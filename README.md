@@ -48,23 +48,14 @@ mcp-suite/
 **Package:** `@mcp-suite/jira-server`  
 **Description:** Comprehensive Jira integration for issue management, project tracking, and workflow automation.
 
-**Required Environment Variables:**
+📖 **[Full Documentation](servers/jira/README.md)**
+
+**Quick Setup:**
 - `JIRA_BASE_URL` - Your Jira instance URL
-- `JIRA_EMAIL` - Your Jira account email
+- `JIRA_EMAIL` - Your Jira account email  
 - `JIRA_API_TOKEN` - Your Jira API token
 
-**Available Tools:**
-- `search_issues` - Search issues using JQL
-- `get_issue` - Get detailed issue information
-- `create_issue` - Create new issues
-- `update_issue` - Update existing issues
-- `transition_issue` - Change issue status
-- `add_comment` - Add comments to issues
-- `list_projects` - List accessible projects
-- `get_project` - Get project details
-- `get_issue_transitions` - Get available transitions
-- `assign_issue` - Assign issues to users
-- `delete_issue` - Delete issues
+**Key Features:** Issue management, JQL search, workflow automation, project tracking, comments, and assignments.
 
 ## 🛠️ Development
 
