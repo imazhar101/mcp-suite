@@ -1,0 +1,22 @@
+{
+  "logLevel": "debug",
+  "servers": {
+    "jira": {
+      "enabled": true,
+      "timeout": 30000,
+      "retries": 3,
+      "rateLimiting": {
+        "enabled": true,
+        "requestsPerMinute": 100
+      }
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "metricsInterval": 60000
+  },
+  "security": {
+    "validateCertificates": false,
+    "allowSelfSignedCerts": true
+  }
+}

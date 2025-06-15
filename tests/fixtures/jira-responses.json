@@ -1,0 +1,93 @@
+{
+  "searchIssues": {
+    "total": 2,
+    "issues": [
+      {
+        "key": "PROJ-123",
+        "fields": {
+          "summary": "Test issue 1",
+          "status": { "name": "Open" },
+          "assignee": { "displayName": "John Doe" },
+          "reporter": { "displayName": "Jane Smith" },
+          "priority": { "name": "High" },
+          "issuetype": { "name": "Bug" },
+          "project": { "key": "PROJ", "name": "Test Project" },
+          "created": "2024-01-01T00:00:00.000Z",
+          "updated": "2024-01-02T00:00:00.000Z"
+        }
+      },
+      {
+        "key": "PROJ-124",
+        "fields": {
+          "summary": "Test issue 2",
+          "status": { "name": "In Progress" },
+          "assignee": null,
+          "reporter": { "displayName": "Bob Johnson" },
+          "priority": { "name": "Medium" },
+          "issuetype": { "name": "Task" },
+          "project": { "key": "PROJ", "name": "Test Project" },
+          "created": "2024-01-03T00:00:00.000Z",
+          "updated": "2024-01-04T00:00:00.000Z"
+        }
+      }
+    ]
+  },
+  "getIssue": {
+    "key": "PROJ-123",
+    "fields": {
+      "summary": "Test issue 1",
+      "description": "This is a test issue description",
+      "status": { "name": "Open" },
+      "assignee": { "displayName": "John Doe" },
+      "reporter": { "displayName": "Jane Smith" },
+      "priority": { "name": "High" },
+      "issuetype": { "name": "Bug" },
+      "project": { "key": "PROJ", "name": "Test Project" },
+      "created": "2024-01-01T00:00:00.000Z",
+      "updated": "2024-01-02T00:00:00.000Z",
+      "comment": {
+        "comments": [
+          {
+            "id": "10001",
+            "author": { "displayName": "John Doe" },
+            "body": "This is a test comment",
+            "created": "2024-01-02T00:00:00.000Z"
+          }
+        ]
+      }
+    }
+  },
+  "listProjects": [
+    {
+      "key": "PROJ",
+      "name": "Test Project",
+      "projectTypeKey": "software",
+      "lead": { "displayName": "Project Lead" }
+    },
+    {
+      "key": "DEMO",
+      "name": "Demo Project",
+      "projectTypeKey": "business",
+      "lead": { "displayName": "Demo Lead" }
+    }
+  ],
+  "transitions": {
+    "transitions": [
+      {
+        "id": "11",
+        "name": "To Do",
+        "to": { "name": "To Do", "id": "10000" }
+      },
+      {
+        "id": "21",
+        "name": "In Progress",
+        "to": { "name": "In Progress", "id": "10001" }
+      },
+      {
+        "id": "31",
+        "name": "Done",
+        "to": { "name": "Done", "id": "10002" }
+      }
+    ]
+  }
+}

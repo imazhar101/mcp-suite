@@ -1,0 +1,33 @@
+{
+  "servers": [
+    {
+      "name": "jira",
+      "displayName": "Jira Server",
+      "description": "Jira issue management and project tracking",
+      "version": "2.0.0",
+      "category": "productivity",
+      "capabilities": ["tools"],
+      "requiredEnvVars": [
+        "JIRA_BASE_URL",
+        "JIRA_EMAIL",
+        "JIRA_API_TOKEN"
+      ],
+      "optionalEnvVars": [],
+      "tools": [
+        "search_issues",
+        "get_issue",
+        "create_issue",
+        "update_issue",
+        "transition_issue",
+        "add_comment",
+        "list_projects",
+        "get_project",
+        "get_issue_transitions",
+        "assign_issue",
+        "delete_issue"
+      ],
+      "resources": [],
+      "prompts": []
+    }
+  ]
+}

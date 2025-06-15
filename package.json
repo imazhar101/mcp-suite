@@ -1,0 +1,27 @@
+{
+  "name": "mcp-suite",
+  "version": "2.0.0",
+  "description": "A comprehensive suite of MCP (Model Context Protocol) servers",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "servers/*"
+  ],
+  "scripts": {
+    "build": "node scripts/build.js",
+    "deploy": "node scripts/deploy.js",
+    "test": "npm run test --workspaces",
+    "lint": "eslint . --ext .ts,.js",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "eslint": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

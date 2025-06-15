@@ -1,0 +1,27 @@
+{
+  "name": "@mcp-suite/jira-server",
+  "version": "2.0.0",
+  "description": "Jira MCP server for issue management and project tracking",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "mcp-jira": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node ./dist/index.js",
+    "inspector": "npx @modelcontextprotocol/inspector ./dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "axios": "^1.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}
