@@ -1,0 +1,23 @@
+{
+  "name": "@mcp-suite/figma-server",
+  "version": "2.0.0",
+  "description": "Figma MCP server for design file management and API integration",
+  "type": "module",
+  "main": "../../dist/servers/figma/src/index.js",
+  "bin": {
+    "mcp-figma": "../../dist/servers/figma/src/index.js"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/node-fetch": "^2.6.4",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "../../dist/servers/figma"
+  ]
+}
