@@ -88,12 +88,11 @@ npm run start:all
 
 ### Testing
 ```bash
-# Run all tests
+# Run integration tests
 npm test
 
-# Run specific test suites
-npm run test:unit
-npm run test:integration
+# Run specific test file
+npx vitest run tests/integration/jira-server.test.ts
 ```
 
 ### Creating New Servers
@@ -114,7 +113,7 @@ npm run test:integration
 - `npm run build:server <name>` - Start specific server
 - `npm run start:all` - Start all servers
 - `npm run deploy <server> [version-type]` - Deploy server with version bump
-- `npm test` - Run test suite
+- `npm test` - Run integration tests
 - `npm run lint` - Lint codebase
 - `npm run type-check` - TypeScript type checking
 
@@ -135,9 +134,9 @@ npm run test:integration
 ## 🧪 Testing
 
 The test suite includes:
-- **Unit tests:** Test shared utilities and individual components
-- **Integration tests:** Test server startup and MCP protocol communication
-- **Fixtures:** Mock data for consistent testing
+- **Integration tests:** Test server startup and MCP protocol communication using Vitest
+- Tests require environment variables (e.g., `JIRA_BASE_URL`) to run against real services
+- Tests are skipped automatically when environment variables are not configured
 
 ## 📈 Monitoring
 
