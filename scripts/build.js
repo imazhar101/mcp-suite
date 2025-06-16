@@ -27,8 +27,8 @@ function buildServer(serverName) {
 
   try {
     console.log(`📦 Building ${serverName}...`);
-    execSync('npm run build', { 
-      cwd: serverPath, 
+    execSync(`npx tsc --project ${serverPath}/tsconfig.json --outDir ${ROOT_DIR}/dist --rootDir ${ROOT_DIR}`, { 
+      cwd: ROOT_DIR, 
       stdio: 'inherit' 
     });
     console.log(`✅ ${serverName} built successfully`);
