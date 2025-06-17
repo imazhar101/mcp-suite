@@ -1,69 +1,104 @@
 #!/usr/bin/env node
-import { execSync } from 'child_process';
-import { readFileSync, existsSync } from 'fs';
-import { join } from 'path';
+import { execSync } from "child_process";
+import { readFileSync, existsSync } from "fs";
+import { join } from "path";
+
+class ProgressBar {
+  constructor(total, width = 30) {
+    this.total = total;
+    this.current = 0;
+    this.width = width;
+  }
+
+  update(current, label = "") {
+    this.current = current;
+    const percentage = Math.round((current / this.total) * 100);
+    const filled = Math.round((current / this.total) * this.width);
+    const empty = this.width - filled;
+
+    const bar = "█".repeat(filled) + "░".repeat(empty);
+    const progress = `[${bar}] ${percentage}% (${current}/${this.total})`;
+
+    process.stdout.write(`\r${progress} ${label}`);
+
+    if (current === this.total) {
+      process.stdout.write("\n");
+    }
+  }
+
+  finish() {
+    this.update(this.total);
+  }
+}
 
 const ROOT_DIR = process.cwd();
-const SERVERS_DIR = join(ROOT_DIR, 'servers');
+const SERVERS_DIR = join(ROOT_DIR, "servers");
 
 function getServers() {
   try {
-    const entries = execSync('ls -d servers/*/', { encoding: 'utf8' }).trim().split('\n');
-    return entries.map(entry => entry.replace('servers/', '').replace('/', ''));
+    const entries = execSync("ls -d servers/*/", { encoding: "utf8" })
+      .trim()
+      .split("\n");
+    return entries.map((entry) =>
+      entry.replace("servers/", "").replace("/", "")
+    );
   } catch (error) {
-    console.log('No servers found');
+    console.log("No servers found");
     return [];
   }
 }
 
-function buildServer(serverName) {
+function buildServer(serverName, progressBar, current, total) {
   const serverPath = join(SERVERS_DIR, serverName);
-  const packageJsonPath = join(serverPath, 'package.json');
-  
+  const packageJsonPath = join(serverPath, "package.json");
+
   if (!existsSync(packageJsonPath)) {
-    console.log(`⚠️  No package.json found for ${serverName}, skipping...`);
+    progressBar.update(current, `⚠️  Skipping ${serverName} (no package.json)`);
     return false;
   }
 
   try {
-    console.log(`📦 Building ${serverName}...`);
-    execSync(`npx tsc --project ${serverPath}/tsconfig.json --outDir ${ROOT_DIR}/dist --rootDir ${ROOT_DIR}`, { 
-      cwd: ROOT_DIR, 
-      stdio: 'inherit' 
-    });
-    console.log(`✅ ${serverName} built successfully`);
+    progressBar.update(current, `📦 Building ${serverName}...`);
+    execSync(
+      `npx tsc --project ${serverPath}/tsconfig.json --outDir ${ROOT_DIR}/dist --rootDir ${ROOT_DIR}`,
+      {
+        cwd: ROOT_DIR,
+        stdio: "pipe",
+      }
+    );
+    progressBar.update(current + 1, `✅ ${serverName} completed`);
     return true;
   } catch (error) {
-    console.error(`❌ Failed to build ${serverName}:`, error.message);
+    progressBar.update(
+      current + 1,
+      `❌ ${serverName} failed: ${error.message.split("\n")[0]}`
+    );
     return false;
   }
 }
 
 function main() {
   const servers = getServers();
-  
+
   if (servers.length === 0) {
-    console.log('No servers found to build');
+    console.log("No servers found to build");
     return;
   }
 
-  console.log(`Building ${servers.length} server(s): ${servers.join(', ')}\n`);
-  
+  console.log(`Building ${servers.length} server(s): ${servers.join(", ")}\n`);
+
+  const progressBar = new ProgressBar(servers.length);
   let successful = 0;
   let failed = 0;
 
-  for (const server of servers) {
-    if (buildServer(server)) {
+  for (let i = 0; i < servers.length; i++) {
+    const server = servers[i];
+    if (buildServer(server, progressBar, i, servers.length)) {
       successful++;
     } else {
       failed++;
     }
   }
-
-  console.log(`\n📊 Build Summary:`);
-  console.log(`   ✅ Successful: ${successful}`);
-  console.log(`   ❌ Failed: ${failed}`);
-  console.log(`   📦 Total: ${servers.length}`);
 
   if (failed > 0) {
     process.exit(1);
