@@ -75,12 +75,6 @@ class PostgreSQLServer {
           args.query,
           args.params
         );
-      case "list_tables":
-        return await this.postgresqlService.listTables();
-      case "get_database_stats":
-        return await this.postgresqlService.getDatabaseStats();
-      case "test_connection":
-        return await this.postgresqlService.testConnection();
       default:
         throw new McpError(
           ErrorCode.MethodNotFound,

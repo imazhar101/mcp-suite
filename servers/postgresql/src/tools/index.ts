@@ -4,7 +4,7 @@ export const postgresqlTools: McpTool[] = [
   {
     name: "execute_query",
     description:
-      "Execute a SQL query on the PostgreSQL database (SELECT queries automatically limited to 100 results)",
+      "Execute a read-only SQL query on the PostgreSQL database (SELECT queries only, automatically limited to 100 results)",
     inputSchema: {
       type: "object",
       properties: {

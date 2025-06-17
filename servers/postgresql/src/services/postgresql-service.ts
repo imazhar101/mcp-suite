@@ -8,9 +8,7 @@ export class PostgreSQLService {
 
   constructor(connectionString: string, logger: Logger) {
     this.logger = logger;
-    this.pool = new Pool({
-      connectionString,
-    });
+    this.pool = new Pool({ connectionString });
 
     this.pool.on("error", (err: Error) => {
       this.logger.error("Unexpected PostgreSQL client error", err);
@@ -22,12 +20,32 @@ export class PostgreSQLService {
     params?: any[]
   ): Promise<{ success: boolean; data?: any; error?: string }> {
     const client = await this.pool.connect();
+
     try {
       this.logger.info(`Executing query: ${query}`);
 
+      // Validate query for safety (block potentially dangerous operations)
+      const trimmedQuery = query.trim();
+      const lowerQuery = trimmedQuery.toLowerCase();
+      
+      // Block dangerous operations
+      const dangerousKeywords = ['drop', 'delete', 'insert', 'update', 'create', 'alter', 'truncate', 'grant', 'revoke'];
+      const hasDangerousKeyword = dangerousKeywords.some(keyword => 
+        lowerQuery.includes(keyword + ' ') || lowerQuery.startsWith(keyword)
+      );
+      
+      if (hasDangerousKeyword) {
+        return {
+          success: false,
+          error: "Query contains potentially dangerous operations. Only SELECT queries are allowed for safety.",
+        };
+      }
+
+      // Start a read-only transaction for additional safety
+      await client.query('BEGIN READ ONLY');
+      
       // Add LIMIT 100 to SELECT queries for safety
-      let modifiedQuery = query.trim();
-      const lowerQuery = modifiedQuery.toLowerCase();
+      let modifiedQuery = trimmedQuery;
       
       if (lowerQuery.startsWith("select") && !lowerQuery.includes("limit")) {
         // Remove trailing semicolon if present, add LIMIT, then add semicolon back
@@ -39,6 +57,10 @@ export class PostgreSQLService {
       }
 
       const result = await client.query(modifiedQuery, params);
+      
+      // Commit the read-only transaction
+      await client.query('COMMIT');
+
       return {
         success: true,
         data: {
@@ -54,6 +76,14 @@ export class PostgreSQLService {
       };
     } catch (error) {
       this.logger.error("Error executing query", error);
+      
+      // Rollback transaction on error
+      try {
+        await client.query('ROLLBACK');
+      } catch (rollbackError) {
+        this.logger.error("Error rolling back transaction", rollbackError);
+      }
+
       return {
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",
@@ -63,130 +93,10 @@ export class PostgreSQLService {
     }
   }
 
-  async listTables(): Promise<{
-    success: boolean;
-    data?: string[];
-    error?: string;
-  }> {
-    const query = `
-      SELECT table_name 
-      FROM information_schema.tables 
-      WHERE table_schema = 'public' 
-      ORDER BY table_name;
-    `;
-
-    try {
-      const result = await this.executeQuery(query);
-      if (!result.success) {
-        return result;
-      }
-
-      return {
-        success: true,
-        data: result.data.rows.map((row: any) => row.table_name),
-      };
-    } catch (error) {
-      this.logger.error("Error listing tables", error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
-      };
-    }
-  }
-
-  async getDatabaseStats(): Promise<{
-    success: boolean;
-    data?: DatabaseStats;
-    error?: string;
-  }> {
-    const tablesQuery = `
-      SELECT COUNT(*) as table_count 
-      FROM information_schema.tables 
-      WHERE table_schema = 'public';
-    `;
-
-    const sizeQuery = `
-      SELECT pg_size_pretty(pg_database_size(current_database())) as size;
-    `;
-
-    try {
-      const [tablesResult, sizeResult] = await Promise.all([
-        this.executeQuery(tablesQuery),
-        this.executeQuery(sizeQuery),
-      ]);
-
-      if (!tablesResult.success || !sizeResult.success) {
-        return {
-          success: false,
-          error: "Failed to get database statistics",
-        };
-      }
-
-      // Get total row count across all tables
-      const tablesListResult = await this.listTables();
-      if (!tablesListResult.success) {
-        return {
-          success: false,
-          error: tablesListResult.error || "Failed to get tables list",
-        };
-      }
-
-      let totalRows = 0;
-      const tables = tablesListResult.data || [];
-
-      for (const table of tables) {
-        try {
-          const rowCountResult = await this.executeQuery(
-            `SELECT COUNT(*) as count FROM "${table}"`
-          );
-          if (rowCountResult.success) {
-            totalRows += parseInt(rowCountResult.data.rows[0].count);
-          }
-        } catch (error) {
-          this.logger.warn(`Could not get row count for table ${table}`, error);
-        }
-      }
-
-      return {
-        success: true,
-        data: {
-          totalTables: parseInt(tablesResult.data.rows[0].table_count),
-          totalRows,
-          databaseSize: sizeResult.data.rows[0].size,
-        },
-      };
-    } catch (error) {
-      this.logger.error("Error getting database stats", error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
-      };
-    }
-  }
-
-  async testConnection(): Promise<{
-    success: boolean;
-    data?: { connected: boolean };
-    error?: string;
-  }> {
-    try {
-      const result = await this.executeQuery("SELECT 1 as test");
-      return {
-        success: true,
-        data: { connected: result.success && result.data.rows.length > 0 },
-      };
-    } catch (error) {
-      this.logger.error("Connection test failed", error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
-      };
-    }
-  }
-
   async disconnect(): Promise<void> {
     try {
       await this.pool.end();
+
       this.logger.info("Disconnected from PostgreSQL database");
     } catch (err) {
       this.logger.error("Error disconnecting from PostgreSQL database", err);
