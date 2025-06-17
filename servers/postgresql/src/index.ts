@@ -75,8 +75,6 @@ class PostgreSQLServer {
           args.query,
           args.params
         );
-      case "get_table_schema":
-        return await this.postgresqlService.getTableSchema(args.tableName);
       case "list_tables":
         return await this.postgresqlService.listTables();
       case "get_database_stats":

@@ -1,12 +1,6 @@
-import { Pool, PoolClient } from "pg";
+import { Pool } from "pg";
 import { Logger } from "../../../../shared/utils/logger.js";
-import {
-  DatabaseConnection,
-  QueryResult,
-  TableSchema,
-  ColumnInfo,
-  DatabaseStats,
-} from "../types/database.js";
+import { DatabaseStats } from "../types/database.js";
 
 export class PostgreSQLService {
   private pool: Pool;
@@ -30,7 +24,17 @@ export class PostgreSQLService {
     const client = await this.pool.connect();
     try {
       this.logger.info(`Executing query: ${query}`);
-      const result = await client.query(query, params);
+
+      // Add LIMIT 100 to SELECT queries for safety
+      let modifiedQuery = query.trim();
+      if (
+        modifiedQuery.toLowerCase().startsWith("select") &&
+        !modifiedQuery.toLowerCase().includes("limit")
+      ) {
+        modifiedQuery += " LIMIT 100";
+      }
+
+      const result = await client.query(modifiedQuery, params);
       return {
         success: true,
         data: {
@@ -52,55 +56,6 @@ export class PostgreSQLService {
       };
     } finally {
       client.release();
-    }
-  }
-
-  async getTableSchema(
-    tableName: string
-  ): Promise<{ success: boolean; data?: TableSchema; error?: string }> {
-    const query = `
-      SELECT 
-        column_name,
-        data_type,
-        is_nullable,
-        column_default,
-        CASE WHEN tc.constraint_type = 'PRIMARY KEY' THEN true ELSE false END as is_primary_key
-      FROM information_schema.columns c
-      LEFT JOIN information_schema.key_column_usage kcu 
-        ON c.table_name = kcu.table_name AND c.column_name = kcu.column_name
-      LEFT JOIN information_schema.table_constraints tc 
-        ON kcu.constraint_name = tc.constraint_name
-      WHERE c.table_name = $1
-      ORDER BY c.ordinal_position;
-    `;
-
-    try {
-      const result = await this.executeQuery(query, [tableName]);
-      if (!result.success) {
-        return result;
-      }
-
-      const columns: ColumnInfo[] = result.data.rows.map((row: any) => ({
-        columnName: row.column_name,
-        dataType: row.data_type,
-        isNullable: row.is_nullable === "YES",
-        defaultValue: row.column_default,
-        isPrimaryKey: row.is_primary_key,
-      }));
-
-      return {
-        success: true,
-        data: {
-          tableName,
-          columns,
-        },
-      };
-    } catch (error) {
-      this.logger.error("Error getting table schema", error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
-      };
     }
   }
 

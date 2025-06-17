@@ -102,7 +102,7 @@ assign_issue, delete_issue
 **Available Tools (5):**
 
 ```
-execute_query, get_table_schema, list_tables, get_database_stats, test_connection
+execute_query, list_tables, get_database_stats, test_connection
 ```
 
 **Available Tools (185):**
