@@ -27,11 +27,15 @@ export class PostgreSQLService {
 
       // Add LIMIT 100 to SELECT queries for safety
       let modifiedQuery = query.trim();
-      if (
-        modifiedQuery.toLowerCase().startsWith("select") &&
-        !modifiedQuery.toLowerCase().includes("limit")
-      ) {
-        modifiedQuery += " LIMIT 100";
+      const lowerQuery = modifiedQuery.toLowerCase();
+      
+      if (lowerQuery.startsWith("select") && !lowerQuery.includes("limit")) {
+        // Remove trailing semicolon if present, add LIMIT, then add semicolon back
+        if (modifiedQuery.endsWith(";")) {
+          modifiedQuery = modifiedQuery.slice(0, -1) + " LIMIT 100;";
+        } else {
+          modifiedQuery += " LIMIT 100";
+        }
       }
 
       const result = await client.query(modifiedQuery, params);
