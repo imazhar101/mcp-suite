@@ -12,7 +12,8 @@ mcp-suite/
 │   └── middleware/     # Reusable middleware (auth, error handling)
 ├── servers/            # Individual MCP servers
 │   ├── jira/          # Jira server for issue management
-│   └── canvas/        # Canvas LMS server for educational workflows
+│   ├── canvas/        # Canvas LMS server for educational workflows
+│   └── postgresql/    # PostgreSQL database management server
 ├── scripts/           # Build and deployment scripts
 ├── config/            # Environment-specific configurations
 └── tests/             # Test suite (unit, integration, fixtures)
@@ -21,6 +22,7 @@ mcp-suite/
 ## 🚀 Quick Start
 
 1. **Clone and install dependencies:**
+
    ```bash
    git clone <repository-url>
    cd mcp-suite
@@ -28,12 +30,14 @@ mcp-suite/
    ```
 
 2. **Set up environment variables:**
+
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
    ```
 
 3. **Build all servers:**
+
    ```bash
    npm run build
    ```
@@ -46,19 +50,22 @@ mcp-suite/
 ## 📦 Available Servers
 
 ### Jira Server
+
 **Package:** `@mcp-suite/jira-server`  
 **Description:** Comprehensive Jira integration for issue management, project tracking, and workflow automation.
 
 📖 **[Full Documentation](servers/jira/README.md)**
 
 **Quick Setup:**
+
 - `JIRA_BASE_URL` - Your Jira instance URL
-- `JIRA_EMAIL` - Your Jira account email  
+- `JIRA_EMAIL` - Your Jira account email
 - `JIRA_API_TOKEN` - Your Jira API token
 
 **Key Features:** Issue management, JQL search, workflow automation, project tracking, comments, and assignments.
 
 **Available Tools (11):**
+
 ```
 search_issues, get_issue, create_issue, update_issue, transition_issue,
 add_comment, list_projects, get_project, get_issue_transitions,
@@ -66,23 +73,45 @@ assign_issue, delete_issue
 ```
 
 ### Canvas Server
+
 **Package:** `@mcp-suite/canvas-server`  
 **Description:** Comprehensive Canvas LMS integration for course management, enrollment operations, grading, and administrative tasks.
 
 📖 **[Full Documentation](servers/canvas/README.md)**
 
 **Quick Setup:**
+
 - `CANVAS_BASE_URL` - Your Canvas instance URL (e.g., `https://your-school.instructure.com`)
 - `CANVAS_API_TOKEN` - Your Canvas API access token
 
 **Key Features:** Course management, enrollment utilities, user administration, assignment/quiz tools, grading standards, grade change auditing, admin management, and comprehensive Canvas API coverage.
 
+### PostgreSQL Server
+
+**Package:** `@mcp-suite/postgresql-server`  
+**Description:** PostgreSQL database management and query execution server for database operations, schema inspection, and analytics.
+
+📖 **[Full Documentation](servers/postgresql/README.md)**
+
+**Quick Setup:**
+
+- `POSTGRESQL_CONNECTION_STRING` - Your PostgreSQL connection string (e.g., `postgresql://user:password@localhost:5432/database`)
+
+**Key Features:** SQL query execution, table schema inspection, database statistics, connection testing, and comprehensive PostgreSQL database management.
+
+**Available Tools (5):**
+
+```
+execute_query, get_table_schema, list_tables, get_database_stats, test_connection
+```
+
 **Available Tools (185):**
+
 ```
 # Admin Tools (4)
 make_account_admin, remove_account_admin, list_account_admins, list_my_admin_roles
 
-# Assignment Tools (14) 
+# Assignment Tools (14)
 list_assignments, get_assignment, create_assignment, update_assignment, delete_assignment,
 duplicate_assignment, bulk_update_assignment_dates, list_assignment_overrides,
 get_assignment_override, create_assignment_override, update_assignment_override,
@@ -166,6 +195,7 @@ upload_user_file, get_pandata_events_token
 ## 🛠️ Development
 
 ### Building Servers
+
 ```bash
 # Build all servers
 npm run build
@@ -175,6 +205,7 @@ cd servers/jira && npm run build
 ```
 
 ### Running Servers
+
 ```bash
 # Start a specific server
 npm run build:server jira
@@ -184,6 +215,7 @@ npm run start:all
 ```
 
 ### Testing
+
 ```bash
 # Run integration tests
 npm test
@@ -195,6 +227,7 @@ npx vitest run tests/integration/jira-server.test.ts
 ### Creating New Servers
 
 1. Create server directory:
+
    ```bash
    mkdir -p servers/your-server/src/{handlers,tools,types}
    ```
@@ -217,11 +250,13 @@ npx vitest run tests/integration/jira-server.test.ts
 ## 🔧 Configuration
 
 ### Environment-specific configs
+
 - `config/development.json` - Development settings
 - `config/production.json` - Production settings
 - `config/servers.json` - Server registry and metadata
 
 ### Shared Utilities
+
 - **Logger:** Structured logging with context
 - **Config:** Environment variable management
 - **Validation:** Input validation utilities
@@ -231,6 +266,7 @@ npx vitest run tests/integration/jira-server.test.ts
 ## 🧪 Testing
 
 The test suite includes:
+
 - **Integration tests:** Test server startup and MCP protocol communication using Vitest
 - Tests require environment variables (e.g., `JIRA_BASE_URL`) to run against real services
 - Tests are skipped automatically when environment variables are not configured
@@ -238,6 +274,7 @@ The test suite includes:
 ## 📈 Monitoring
 
 Each server includes built-in monitoring capabilities:
+
 - Structured logging with contextual information
 - Error tracking and reporting
 - Performance metrics collection

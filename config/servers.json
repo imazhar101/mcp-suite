@@ -7,11 +7,7 @@
       "version": "2.0.0",
       "category": "productivity",
       "capabilities": ["tools"],
-      "requiredEnvVars": [
-        "JIRA_BASE_URL",
-        "JIRA_EMAIL",
-        "JIRA_API_TOKEN"
-      ],
+      "requiredEnvVars": ["JIRA_BASE_URL", "JIRA_EMAIL", "JIRA_API_TOKEN"],
       "optionalEnvVars": [],
       "tools": [
         "search_issues",
@@ -25,6 +21,25 @@
         "get_issue_transitions",
         "assign_issue",
         "delete_issue"
+      ],
+      "resources": [],
+      "prompts": []
+    },
+    {
+      "name": "postgresql",
+      "displayName": "PostgreSQL Server",
+      "description": "PostgreSQL database management and query execution",
+      "version": "1.0.0",
+      "category": "database",
+      "capabilities": ["tools"],
+      "requiredEnvVars": ["POSTGRESQL_CONNECTION_STRING"],
+      "optionalEnvVars": [],
+      "tools": [
+        "executeQuery",
+        "getTableSchema",
+        "listTables",
+        "getDatabaseStats",
+        "testConnection"
       ],
       "resources": [],
       "prompts": []
