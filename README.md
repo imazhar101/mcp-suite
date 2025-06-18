@@ -36,11 +36,6 @@ mcp-suite/
    npm run build
    ```
 
-3. **Start a specific server:**
-   ```bash
-   npm run build:server jira
-   ```
-
 ## 📖 Setup Documentation
 
 For detailed setup instructions with AI coding assistants like Continue.dev, Claude Code, and Cline, see:
@@ -49,12 +44,10 @@ For detailed setup instructions with AI coding assistants like Continue.dev, Cla
 
 ## 📦 Available Servers
 
-### Jira Server
+### [Jira Server](servers/jira/README.md)
 
 **Package:** `@mcp-suite/jira-server`  
 **Description:** Comprehensive Jira integration for issue management, project tracking, and workflow automation.
-
-📖 **[Full Documentation](servers/jira/README.md)**
 
 **Quick Setup:**
 
@@ -72,12 +65,10 @@ add_comment, list_projects, get_project, get_issue_transitions,
 assign_issue, delete_issue
 ```
 
-### Canvas Server
+### [Canvas Server](servers/canvas/README.md)
 
 **Package:** `@mcp-suite/canvas-server`  
 **Description:** Comprehensive Canvas LMS integration for course management, enrollment operations, grading, and administrative tasks.
-
-📖 **[Full Documentation](servers/canvas/README.md)**
 
 **Quick Setup:**
 
@@ -86,7 +77,7 @@ assign_issue, delete_issue
 
 **Key Features:** Course management, enrollment utilities, user administration, assignment/quiz tools, grading standards, grade change auditing, admin management, and comprehensive Canvas API coverage.
 
-### PostgreSQL Server
+### [PostgreSQL Server](servers/postgresql/README.md)
 
 **Package:** `@mcp-suite/postgresql-server`  
 **Description:** PostgreSQL database management and query execution server for database operations, schema inspection, and analytics.
@@ -103,6 +94,26 @@ assign_issue, delete_issue
 
 ```
 execute_query, list_tables, get_database_stats, test_connection
+```
+
+### [Figma Server](servers/figma/README.md)
+
+**Package:** `@mcp-suite/figma-server`  
+**Description:** Figma API integration for retrieving files, components, styles, comments, and managing design workflows.
+
+**Quick Setup:**
+
+- `FIGMA_ACCESS_TOKEN` - Your Figma Personal Access Token
+
+**Key Features:** File operations, comment management, team & project management, components & styles retrieval, and comprehensive Figma API coverage.
+
+**Available Tools (14):**
+
+```
+get_file, get_file_nodes, get_images, get_image_fills, get_comments, post_comment,
+delete_comment, get_me, get_team_projects, get_project_files, get_component,
+get_component_sets, get_team_components, get_file_components, get_team_styles,
+get_file_styles
 ```
 
 **Available Tools (185):**
@@ -207,11 +218,8 @@ cd servers/jira && npm run build
 ### Running Servers
 
 ```bash
-# Start a specific server
-npm run build:server jira
-
-# Start all servers
-npm run start:all
+# Build and run a specific server
+cd servers/jira && npm run build
 ```
 
 ### Testing
@@ -240,8 +248,6 @@ npx vitest run tests/integration/jira-server.test.ts
 ## 📋 Scripts
 
 - `npm run build` - Build all servers
-- `npm run build:server <name>` - Start specific server
-- `npm run start:all` - Start all servers
 - `npm run deploy <server> [version-type]` - Deploy server with version bump
 - `npm test` - Run integration tests
 - `npm run lint` - Lint codebase
