@@ -6,7 +6,8 @@ A comprehensive monorepo suite of MCP (Model Context Protocol) servers built for
 
 ```
 mcp-suite/
-├── shared/              # Shared utilities and types
+├── docs/               # Documentation and setup guides
+├── shared/             # Shared utilities and types
 │   ├── types/          # Common TypeScript interfaces
 │   ├── utils/          # Utility functions (logger, config, validation)
 │   └── middleware/     # Reusable middleware (auth, error handling)
@@ -29,23 +30,22 @@ mcp-suite/
    npm install
    ```
 
-2. **Set up environment variables:**
-
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
-
-3. **Build all servers:**
+2. **Build all servers:**
 
    ```bash
    npm run build
    ```
 
-4. **Start a specific server:**
+3. **Start a specific server:**
    ```bash
    npm run build:server jira
    ```
+
+## 📖 Setup Documentation
+
+For detailed setup instructions with AI coding assistants like Continue.dev, Claude Code, and Cline, see:
+
+📋 **[MCP Setup Guide](docs/MCP_SETUP_GUIDE.md)**
 
 ## 📦 Available Servers
 
