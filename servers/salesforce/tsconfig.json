@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/servers/salesforce",
+    "rootDir": "."
+  },
+  "include": ["src/**/*", "../../shared/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
