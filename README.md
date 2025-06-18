@@ -102,17 +102,16 @@ execute_query, list_tables, get_database_stats, test_connection
 
 **Quick Setup:**
 
-- **OAuth Authentication** (Recommended): Use `salesforce_oauth_login` tool with Connected App credentials
-- **Environment Variables** (Optional): `SALESFORCE_INSTANCE_URL`, `SALESFORCE_ACCESS_TOKEN`, `SALESFORCE_API_VERSION`
+- **Required Environment Variables**: `SALESFORCE_CLIENT_ID`, `SALESFORCE_CLIENT_SECRET`, `SALESFORCE_USERNAME`, `SALESFORCE_PASSWORD`
+- **Optional Variables**: `SALESFORCE_GRANT_TYPE`, `SALESFORCE_LOGIN_URL`, `SALESFORCE_API_VERSION`
 
-**Key Features:** OAuth authentication, SOQL queries, record CRUD operations, object metadata inspection, and comprehensive Salesforce REST API coverage.
+**Key Features:** Automatic OAuth authentication with token persistence, SOQL queries, record CRUD operations, object metadata inspection, auto token renewal, and comprehensive Salesforce REST API coverage.
 
-**Available Tools (9):**
+**Available Tools (7):**
 
 ```
-salesforce_oauth_login, salesforce_auth_status, salesforce_query, salesforce_create,
-salesforce_read, salesforce_update, salesforce_delete, salesforce_describe,
-salesforce_list_objects
+salesforce_query, salesforce_create, salesforce_read, salesforce_update,
+salesforce_delete, salesforce_describe, salesforce_list_objects
 ```
 
 ### [Figma Server](servers/figma/README.md)

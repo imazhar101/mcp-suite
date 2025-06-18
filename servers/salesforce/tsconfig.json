@@ -1,9 +1,23 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/servers/salesforce",
-    "rootDir": "."
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "lib": ["ES2022"],
+    "outDir": "./dist",
+    "rootDir": "../../",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "baseUrl": "../../",
+    "paths": {
+      "shared/*": ["shared/*"]
+    }
   },
   "include": ["src/**/*", "../../shared/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "**/*.test.ts", "**/*.spec.ts"]
 }

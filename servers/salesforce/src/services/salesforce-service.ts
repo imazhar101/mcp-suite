@@ -37,6 +37,15 @@ export class SalesforceService {
     method: "GET" | "POST" | "PATCH" | "DELETE" = "GET",
     body?: any
   ): Promise<any> {
+    // Try to auto-authenticate if we have OAuth credentials but no access token
+    if (!this.isAuthenticated && this.hasOAuthCredentials()) {
+      this.logger.info("No access token found, attempting auto-authentication");
+      const authResult = await this.autoAuthenticate();
+      if (!authResult.success) {
+        throw new Error(`Auto-authentication failed: ${authResult.error}`);
+      }
+    }
+
     if (!this.isAuthenticated) {
       throw new Error("Not authenticated. Please use salesforce_oauth_login to authenticate first.");
     }
@@ -63,6 +72,26 @@ export class SalesforceService {
       const response = await fetch(url, options);
       
       if (!response.ok) {
+        // Check if it's an authentication error (401 Unauthorized)
+        if (response.status === 401 && this.hasOAuthCredentials()) {
+          this.logger.warn("Access token expired, attempting re-authentication");
+          const authResult = await this.autoAuthenticate();
+          if (authResult.success) {
+            // Retry the request with the new token
+            options.headers = {
+              ...options.headers,
+              "Authorization": `Bearer ${this.config.accessToken}`,
+            };
+            const retryResponse = await fetch(url, options);
+            if (retryResponse.ok) {
+              if (retryResponse.status === 204) {
+                return { success: true };
+              }
+              return await retryResponse.json();
+            }
+          }
+        }
+
         const errorBody = await response.text();
         let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
         
@@ -210,13 +239,16 @@ export class SalesforceService {
     }
   }
 
-  async listSObjects(): Promise<{ success: boolean; data?: { sobjects: any[] }; error?: string }> {
+  async listSObjects(): Promise<{ success: boolean; data?: { sobjects: string[] }; error?: string }> {
     try {
       const response = await this.makeRequest("/sobjects");
       
+      // Extract only the names from the sobjects array to reduce payload size
+      const objectNames = response.sobjects?.map((sobject: any) => sobject.name) || [];
+      
       return {
         success: true,
-        data: response,
+        data: { sobjects: objectNames },
       };
     } catch (error) {
       return {
@@ -270,7 +302,11 @@ export class SalesforceService {
       this.config.instanceUrl = authResponse.instance_url;
       this.isAuthenticated = true;
 
-      this.logger.info("Successfully authenticated with Salesforce OAuth");
+      // Store tokens in environment variables for persistence
+      process.env.SALESFORCE_ACCESS_TOKEN = authResponse.access_token;
+      process.env.SALESFORCE_INSTANCE_URL = authResponse.instance_url;
+
+      this.logger.info("Successfully authenticated with Salesforce OAuth and stored tokens");
 
       return {
         success: true,
@@ -295,5 +331,34 @@ export class SalesforceService {
       instanceUrl: this.config.instanceUrl,
       hasAccessToken: !!this.config.accessToken,
     };
+  }
+
+  private hasOAuthCredentials(): boolean {
+    return !!(
+      process.env.SALESFORCE_CLIENT_ID &&
+      process.env.SALESFORCE_CLIENT_SECRET &&
+      process.env.SALESFORCE_USERNAME &&
+      process.env.SALESFORCE_PASSWORD
+    );
+  }
+
+  private async autoAuthenticate(): Promise<{ success: boolean; data?: SalesforceAuthResponse; error?: string }> {
+    if (!this.hasOAuthCredentials()) {
+      return {
+        success: false,
+        error: "OAuth credentials not available in environment variables",
+      };
+    }
+
+    const oauthConfig: SalesforceOAuthConfig = {
+      clientId: process.env.SALESFORCE_CLIENT_ID!,
+      clientSecret: process.env.SALESFORCE_CLIENT_SECRET!,
+      username: process.env.SALESFORCE_USERNAME!,
+      password: process.env.SALESFORCE_PASSWORD!,
+      grantType: process.env.SALESFORCE_GRANT_TYPE || "password",
+      loginUrl: process.env.SALESFORCE_LOGIN_URL || "https://login.salesforce.com",
+    };
+
+    return await this.authenticateWithOAuth(oauthConfig);
   }
 }

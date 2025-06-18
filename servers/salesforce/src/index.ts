@@ -23,7 +23,7 @@ class SalesforceServer {
   constructor() {
     this.logger = new Logger(getLogLevel(), { server: "salesforce" });
 
-    // Make OAuth credentials optional - they can be provided via environment variables or through the OAuth tool
+    // Load tokens from environment variables if available
     const instanceUrl = process.env.SALESFORCE_INSTANCE_URL;
     const accessToken = process.env.SALESFORCE_ACCESS_TOKEN;
     const apiVersion = process.env.SALESFORCE_API_VERSION || "v59.0";
@@ -33,6 +33,8 @@ class SalesforceServer {
       accessToken,
       apiVersion,
     };
+
+    this.logger.info(`Salesforce server starting with${accessToken ? '' : 'out'} stored access token`);
 
     this.salesforceService = new SalesforceService(config, this.logger);
 
@@ -93,64 +95,76 @@ class SalesforceServer {
   }
 
   private async handleToolCall(toolName: string, args: any): Promise<any> {
-    switch (toolName) {
-      case "salesforce_oauth_login":
-        const oauthConfig = {
-          clientId: args.client_id,
-          clientSecret: args.client_secret,
-          username: args.username,
-          password: args.password,
-          grantType: args.grant_type || "password",
-          loginUrl: args.login_url || "https://login.salesforce.com",
-        };
-        return await this.salesforceService.authenticateWithOAuth(oauthConfig);
+    try {
+      switch (toolName) {
+        case "salesforce_query":
+          return await this.salesforceService.query(args.soql);
 
-      case "salesforce_auth_status":
+        case "salesforce_create":
+          return await this.salesforceService.create(
+            args.sobject_type,
+            args.record
+          );
+
+        case "salesforce_read":
+          return await this.salesforceService.read(
+            args.sobject_type,
+            args.id,
+            args.fields
+          );
+
+        case "salesforce_update":
+          return await this.salesforceService.update(
+            args.sobject_type,
+            args.id,
+            args.record
+          );
+
+        case "salesforce_delete":
+          return await this.salesforceService.delete(
+            args.sobject_type,
+            args.id
+          );
+
+        case "salesforce_describe":
+          return await this.salesforceService.describe(args.sobject_type);
+
+        case "salesforce_list_objects":
+          return await this.salesforceService.listSObjects();
+
+        default:
+          throw new McpError(
+            ErrorCode.MethodNotFound,
+            `Unknown tool: ${toolName}`
+          );
+      }
+    } catch (error) {
+      // Enhanced error handling for authentication issues
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      
+      if (errorMessage.includes("OAuth credentials not available") || 
+          errorMessage.includes("Auto-authentication failed") ||
+          errorMessage.includes("Not authenticated")) {
         return {
-          success: true,
-          data: this.salesforceService.getAuthenticationStatus(),
+          success: false,
+          error: `Authentication failed. Please ensure the following environment variables are set correctly:
+- SALESFORCE_CLIENT_ID: Your Connected App Client ID
+- SALESFORCE_CLIENT_SECRET: Your Connected App Client Secret  
+- SALESFORCE_USERNAME: Your Salesforce username
+- SALESFORCE_PASSWORD: Your Salesforce password (with security token appended if required)
+
+Optional environment variables:
+- SALESFORCE_GRANT_TYPE: OAuth grant type (defaults to "password")
+- SALESFORCE_LOGIN_URL: Salesforce login URL (defaults to "https://login.salesforce.com")
+
+Original error: ${errorMessage}`
         };
+      }
 
-      case "salesforce_query":
-        return await this.salesforceService.query(args.soql);
-
-      case "salesforce_create":
-        return await this.salesforceService.create(
-          args.sobject_type,
-          args.record
-        );
-
-      case "salesforce_read":
-        return await this.salesforceService.read(
-          args.sobject_type,
-          args.id,
-          args.fields
-        );
-
-      case "salesforce_update":
-        return await this.salesforceService.update(
-          args.sobject_type,
-          args.id,
-          args.record
-        );
-
-      case "salesforce_delete":
-        return await this.salesforceService.delete(
-          args.sobject_type,
-          args.id
-        );
-
-      case "salesforce_describe":
-        return await this.salesforceService.describe(args.sobject_type);
-
-      case "salesforce_list_objects":
-        return await this.salesforceService.listSObjects();
-
-      default:
-        throw new McpError(
-          ErrorCode.MethodNotFound,
-          `Unknown tool: ${toolName}`
-        );
+      return {
+        success: false,
+        error: errorMessage
+      };
     }
   }
 

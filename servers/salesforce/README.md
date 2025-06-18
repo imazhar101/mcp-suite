@@ -4,6 +4,7 @@ A Model Context Protocol (MCP) server for Salesforce CRM operations using REST A
 
 ## Features
 
+- **OAuth Authentication**: Automatic token management with persistence and auto-renewal
 - **Query**: Execute SOQL queries to retrieve records
 - **Create**: Create new records in any Salesforce object
 - **Read**: Retrieve specific records by ID
@@ -11,24 +12,24 @@ A Model Context Protocol (MCP) server for Salesforce CRM operations using REST A
 - **Delete**: Delete records from Salesforce
 - **Describe**: Get metadata information about Salesforce objects
 - **List Objects**: List all available Salesforce object types
+- **Auto Re-authentication**: Automatically refreshes expired tokens
 
 ## Configuration
 
-### Option 1: OAuth Authentication (Recommended)
+### OAuth Authentication (Required)
 
-Use the built-in OAuth authentication tool to authenticate at runtime:
+Set OAuth environment variables for automatic authentication:
 
-```json
-{
-  "tool": "salesforce_oauth_login",
-  "client_id": "your_connected_app_client_id",
-  "client_secret": "your_connected_app_client_secret",
-  "username": "your_salesforce_username",
-  "password": "your_password_with_security_token",
-  "grant_type": "password",
-  "login_url": "https://login.salesforce.com"
-}
+```bash
+export SALESFORCE_CLIENT_ID="your_connected_app_client_id"
+export SALESFORCE_CLIENT_SECRET="your_connected_app_client_secret"
+export SALESFORCE_USERNAME="your_salesforce_username"
+export SALESFORCE_PASSWORD="your_password_with_security_token"
+export SALESFORCE_GRANT_TYPE="password"  # Optional, defaults to "password"
+export SALESFORCE_LOGIN_URL="https://login.salesforce.com"  # Optional, defaults to production
 ```
+
+**Automatic Authentication**: The server automatically authenticates on the first API call and handles token management transparently. Access tokens are stored in environment variables (`SALESFORCE_ACCESS_TOKEN` and `SALESFORCE_INSTANCE_URL`) and automatically renewed when they expire.
 
 **Setting up a Connected App:**
 1. Go to Setup → App Manager → New Connected App
@@ -37,41 +38,9 @@ Use the built-in OAuth authentication tool to authenticate at runtime:
 4. Set Callback URL (can be placeholder for username-password flow)
 5. Note down Consumer Key (Client ID) and Consumer Secret (Client Secret)
 
-### Option 2: Environment Variables
-
-Set the following environment variables (optional):
-
-```bash
-export SALESFORCE_INSTANCE_URL="https://your-instance.salesforce.com"
-export SALESFORCE_ACCESS_TOKEN="your_access_token"
-export SALESFORCE_API_VERSION="v59.0"  # Optional, defaults to v59.0
-```
-
 ## Usage
 
-### Authentication Status
-Check if you're authenticated:
-
-```json
-{
-  "tool": "salesforce_auth_status"
-}
-```
-
-### OAuth Login
-Authenticate using OAuth credentials:
-
-```json
-{
-  "tool": "salesforce_oauth_login",
-  "client_id": "3MVG9...",
-  "client_secret": "your_secret",
-  "username": "user@example.com",
-  "password": "passwordSecurityToken",
-  "grant_type": "password",
-  "login_url": "https://login.salesforce.com"
-}
-```
+**Note**: All tools automatically handle authentication using the environment variables above. No manual authentication is required.
 
 ### Query Records
 Execute SOQL queries to retrieve data:
@@ -147,13 +116,15 @@ Get metadata information about Salesforce objects:
 ```
 
 ### List Available Objects
-List all available Salesforce object types:
+List all available Salesforce object types (returns only object names):
 
 ```json
 {
   "tool": "salesforce_list_objects"
 }
 ```
+
+**Note**: This tool returns only the object names (e.g., "Account", "Contact", "Opportunity") for efficiency. Use `salesforce_describe` with a specific object name to get detailed metadata.
 
 ## Common Salesforce Objects
 
