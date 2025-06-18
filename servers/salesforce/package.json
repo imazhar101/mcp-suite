@@ -1,0 +1,23 @@
+{
+  "name": "@mcp-suite/salesforce-server",
+  "version": "1.0.0",
+  "description": "Salesforce MCP server for CRUD operations using REST APIs",
+  "type": "module",
+  "main": "../../dist/servers/salesforce/src/index.js",
+  "bin": {
+    "mcp-salesforce": "../../dist/servers/salesforce/src/index.js"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "../../dist/servers/salesforce"
+  ]
+}

@@ -14,7 +14,8 @@ mcp-suite/
 ├── servers/            # Individual MCP servers
 │   ├── jira/          # Jira server for issue management
 │   ├── canvas/        # Canvas LMS server for educational workflows
-│   └── postgresql/    # PostgreSQL database management server
+│   ├── postgresql/    # PostgreSQL database management server
+│   └── salesforce/    # Salesforce CRM server with OAuth authentication
 ├── scripts/           # Build and deployment scripts
 ├── config/            # Environment-specific configurations
 └── tests/             # Test suite (unit, integration, fixtures)
@@ -82,8 +83,6 @@ assign_issue, delete_issue
 **Package:** `@mcp-suite/postgresql-server`  
 **Description:** PostgreSQL database management and query execution server for database operations, schema inspection, and analytics.
 
-📖 **[Full Documentation](servers/postgresql/README.md)**
-
 **Quick Setup:**
 
 - `POSTGRESQL_CONNECTION_STRING` - Your PostgreSQL connection string (e.g., `postgresql://user:password@localhost:5432/database`)
@@ -94,6 +93,25 @@ assign_issue, delete_issue
 
 ```
 execute_query, list_tables, get_database_stats, test_connection
+```
+
+### [Salesforce Server](servers/salesforce/README.md)
+
+**Package:** `@mcp-suite/salesforce-server`  
+**Description:** Salesforce CRM integration with CRUD operations using REST APIs and OAuth authentication support.
+
+**Quick Setup:**
+
+- **Required Environment Variables**: `SALESFORCE_CLIENT_ID`, `SALESFORCE_CLIENT_SECRET`, `SALESFORCE_USERNAME`, `SALESFORCE_PASSWORD`
+- **Optional Variables**: `SALESFORCE_GRANT_TYPE`, `SALESFORCE_LOGIN_URL`, `SALESFORCE_API_VERSION`
+
+**Key Features:** Automatic OAuth authentication with token persistence, SOQL queries, record CRUD operations, object metadata inspection, auto token renewal, and comprehensive Salesforce REST API coverage.
+
+**Available Tools (7):**
+
+```
+salesforce_query, salesforce_create, salesforce_read, salesforce_update,
+salesforce_delete, salesforce_describe, salesforce_list_objects
 ```
 
 ### [Figma Server](servers/figma/README.md)
