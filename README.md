@@ -45,6 +45,9 @@ For detailed setup instructions with AI coding assistants like Continue.dev, Cla
 
 ## 📦 Available Servers
 
+<details>
+<summary><strong>🎫 Jira Server</strong> - Issue management and project tracking</summary>
+
 ### [Jira Server](servers/jira/README.md)
 
 **Package:** `@mcp-suite/jira-server`  
@@ -66,6 +69,11 @@ add_comment, list_projects, get_project, get_issue_transitions,
 assign_issue, delete_issue
 ```
 
+</details>
+
+<details>
+<summary><strong>🐘 PostgreSQL Server</strong> - Database management and analytics</summary>
+
 ### [PostgreSQL Server](servers/postgresql/README.md)
 
 **Package:** `@mcp-suite/postgresql-server`  
@@ -82,6 +90,11 @@ assign_issue, delete_issue
 ```
 execute_query, list_tables, get_database_stats, test_connection
 ```
+
+</details>
+
+<details>
+<summary><strong>☁️ Salesforce Server</strong> - CRM integration with OAuth</summary>
 
 ### [Salesforce Server](servers/salesforce/README.md)
 
@@ -102,6 +115,11 @@ salesforce_query, salesforce_create, salesforce_read, salesforce_update,
 salesforce_delete, salesforce_describe, salesforce_list_objects
 ```
 
+</details>
+
+<details>
+<summary><strong>🎨 Figma Server</strong> - Design file and workflow management</summary>
+
 ### [Figma Server](servers/figma/README.md)
 
 **Package:** `@mcp-suite/figma-server`  
@@ -121,6 +139,11 @@ delete_comment, get_me, get_team_projects, get_project_files, get_component,
 get_component_sets, get_team_components, get_file_components, get_team_styles,
 get_file_styles
 ```
+
+</details>
+
+<details>
+<summary><strong>🎓 Canvas Server</strong> - Learning management system integration</summary>
 
 ### [Canvas Server](servers/canvas/README.md)
 
@@ -220,6 +243,8 @@ store_custom_data, load_custom_data, delete_custom_data, list_course_nicknames,
 get_course_nickname, set_course_nickname, remove_course_nickname, clear_course_nicknames,
 upload_user_file, get_pandata_events_token
 ```
+
+</details>
 
 ## 🛠️ Development
 
