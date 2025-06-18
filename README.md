@@ -66,18 +66,6 @@ add_comment, list_projects, get_project, get_issue_transitions,
 assign_issue, delete_issue
 ```
 
-### [Canvas Server](servers/canvas/README.md)
-
-**Package:** `@mcp-suite/canvas-server`  
-**Description:** Comprehensive Canvas LMS integration for course management, enrollment operations, grading, and administrative tasks.
-
-**Quick Setup:**
-
-- `CANVAS_BASE_URL` - Your Canvas instance URL (e.g., `https://your-school.instructure.com`)
-- `CANVAS_API_TOKEN` - Your Canvas API access token
-
-**Key Features:** Course management, enrollment utilities, user administration, assignment/quiz tools, grading standards, grade change auditing, admin management, and comprehensive Canvas API coverage.
-
 ### [PostgreSQL Server](servers/postgresql/README.md)
 
 **Package:** `@mcp-suite/postgresql-server`  
@@ -133,6 +121,18 @@ delete_comment, get_me, get_team_projects, get_project_files, get_component,
 get_component_sets, get_team_components, get_file_components, get_team_styles,
 get_file_styles
 ```
+
+### [Canvas Server](servers/canvas/README.md)
+
+**Package:** `@mcp-suite/canvas-server`  
+**Description:** Comprehensive Canvas LMS integration for course management, enrollment operations, grading, and administrative tasks.
+
+**Quick Setup:**
+
+- `CANVAS_BASE_URL` - Your Canvas instance URL (e.g., `https://your-school.instructure.com`)
+- `CANVAS_API_TOKEN` - Your Canvas API access token
+
+**Key Features:** Course management, enrollment utilities, user administration, assignment/quiz tools, grading standards, grade change auditing, admin management, and comprehensive Canvas API coverage.
 
 **Available Tools (185):**
 
