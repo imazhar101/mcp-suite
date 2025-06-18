@@ -5,9 +5,11 @@ import { DatabaseStats } from "../types/database.js";
 export class PostgreSQLService {
   private pool: Pool;
   private logger: Logger;
+  private allowDangerousOperations: boolean;
 
-  constructor(connectionString: string, logger: Logger) {
+  constructor(connectionString: string, logger: Logger, allowDangerousOperations: boolean = false) {
     this.logger = logger;
+    this.allowDangerousOperations = allowDangerousOperations;
     this.pool = new Pool({ connectionString });
 
     this.pool.on("error", (err: Error) => {
@@ -28,40 +30,46 @@ export class PostgreSQLService {
       const trimmedQuery = query.trim();
       const lowerQuery = trimmedQuery.toLowerCase();
       
-      // Enhanced safety checks - only allow SELECT statements and utility commands
-      if (!this.isReadOnlyQuery(lowerQuery)) {
+      // Enhanced safety checks - only allow SELECT statements and utility commands unless dangerous operations are enabled
+      if (!this.allowDangerousOperations && !this.isReadOnlyQuery(lowerQuery)) {
         return {
           success: false,
-          error: "Only read-only queries are allowed. Permitted operations: SELECT, SHOW, DESCRIBE, EXPLAIN.",
+          error: "Only read-only queries are allowed. Permitted operations: SELECT, SHOW, DESCRIBE, EXPLAIN. Set allowDangerousOperations to true to enable write operations.",
         };
       }
 
-      // Additional safety: Check for dangerous functions and procedures
-      const dangerousFunctions = [
-        'pg_sleep', 'pg_terminate_backend', 'pg_cancel_backend',
-        'current_setting', 'set_config', 'pg_reload_conf',
-        'pg_rotate_logfile', 'pg_stat_file', 'pg_read_file',
-        'copy', 'lo_', 'dblink', 'file_fdw'
-      ];
-      
-      const hasDangerousFunction = dangerousFunctions.some(func => 
-        lowerQuery.includes(func.toLowerCase())
-      );
-      
-      if (hasDangerousFunction) {
-        return {
-          success: false,
-          error: "Query contains potentially dangerous functions. Only safe read operations are allowed.",
-        };
+      // Additional safety: Check for dangerous functions and procedures (unless dangerous operations are allowed)
+      if (!this.allowDangerousOperations) {
+        const dangerousFunctions = [
+          'pg_sleep', 'pg_terminate_backend', 'pg_cancel_backend',
+          'current_setting', 'set_config', 'pg_reload_conf',
+          'pg_rotate_logfile', 'pg_stat_file', 'pg_read_file',
+          'copy', 'lo_', 'dblink', 'file_fdw'
+        ];
+        
+        const hasDangerousFunction = dangerousFunctions.some(func => 
+          lowerQuery.includes(func.toLowerCase())
+        );
+        
+        if (hasDangerousFunction) {
+          return {
+            success: false,
+            error: "Query contains potentially dangerous functions. Only safe read operations are allowed.",
+          };
+        }
       }
 
-      // Start a read-only transaction for additional safety
-      await client.query('BEGIN READ ONLY');
+      // Start a transaction (read-only for safety unless dangerous operations are allowed)
+      if (this.allowDangerousOperations && !this.isReadOnlyQuery(lowerQuery)) {
+        await client.query('BEGIN');
+      } else {
+        await client.query('BEGIN READ ONLY');
+      }
       
-      // Add LIMIT 100 to SELECT queries for safety
+      // Add LIMIT 100 to SELECT queries for safety (unless dangerous operations are allowed)
       let modifiedQuery = trimmedQuery;
       
-      if (lowerQuery.startsWith("select") && !lowerQuery.includes("limit")) {
+      if (!this.allowDangerousOperations && lowerQuery.startsWith("select") && !lowerQuery.includes("limit")) {
         // Remove trailing semicolon if present, add LIMIT, then add semicolon back
         if (modifiedQuery.endsWith(";")) {
           modifiedQuery = modifiedQuery.slice(0, -1) + " LIMIT 100;";
@@ -139,6 +147,10 @@ export class PostgreSQLService {
     });
     
     return !hasDangerousKeyword;
+  }
+
+  isDangerousOperationsAllowed(): boolean {
+    return this.allowDangerousOperations;
   }
 
   async disconnect(): Promise<void> {

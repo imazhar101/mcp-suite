@@ -22,9 +22,11 @@ class PostgreSQLServer {
     this.logger = new Logger(getLogLevel(), { server: "postgresql" });
 
     const connectionString = getEnvVar("POSTGRESQL_CONNECTION_STRING");
+    const allowDangerousOperations = getEnvVar("POSTGRESQL_ALLOW_DANGEROUS_OPERATIONS", "false") === "true";
     this.postgresqlService = new PostgreSQLService(
       connectionString,
-      this.logger
+      this.logger,
+      allowDangerousOperations
     );
 
     this.server = new Server(
@@ -75,6 +77,16 @@ class PostgreSQLServer {
           args.query,
           args.params
         );
+      case "check_dangerous_operations_allowed":
+        return {
+          success: true,
+          data: {
+            allowed: this.postgresqlService.isDangerousOperationsAllowed(),
+            message: this.postgresqlService.isDangerousOperationsAllowed() 
+              ? "Dangerous operations (INSERT, UPDATE, DELETE, etc.) are ENABLED. Write operations are allowed."
+              : "Dangerous operations are DISABLED. Only read-only operations (SELECT, SHOW, DESCRIBE, EXPLAIN) are allowed."
+          }
+        };
       default:
         throw new McpError(
           ErrorCode.MethodNotFound,
