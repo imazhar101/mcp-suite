@@ -107,6 +107,33 @@ export const salesforceTools: McpTool[] = [
     },
   },
   {
+    name: "salesforce_bulk_delete",
+    description: "Delete multiple records from Salesforce using the Composite API",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sobject_type: {
+          type: "string",
+          description:
+            "Salesforce object type (e.g., 'Account', 'Contact', 'Opportunity')",
+        },
+        ids: {
+          type: "array",
+          items: {
+            type: "string",
+          },
+          description: "Array of Salesforce record IDs to delete (maximum 200)",
+        },
+        all_or_none: {
+          type: "boolean",
+          description: "If true, the operation will fail if any record fails to delete. If false, partial success is allowed.",
+          default: false,
+        },
+      },
+      required: ["sobject_type", "ids"],
+    },
+  },
+  {
     name: "salesforce_describe",
     description: "Get metadata information about a Salesforce object type",
     inputSchema: {

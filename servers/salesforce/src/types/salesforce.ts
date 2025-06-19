@@ -50,6 +50,14 @@ export interface SalesforceDeleteResponse {
   errors: any[];
 }
 
+export interface SalesforceBulkDeleteResponse {
+  results: {
+    id: string;
+    success: boolean;
+    errors?: any[];
+  }[];
+}
+
 export interface SalesforceDescribeResponse {
   name: string;
   label: string;

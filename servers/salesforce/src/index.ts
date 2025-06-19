@@ -125,6 +125,13 @@ class SalesforceServer {
             args.sobject_type,
             args.id
           );
+          
+        case "salesforce_bulk_delete":
+          return await this.salesforceService.bulkDelete(
+            args.sobject_type,
+            args.ids,
+            args.all_or_none
+          );
 
         case "salesforce_describe":
           return await this.salesforceService.describe(args.sobject_type);

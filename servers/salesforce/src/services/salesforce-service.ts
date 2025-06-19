@@ -8,6 +8,7 @@ import {
   SalesforceCreateResponse,
   SalesforceUpdateResponse,
   SalesforceDeleteResponse,
+  SalesforceBulkDeleteResponse,
   SalesforceDescribeResponse,
   SalesforceError,
 } from "../types/salesforce.js";
@@ -212,6 +213,45 @@ export class SalesforceService {
       return {
         success: true,
         data: { success: true, errors: [] },
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error occurred",
+      };
+    }
+  }
+  
+  async bulkDelete(
+    sobjectType: string,
+    ids: string[],
+    allOrNone: boolean = false
+  ): Promise<{ success: boolean; data?: SalesforceBulkDeleteResponse; error?: string }> {
+    try {
+      if (!ids || ids.length === 0) {
+        return {
+          success: false,
+          error: "No IDs provided for bulk deletion",
+        };
+      }
+      
+      if (ids.length > 200) {
+        return {
+          success: false,
+          error: "Maximum of 200 records can be deleted in a single bulk delete operation",
+        };
+      }
+      
+      // For objects of the same type, we can use the Composite API's sObject Collections
+      const endpoint = `/composite/sobjects?ids=${ids.join(",")}&allOrNone=${allOrNone}`;
+      const response = await this.makeRequest(endpoint, "DELETE");
+      
+      // Check if any records failed to delete when allOrNone is false
+      const hasErrors = response.results && response.results.some((result: any) => !result.success);
+      
+      return {
+        success: !hasErrors,
+        data: response,
       };
     } catch (error) {
       return {
