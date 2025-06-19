@@ -1,26 +1,60 @@
 {
   "name": "mcp-suite",
-  "version": "2.0.0",
-  "description": "A comprehensive suite of MCP (Model Context Protocol) servers",
-  "private": true,
-  "type": "module",
-  "workspaces": [
-    "servers/*"
-  ],
+  "version": "1.0.0",
+  "description": "A comprehensive Model Context Protocol (MCP) server suite with modular, extensible server implementations for various integrations.",
+  "main": "index.js",
   "scripts": {
-    "build": "node scripts/build.js",
-    "deploy": "node scripts/deploy.js",
-    "test": "vitest run tests/",
+    "build": "npm run build:shared && npm run build:servers",
+    "build:shared": "tsc -p shared/tsconfig.json",
+    "build:servers": "npm run build:jira && npm run build:canvas && npm run build:postgresql && npm run build:salesforce && npm run build:figma",
+    "build:jira": "tsc -p servers/jira/tsconfig.json",
+    "build:canvas": "tsc -p servers/canvas/tsconfig.json",
+    "build:postgresql": "tsc -p servers/postgresql/tsconfig.json",
+    "build:salesforce": "tsc -p servers/salesforce/tsconfig.json",
+    "build:figma": "tsc -p servers/figma/tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "eslint . --ext .ts,.js",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist/",
+    "deploy": "node scripts/deploy.js"
   },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "jira",
+    "canvas",
+    "postgresql",
+    "salesforce",
+    "figma",
+    "api",
+    "integration",
+    "server",
+    "typescript"
+  ],
+  "author": "Azharuddin <azhar@oneorigin.us>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imazhar101/mcp-suite.git"
+  },
+  "bugs": {
+    "url": "https://github.com/imazhar101/mcp-suite/issues"
+  },
+  "homepage": "https://github.com/imazhar101/mcp-suite#readme",
   "devDependencies": {
     "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.0.0",
     "typescript": "^5.0.0",
-    "vitest": "^3.2.3"
+    "vitest": "^1.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.5.0",
+    "axios": "^1.6.0",
+    "pg": "^8.11.0",
+    "jsforce": "^2.0.0"
   },
   "engines": {
     "node": ">=18.0.0"
