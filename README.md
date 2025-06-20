@@ -15,7 +15,8 @@ mcp-suite/
 │   ├── jira/          # Jira server for issue management
 │   ├── canvas/        # Canvas LMS server for educational workflows
 │   ├── postgresql/    # PostgreSQL database management server
-│   └── salesforce/    # Salesforce CRM server with OAuth authentication
+│   ├── salesforce/    # Salesforce CRM server with OAuth authentication
+│   └── clickup/       # ClickUp server for task and project management
 ├── scripts/           # Build and deployment scripts
 ├── config/            # Environment-specific configurations
 └── tests/             # Test suite (unit, integration, fixtures)
@@ -113,6 +114,33 @@ execute_query, list_tables, get_database_stats, test_connection
 ```
 salesforce_query, salesforce_create, salesforce_read, salesforce_update,
 salesforce_delete, salesforce_describe, salesforce_list_objects
+```
+
+</details>
+
+<details>
+<summary><strong>🎨 ClickUp Server</strong> - Task management and project organization</summary>
+
+### [ClickUp Server](servers/clickup/README.md)
+
+**Package:** `@mcp-suite/clickup-server`  
+**Description:** Comprehensive ClickUp integration for task management, project organization, time tracking, and team collaboration.
+
+**Quick Setup:**
+
+- `CLICKUP_API_TOKEN` - Your ClickUp API token
+
+**Key Features:** Task CRUD operations, project hierarchy management (spaces/folders/lists), comment system, team collaboration, time tracking, and goal management.
+
+**Available Tools (29):**
+
+```
+get_tasks, get_task, create_task, update_task, delete_task, get_task_comments,
+create_task_comment, get_lists, get_folderless_lists, create_list,
+create_folderless_list, update_list, delete_list, get_folders, create_folder,
+update_folder, delete_folder, get_spaces, get_space, create_space, update_space,
+delete_space, get_teams, get_team_members, get_user, get_time_entries,
+create_time_entry, get_goals, create_goal
 ```
 
 </details>

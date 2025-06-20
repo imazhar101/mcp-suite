@@ -1,0 +1,22 @@
+{
+  "name": "@mcp-suite/clickup-server",
+  "version": "2.0.0",
+  "description": "ClickUp MCP server for task management and project organization",
+  "type": "module",
+  "main": "../../dist/servers/clickup/src/index.js",
+  "bin": {
+    "mcp-clickup": "../../dist/servers/clickup/src/index.js"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "../../dist/servers/clickup"
+  ]
+}
