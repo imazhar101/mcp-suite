@@ -2,10 +2,10 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "lib": ["ES2022"],
     "outDir": "./dist",
-    "rootDir": "./",
+    "rootDir": "../../",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -18,6 +18,6 @@
       "shared/*": ["shared/*"]
     }
   },
-  "include": ["index.ts", "src/**/*", "../../shared/**/*"],
+  "include": ["index.ts", "../../shared/**/*"],
   "exclude": ["node_modules", "**/*.test.ts", "**/*.spec.ts"]
 }

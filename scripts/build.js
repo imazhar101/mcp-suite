@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import { execSync } from "child_process";
-import { readFileSync, existsSync } from "fs";
-import { join } from "path";
+const { execSync } = require("child_process");
+const { existsSync, writeFileSync, mkdirSync } = require("fs");
+const { join } = require("path");
 
 class ProgressBar {
   constructor(total, width = 30) {
@@ -66,6 +66,18 @@ function buildServer(serverName, progressBar, current, total) {
         stdio: "pipe",
       }
     );
+    
+    // Create package.json in dist folder to specify ES modules
+    const distServerPath = join(ROOT_DIR, "dist", "servers", serverName);
+    if (!existsSync(distServerPath)) {
+      mkdirSync(distServerPath, { recursive: true });
+    }
+    const distPackageJsonPath = join(distServerPath, "package.json");
+    const distPackageJson = {
+      "type": "module"
+    };
+    writeFileSync(distPackageJsonPath, JSON.stringify(distPackageJson, null, 2));
+    
     progressBar.update(current + 1, `✅ ${serverName} completed`);
     return true;
   } catch (error) {
@@ -77,7 +89,39 @@ function buildServer(serverName, progressBar, current, total) {
   }
 }
 
+function buildShared() {
+  try {
+    console.log("📦 Building shared modules...");
+    execSync("npm run build:shared", {
+      cwd: ROOT_DIR,
+      stdio: "pipe",
+    });
+    
+    // Create package.json in shared dist folder
+    const sharedDistPath = join(ROOT_DIR, "dist", "shared");
+    if (!existsSync(sharedDistPath)) {
+      mkdirSync(sharedDistPath, { recursive: true });
+    }
+    const sharedPackageJsonPath = join(sharedDistPath, "package.json");
+    const sharedPackageJson = {
+      "type": "module"
+    };
+    writeFileSync(sharedPackageJsonPath, JSON.stringify(sharedPackageJson, null, 2));
+    
+    console.log("✅ Shared modules completed\n");
+    return true;
+  } catch (error) {
+    console.log(`❌ Shared modules failed: ${error.message.split("\n")[0]}`);
+    return false;
+  }
+}
+
 function main() {
+  // Build shared modules first
+  if (!buildShared()) {
+    process.exit(1);
+  }
+  
   const servers = getServers();
 
   if (servers.length === 0) {

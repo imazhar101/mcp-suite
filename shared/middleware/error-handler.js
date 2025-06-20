@@ -1,5 +1,4 @@
 export class ErrorHandler {
-    logger;
     constructor(logger) {
         this.logger = logger;
     }

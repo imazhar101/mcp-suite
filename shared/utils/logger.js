@@ -1,6 +1,4 @@
 export class Logger {
-    level;
-    context;
     constructor(level = 'info', context = {}) {
         this.level = level;
         this.context = context;

@@ -1,6 +1,5 @@
 import { validateRequired, validateApiKey } from '../utils/validation.js';
 export class AuthMiddleware {
-    credentials;
     constructor(credentials) {
         this.credentials = credentials;
         this.validateCredentials();
