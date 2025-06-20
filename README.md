@@ -16,7 +16,10 @@ mcp-suite/
 │   ├── canvas/        # Canvas LMS server for educational workflows
 │   ├── postgresql/    # PostgreSQL database management server
 │   ├── salesforce/    # Salesforce CRM server with OAuth authentication
-│   └── clickup/       # ClickUp server for task and project management
+│   ├── clickup/       # ClickUp server for task and project management
+│   ├── figma/         # Figma server for design file management
+│   ├── notion/        # Notion server for knowledge management
+│   └── bitbucket/     # Bitbucket server for repository management
 ├── scripts/           # Build and deployment scripts
 ├── config/            # Environment-specific configurations
 └── tests/             # Test suite (unit, integration, fixtures)
@@ -114,6 +117,39 @@ execute_query, list_tables, get_database_stats, test_connection
 ```
 salesforce_query, salesforce_create, salesforce_read, salesforce_update,
 salesforce_delete, salesforce_describe, salesforce_list_objects
+```
+
+</details>
+
+<details>
+<summary><strong>🏗️ Bitbucket Server</strong> - Repository management and pull request workflows</summary>
+
+### [Bitbucket Server](servers/bitbucket/README.md)
+
+**Package:** `@mcp-suite/bitbucket-server`  
+**Description:** Comprehensive Bitbucket integration for repository management, pull request operations, code reviews, and team collaboration workflows.
+
+**Quick Setup:**
+
+- `BITBUCKET_USERNAME` - Your Bitbucket username
+- `BITBUCKET_APP_PASSWORD` - Your Bitbucket app password
+- `BITBUCKET_WORKSPACE` - Your Bitbucket workspace name
+
+**Key Features:** Repository management, pull request lifecycle, review workflows, comment system, task management, reviewer assignment, build status tracking, and merge strategies.
+
+**Available Tools (40):**
+
+```
+get_repositories, get_repository, get_pull_requests, get_pull_request, 
+create_pull_request, update_pull_request, merge_pull_request, decline_pull_request,
+get_pull_request_activity, get_pull_request_comments, create_pull_request_comment,
+update_pull_request_comment, delete_pull_request_comment, get_pull_request_diff,
+get_pull_request_commits, approve_pull_request, unapprove_pull_request,
+request_changes, remove_change_request, get_pull_request_tasks,
+create_pull_request_task, update_pull_request_task, delete_pull_request_task,
+get_default_reviewers, get_effective_default_reviewers, add_default_reviewer,
+remove_default_reviewer, get_commits, get_commit, get_branches,
+get_pull_requests_for_commit, get_pull_request_statuses
 ```
 
 </details>

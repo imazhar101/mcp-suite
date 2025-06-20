@@ -1,28 +1,22 @@
 {
-  "name": "canvas-server",
+  "name": "@mcp-suite/canvas-server",
   "version": "2.0.0",
   "description": "Canvas LMS MCP Server - Provides tools for interacting with Canvas API",
-  "main": "build/index.js",
   "type": "module",
-  "scripts": {
-    "build": "tsc",
-    "start": "node build/index.js",
-    "dev": "tsc --watch"
+  "main": "../../dist/servers/canvas/src/index.js",
+  "bin": {
+    "mcp-canvas": "../../dist/servers/canvas/src/index.js"
   },
-  "keywords": [
-    "mcp",
-    "canvas",
-    "lms",
-    "education"
-  ],
-  "author": "",
-  "license": "MIT",
+  "scripts": {},
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@modelcontextprotocol/sdk": "^0.6.0",
     "axios": "^1.6.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "typescript": "^5.0.0"
-  }
+  },
+  "files": [
+    "../../dist/servers/canvas"
+  ]
 }
