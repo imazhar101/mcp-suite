@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import { execSync } from "child_process";
-import { readFileSync, existsSync } from "fs";
-import { join } from "path";
+const { execSync } = require("child_process");
+const { existsSync } = require("fs");
+const { join } = require("path");
 
 class ProgressBar {
   constructor(total, width = 30) {

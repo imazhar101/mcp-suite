@@ -1,4 +1,11 @@
-export function getEnvVar(key, defaultValue) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getEnvVar = getEnvVar;
+exports.getOptionalEnvVar = getOptionalEnvVar;
+exports.getLogLevel = getLogLevel;
+exports.isProduction = isProduction;
+exports.isDevelopment = isDevelopment;
+function getEnvVar(key, defaultValue) {
     const value = process.env[key];
     if (value === undefined) {
         if (defaultValue !== undefined) {
@@ -8,17 +15,17 @@ export function getEnvVar(key, defaultValue) {
     }
     return value;
 }
-export function getOptionalEnvVar(key, defaultValue = '') {
+function getOptionalEnvVar(key, defaultValue = '') {
     return process.env[key] || defaultValue;
 }
-export function getLogLevel() {
+function getLogLevel() {
     const level = process.env.LOG_LEVEL?.toLowerCase();
     return ['debug', 'info', 'warn', 'error'].includes(level) ? level : 'info';
 }
-export function isProduction() {
+function isProduction() {
     return process.env.NODE_ENV === 'production';
 }
-export function isDevelopment() {
+function isDevelopment() {
     return process.env.NODE_ENV === 'development';
 }
 //# sourceMappingURL=config.js.map

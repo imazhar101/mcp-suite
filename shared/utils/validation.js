@@ -1,13 +1,20 @@
-export function validateRequired(value, fieldName) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.validateRequired = validateRequired;
+exports.validateEmail = validateEmail;
+exports.validateUrl = validateUrl;
+exports.sanitizeString = sanitizeString;
+exports.validateApiKey = validateApiKey;
+function validateRequired(value, fieldName) {
     if (value === undefined || value === null || value === '') {
         throw new Error(`${fieldName} is required`);
     }
 }
-export function validateEmail(email) {
+function validateEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 }
-export function validateUrl(url) {
+function validateUrl(url) {
     try {
         new URL(url);
         return true;
@@ -16,10 +23,10 @@ export function validateUrl(url) {
         return false;
     }
 }
-export function sanitizeString(input) {
+function sanitizeString(input) {
     return input.trim().replace(/[<>]/g, '');
 }
-export function validateApiKey(apiKey, minLength = 10) {
+function validateApiKey(apiKey, minLength = 10) {
     return typeof apiKey === 'string' && apiKey.length >= minLength;
 }
 //# sourceMappingURL=validation.js.map
