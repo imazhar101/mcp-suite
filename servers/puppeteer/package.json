@@ -1,0 +1,23 @@
+{
+  "name": "@mcp-suite/puppeteer-server",
+  "version": "2.0.0",
+  "description": "Puppeteer MCP Server - Provides tools for browser automation and web scraping",
+  "type": "module",
+  "main": "../../dist/servers/puppeteer/src/index.js",
+  "bin": {
+    "mcp-puppeteer": "../../dist/servers/puppeteer/src/index.js"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "@types/puppeteer": "^7.0.4",
+    "puppeteer": "^22.15.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "../../dist/servers/puppeteer"
+  ]
+}
