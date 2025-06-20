@@ -1,0 +1,22 @@
+{
+  "name": "@mcp-suite/bitbucket-server",
+  "version": "2.0.0",
+  "description": "Bitbucket MCP Server - Provides tools for interacting with Bitbucket API",
+  "type": "module",
+  "main": "../../dist/servers/bitbucket/src/index.js",
+  "bin": {
+    "mcp-bitbucket": "../../dist/servers/bitbucket/src/index.js"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "../../dist/servers/bitbucket"
+  ]
+}
