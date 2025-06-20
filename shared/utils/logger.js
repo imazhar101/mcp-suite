@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Logger = void 0;
-class Logger {
+export class Logger {
     constructor(level = 'info', context = {}) {
         this.level = level;
         this.context = context;
@@ -45,5 +42,4 @@ class Logger {
         return new Logger(this.level, { ...this.context, ...context });
     }
 }
-exports.Logger = Logger;
 //# sourceMappingURL=logger.js.map

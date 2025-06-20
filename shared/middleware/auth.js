@@ -1,23 +1,20 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthMiddleware = void 0;
-const validation_js_1 = require("../utils/validation.js");
-class AuthMiddleware {
+import { validateRequired, validateApiKey } from '../utils/validation.js';
+export class AuthMiddleware {
     constructor(credentials) {
         this.credentials = credentials;
         this.validateCredentials();
     }
     validateCredentials() {
         if (this.credentials.apiKey) {
-            if (!(0, validation_js_1.validateApiKey)(this.credentials.apiKey)) {
+            if (!validateApiKey(this.credentials.apiKey)) {
                 throw new Error('Invalid API key format');
             }
         }
         if (this.credentials.username) {
-            (0, validation_js_1.validateRequired)(this.credentials.username, 'Username');
+            validateRequired(this.credentials.username, 'Username');
         }
         if (this.credentials.baseUrl) {
-            (0, validation_js_1.validateRequired)(this.credentials.baseUrl, 'Base URL');
+            validateRequired(this.credentials.baseUrl, 'Base URL');
         }
     }
     getAuthHeaders() {
@@ -39,5 +36,4 @@ class AuthMiddleware {
             (this.credentials.username && this.credentials.password));
     }
 }
-exports.AuthMiddleware = AuthMiddleware;
 //# sourceMappingURL=auth.js.map
