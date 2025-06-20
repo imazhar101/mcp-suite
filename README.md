@@ -119,7 +119,7 @@ salesforce_delete, salesforce_describe, salesforce_list_objects
 </details>
 
 <details>
-<summary><strong>🎨 ClickUp Server</strong> - Task management and project organization</summary>
+<summary><strong>📋 ClickUp Server</strong> - Task management and project organization</summary>
 
 ### [ClickUp Server](servers/clickup/README.md)
 
