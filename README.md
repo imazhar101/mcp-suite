@@ -19,7 +19,9 @@ mcp-suite/
 │   ├── clickup/       # ClickUp server for task and project management
 │   ├── figma/         # Figma server for design file management
 │   ├── notion/        # Notion server for knowledge management
-│   └── bitbucket/     # Bitbucket server for repository management
+│   ├── bitbucket/     # Bitbucket server for repository management
+│   ├── aws/           # AWS services (DynamoDB, Lambda, API Gateway)
+│   └── puppeteer/     # Puppeteer server for browser automation
 ├── scripts/           # Build and deployment scripts
 ├── config/            # Environment-specific configurations
 └── tests/             # Test suite (unit, integration, fixtures)
@@ -307,6 +309,56 @@ store_custom_data, load_custom_data, delete_custom_data, list_course_nicknames,
 get_course_nickname, set_course_nickname, remove_course_nickname, clear_course_nicknames,
 upload_user_file, get_pandata_events_token
 ```
+
+</details>
+
+<details>
+<summary><strong>☁️ AWS Server</strong> - AWS services integration for DynamoDB, Lambda, and API Gateway</summary>
+
+### [AWS Server](servers/aws/README.md)
+
+**Package:** `@mcp-suite/aws-server`  
+**Description:** Comprehensive AWS integration for DynamoDB, Lambda, and API Gateway services with full CRUD operations and management capabilities.
+
+**Quick Setup:**
+
+- `AWS_REGION` - Your AWS region (e.g., us-east-1)
+- `AWS_ACCESS_KEY_ID` - Your AWS access key ID
+- `AWS_SECRET_ACCESS_KEY` - Your AWS secret access key
+
+**Key Features:** DynamoDB table management and operations, Lambda function management and invocation, API Gateway REST and HTTP API management, resource and deployment management, comprehensive AWS service integration.
+
+**Available Tools (29):**
+
+```
+dynamodb_list_tables, dynamodb_describe_table, dynamodb_put_item, dynamodb_get_item,
+dynamodb_update_item, dynamodb_delete_item, dynamodb_query, dynamodb_scan,
+lambda_list_functions, lambda_get_function, lambda_invoke_function, lambda_create_function,
+lambda_update_function_code, lambda_update_function_configuration, apigateway_list_rest_apis,
+apigateway_get_rest_api, apigateway_create_rest_api, apigateway_delete_rest_api,
+apigateway_get_resources, apigateway_create_resource, apigateway_put_method,
+apigateway_put_integration, apigateway_create_deployment, apigatewayv2_list_apis,
+apigatewayv2_create_api, apigatewayv2_get_routes, apigatewayv2_create_route,
+apigatewayv2_get_integrations, apigatewayv2_create_integration
+```
+
+</details>
+
+<details>
+<summary><strong>🎭 Puppeteer Server</strong> - Browser automation and web scraping</summary>
+
+### [Puppeteer Server](servers/puppeteer/README.md)
+
+**Package:** `@mcp-suite/puppeteer-server`  
+**Description:** Browser automation server using Puppeteer for web scraping, testing, and automated browsing tasks.
+
+**Quick Setup:**
+
+No environment variables required for basic usage.
+
+**Key Features:** Browser automation, web scraping, screenshot capture, PDF generation, form automation, and comprehensive browser control.
+
+**Available Tools:** Browser management, page navigation, element interaction, data extraction, and automated testing capabilities.
 
 </details>
 
