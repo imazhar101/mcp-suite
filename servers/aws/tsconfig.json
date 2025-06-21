@@ -15,8 +15,7 @@
     "sourceMap": true,
     "baseUrl": "../../",
     "paths": {
-      "shared/*": ["shared/*"],
-      "puppeteer": ["node_modules/puppeteer"]
+      "shared/*": ["shared/*"]
     }
   },
   "include": ["src/**/*", "../../shared/**/*"],
