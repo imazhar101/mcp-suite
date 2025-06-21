@@ -1,0 +1,26 @@
+{
+  "name": "@mcp-suite/aws-server",
+  "version": "1.0.0",
+  "description": "AWS MCP Server - Provides tools for interacting with AWS services (DynamoDB, Lambda, API Gateway)",
+  "type": "module",
+  "main": "../../dist/servers/aws/src/index.js",
+  "bin": {
+    "mcp-aws": "../../dist/servers/aws/src/index.js"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "@aws-sdk/client-dynamodb": "^3.0.0",
+    "@aws-sdk/client-lambda": "^3.0.0",
+    "@aws-sdk/client-api-gateway": "^3.0.0",
+    "@aws-sdk/client-apigatewayv2": "^3.0.0",
+    "@aws-sdk/util-dynamodb": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "../../dist/servers/aws"
+  ]
+}

@@ -1,4 +1,5 @@
-import puppeteer, { Browser, Page } from 'puppeteer';
+import puppeteer from 'puppeteer';
+import type { Browser, Page } from 'puppeteer';
 import {
   PuppeteerOptions,
   NavigateParams,
