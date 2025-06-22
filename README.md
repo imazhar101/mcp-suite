@@ -21,7 +21,8 @@ mcp-suite/
 │   ├── notion/        # Notion server for knowledge management
 │   ├── bitbucket/     # Bitbucket server for repository management
 │   ├── aws/           # AWS services (DynamoDB, Lambda, API Gateway)
-│   └── puppeteer/     # Puppeteer server for browser automation
+│   ├── puppeteer/     # Puppeteer server for browser automation
+│   └── elasticsearch/ # Elasticsearch server for search and analytics
 ├── scripts/           # Build and deployment scripts
 ├── config/            # Environment-specific configurations
 └── tests/             # Test suite (unit, integration, fixtures)
@@ -359,6 +360,35 @@ No environment variables required for basic usage.
 **Key Features:** Browser automation, web scraping, screenshot capture, PDF generation, form automation, and comprehensive browser control.
 
 **Available Tools:** Browser management, page navigation, element interaction, data extraction, and automated testing capabilities.
+
+</details>
+
+<details>
+<summary><strong>🔍 Elasticsearch Server</strong> - Search, analytics, and document management</summary>
+
+### [Elasticsearch Server](servers/elasticsearch/README.md)
+
+**Package:** `@mcp-suite/elasticsearch-server`  
+**Description:** Comprehensive Elasticsearch integration for search, analytics, and document management with built-in data limiting controls.
+
+**Quick Setup:**
+
+- `ELASTICSEARCH_NODE` - Elasticsearch node URL (default: http://localhost:9200)
+- `ELASTICSEARCH_USERNAME` and `ELASTICSEARCH_PASSWORD` - Basic authentication (optional)
+- `ELASTICSEARCH_API_KEY` - API key authentication (optional)
+
+**Key Features:** Full-text search with query DSL, aggregations and analytics, index management, document CRUD operations, bulk operations with safety limits, cluster health monitoring, and comprehensive data limiting controls.
+
+**Available Tools (19):**
+
+```
+elasticsearch_test_connection, elasticsearch_cluster_health, elasticsearch_node_stats,
+elasticsearch_list_indices, elasticsearch_get_index_info, elasticsearch_create_index,
+elasticsearch_delete_index, elasticsearch_index_exists, elasticsearch_search,
+elasticsearch_count, elasticsearch_aggregation, elasticsearch_get_document,
+elasticsearch_index_document, elasticsearch_update_document, elasticsearch_delete_document,
+elasticsearch_bulk_operation, elasticsearch_delete_by_query, elasticsearch_reindex
+```
 
 </details>
 
