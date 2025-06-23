@@ -2,32 +2,90 @@
 
 A comprehensive Model Context Protocol (MCP) server for Elasticsearch operations, providing search, analytics, and document management capabilities with built-in data limiting controls.
 
+## Installation & Usage
+
+### Option 1: npm Package (Recommended)
+
+```bash
+# Install globally
+npm install -g @imazhar101/mcp-elasticsearch-server
+
+# Or run directly with npx
+npx @imazhar101/mcp-elasticsearch-server
+```
+
+### Option 2: Build from Source
+
+```bash
+# From project root
+npm install
+npm run build
+
+# The server will be available at:
+./dist/servers/elasticsearch/src/index.js
+```
+
+## Cline MCP Configuration
+
+To use this server with Cline (VS Code extension), add the following to your Cline MCP settings:
+
+**File Location:**
+
+- **macOS**: `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+- **Windows**: `%APPDATA%/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+- **Linux**: `~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+
+**Configuration:**
+
+```json
+{
+  "mcpServers": {
+    "elasticsearch-integration": {
+      "command": "npx",
+      "args": ["@imazhar101/mcp-elasticsearch-server"],
+      "env": {
+        "ELASTICSEARCH_URL": "http://localhost:9200",
+        "ELASTICSEARCH_USERNAME": "elastic",
+        "ELASTICSEARCH_PASSWORD": "your-password"
+      },
+      "disabled": false,
+      "alwaysAllow": ["search_documents", "get_indices", "create_index"]
+    }
+  }
+}
+```
+
 ## Features
 
 ### 🔍 **Search & Analytics**
+
 - Full-text search with query DSL support
 - Aggregations and analytics with result limiting
 - Document counting and statistics
 - Pagination support (max 1000 results per search)
 
 ### 📊 **Index Management**
+
 - List all indices with health information
 - Create and delete indices
 - Get detailed index information (stats, mappings, settings)
 - Index existence checks
 
 ### 📄 **Document Operations**
+
 - CRUD operations for individual documents
 - Bulk operations (limited to 100 operations per request)
 - Delete by query (limited to 10,000 documents)
 - Reindexing with optional query filters
 
 ### 🏥 **Cluster Health & Monitoring**
+
 - Connection testing and cluster information
 - Cluster health status and statistics
 - Node statistics (CPU, memory, disk usage)
 
 ### 🛡️ **Built-in Safety Controls**
+
 - Search results limited to 1000 documents maximum
 - Bulk operations limited to 100 operations per request
 - Delete by query limited to 10,000 documents maximum
@@ -39,13 +97,16 @@ A comprehensive Model Context Protocol (MCP) server for Elasticsearch operations
 ### Environment Variables
 
 **Required:**
+
 - `ELASTICSEARCH_NODE` - Elasticsearch node URL (default: `http://localhost:9200`)
 
 **Authentication (choose one):**
+
 - `ELASTICSEARCH_USERNAME` and `ELASTICSEARCH_PASSWORD` - Basic authentication
 - `ELASTICSEARCH_API_KEY` - API key authentication
 
 **Optional:**
+
 - `ELASTICSEARCH_MAX_RETRIES` - Maximum retry attempts (default: 3)
 - `ELASTICSEARCH_REQUEST_TIMEOUT` - Request timeout in milliseconds (default: 30000)
 
@@ -72,13 +133,15 @@ export ELASTICSEARCH_REQUEST_TIMEOUT="60000"
 ## Available Tools (19)
 
 ### Connection & Health Tools (3)
+
 ```
 elasticsearch_test_connection    - Test connection and get cluster info
-elasticsearch_cluster_health     - Get cluster health status and statistics  
+elasticsearch_cluster_health     - Get cluster health status and statistics
 elasticsearch_node_stats         - Get simplified node statistics
 ```
 
 ### Index Management Tools (5)
+
 ```
 elasticsearch_list_indices       - List all indices with basic information
 elasticsearch_get_index_info     - Get detailed index information
@@ -88,6 +151,7 @@ elasticsearch_index_exists       - Check if an index exists
 ```
 
 ### Search Tools (3)
+
 ```
 elasticsearch_search             - Search documents with query DSL (max 1000 results)
 elasticsearch_count              - Count documents matching a query
@@ -95,6 +159,7 @@ elasticsearch_aggregation        - Perform aggregations with optional query filt
 ```
 
 ### Document Management Tools (4)
+
 ```
 elasticsearch_get_document       - Get a specific document by ID
 elasticsearch_index_document     - Index (create/update) a document
@@ -103,6 +168,7 @@ elasticsearch_delete_document    - Delete a document by ID
 ```
 
 ### Bulk & Advanced Operations (4)
+
 ```
 elasticsearch_bulk_operation     - Multiple document operations (max 100 ops)
 elasticsearch_delete_by_query    - Delete documents by query (max 10,000 docs)
@@ -112,6 +178,7 @@ elasticsearch_reindex            - Copy documents between indices
 ## Usage Examples
 
 ### Search Documents
+
 ```json
 {
   "name": "elasticsearch_search",
@@ -123,22 +190,23 @@ elasticsearch_reindex            - Copy documents between indices
       }
     },
     "size": 10,
-    "sort": [{"timestamp": {"order": "desc"}}]
+    "sort": [{ "timestamp": { "order": "desc" } }]
   }
 }
 ```
 
 ### Create Index with Mapping
+
 ```json
 {
-  "name": "elasticsearch_create_index", 
+  "name": "elasticsearch_create_index",
   "arguments": {
     "index": "products",
     "mappings": {
       "properties": {
-        "name": {"type": "text"},
-        "price": {"type": "float"},
-        "created_at": {"type": "date"}
+        "name": { "type": "text" },
+        "price": { "type": "float" },
+        "created_at": { "type": "date" }
       }
     },
     "settings": {
@@ -150,6 +218,7 @@ elasticsearch_reindex            - Copy documents between indices
 ```
 
 ### Perform Aggregations
+
 ```json
 {
   "name": "elasticsearch_aggregation",
@@ -168,6 +237,7 @@ elasticsearch_reindex            - Copy documents between indices
 ```
 
 ### Bulk Operations
+
 ```json
 {
   "name": "elasticsearch_bulk_operation",
@@ -177,12 +247,12 @@ elasticsearch_reindex            - Copy documents between indices
       {
         "action": "index",
         "id": "1",
-        "document": {"message": "Log entry 1", "level": "info"}
+        "document": { "message": "Log entry 1", "level": "info" }
       },
       {
-        "action": "update", 
+        "action": "update",
         "id": "2",
-        "document": {"level": "error"}
+        "document": { "level": "error" }
       }
     ],
     "refresh": true
@@ -213,6 +283,7 @@ This server includes several built-in controls to prevent overwhelming your Elas
 ## Development
 
 ### Build and Run
+
 ```bash
 # Install dependencies
 npm install
@@ -228,24 +299,28 @@ npm run dev
 ```
 
 ### Dependencies
+
 - `@elastic/elasticsearch` - Official Elasticsearch client
 - `@modelcontextprotocol/sdk` - MCP SDK for server implementation
 
 ## Troubleshooting
 
 ### Connection Issues
+
 - Verify `ELASTICSEARCH_NODE` URL is correct
 - Check if Elasticsearch is running and accessible
 - Ensure authentication credentials are valid
 - Check network connectivity and firewall settings
 
 ### Performance Issues
+
 - Use pagination (`from` and `size`) for large result sets
 - Implement query filters to reduce result sets
 - Use aggregations instead of large searches when possible
 - Monitor cluster health and node statistics
 
 ### Authentication Issues
+
 - Verify username/password or API key are correct
 - Ensure the user has appropriate permissions
 - Check if the authentication method is enabled in Elasticsearch

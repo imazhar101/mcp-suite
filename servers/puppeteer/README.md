@@ -2,6 +2,54 @@
 
 A Model Context Protocol server that provides browser automation tools through Puppeteer. This server enables automated web interactions, scraping, and testing capabilities.
 
+## Installation & Usage
+
+### Option 1: npm Package (Recommended)
+
+```bash
+# Install globally
+npm install -g @imazhar101/mcp-puppeteer-server
+
+# Or run directly with npx
+npx @imazhar101/mcp-puppeteer-server
+```
+
+### Option 2: Build from Source
+
+```bash
+# From project root
+npm install
+npm run build
+
+# The server will be available at:
+./dist/servers/puppeteer/src/index.js
+```
+
+## Cline MCP Configuration
+
+To use this server with Cline (VS Code extension), add the following to your Cline MCP settings:
+
+**File Location:**
+
+- **macOS**: `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+- **Windows**: `%APPDATA%/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+- **Linux**: `~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+
+**Configuration:**
+
+```json
+{
+  "mcpServers": {
+    "puppeteer-integration": {
+      "command": "npx",
+      "args": ["@imazhar101/mcp-puppeteer-server"],
+      "disabled": false,
+      "alwaysAllow": ["navigate_to_page", "take_screenshot", "get_page_content"]
+    }
+  }
+}
+```
+
 ## Features
 
 - **Browser Control**: Launch and manage Puppeteer browser instances
@@ -16,27 +64,33 @@ A Model Context Protocol server that provides browser automation tools through P
 ## Tools
 
 ### Browser Management
+
 - `puppeteer_launch` - Launch a new browser instance with custom options
 - `puppeteer_close` - Close the browser instance
 - `puppeteer_get_page_info` - Get current page information
 
 ### Navigation
+
 - `puppeteer_navigate` - Navigate to a specific URL
 - `puppeteer_wait_for_selector` - Wait for elements to appear/disappear
 
 ### Screenshots
+
 - `puppeteer_screenshot` - Capture page or element screenshots
 
 ### Element Interaction
+
 - `puppeteer_click` - Click on page elements
 - `puppeteer_fill` - Fill input fields with text
 - `puppeteer_select` - Select dropdown options
 - `puppeteer_hover` - Hover over elements
 
 ### JavaScript Execution
+
 - `puppeteer_evaluate` - Execute JavaScript code in browser context
 
 ### Debugging
+
 - `puppeteer_get_console_logs` - Retrieve browser console logs
 
 ## Installation
@@ -57,6 +111,7 @@ npx @mcp-suite/puppeteer-server
 ### Example Usage
 
 1. **Launch Browser**:
+
    ```json
    {
      "name": "puppeteer_launch",
@@ -68,6 +123,7 @@ npx @mcp-suite/puppeteer-server
    ```
 
 2. **Navigate to URL**:
+
    ```json
    {
      "name": "puppeteer_navigate",
@@ -79,6 +135,7 @@ npx @mcp-suite/puppeteer-server
    ```
 
 3. **Take Screenshot**:
+
    ```json
    {
      "name": "puppeteer_screenshot",
@@ -90,6 +147,7 @@ npx @mcp-suite/puppeteer-server
    ```
 
 4. **Fill Form Field**:
+
    ```json
    {
      "name": "puppeteer_fill",
@@ -122,6 +180,7 @@ The server supports various browser launch options:
 ## Security
 
 The server includes security measures:
+
 - Filters potentially dangerous browser arguments
 - Validates user inputs
 - Sanitizes JavaScript execution contexts
@@ -129,6 +188,7 @@ The server includes security measures:
 ## Error Handling
 
 All tools return structured responses with success/error status:
+
 ```json
 {
   "success": true,

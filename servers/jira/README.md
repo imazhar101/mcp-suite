@@ -19,7 +19,7 @@ The Jira MCP Server provides seamless integration with Atlassian Jira, allowing 
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - Access to a Jira instance (Cloud or Server)
 - Jira API token for authentication
 
@@ -42,7 +42,19 @@ JIRA_API_TOKEN=your-api-token
 
 ## Installation & Usage
 
-### As Part of MCP Suite
+### Option 1: npm Package (Recommended)
+
+```bash
+# Install globally
+npm install -g @imazhar101/mcp-jira-server
+
+# Or run directly with npx
+npx @imazhar101/mcp-jira-server
+```
+
+### Option 2: Build from Source
+
+#### As Part of MCP Suite
 
 From the project root:
 
@@ -57,7 +69,7 @@ npm run build
 npm run build:server jira
 ```
 
-### Standalone Usage
+#### Standalone Usage
 
 ```bash
 # Navigate to the jira server directory
@@ -73,19 +85,52 @@ npm run build
 npm start
 ```
 
+## Cline MCP Configuration
+
+To use this server with Cline (VS Code extension), add the following to your Cline MCP settings:
+
+**File Location:**
+
+- **macOS**: `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+- **Windows**: `%APPDATA%/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+- **Linux**: `~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+
+**Configuration:**
+
+```json
+{
+  "mcpServers": {
+    "jira-integration": {
+      "command": "npx",
+      "args": ["@imazhar101/mcp-jira-server"],
+      "env": {
+        "JIRA_BASE_URL": "https://your-domain.atlassian.net",
+        "JIRA_EMAIL": "your-email@domain.com",
+        "JIRA_API_TOKEN": "your-api-token"
+      },
+      "disabled": false,
+      "alwaysAllow": ["search_issues", "get_issue", "list_projects"]
+    }
+  }
+}
+```
+
 ## Available Tools
 
 ### Issue Operations
 
 #### `search_issues`
+
 Search for issues using JQL (Jira Query Language).
 
 **Parameters:**
+
 - `jql` (string): The JQL query string
 - `maxResults` (number, optional): Maximum number of results (default: 50)
 - `startAt` (number, optional): Starting index for pagination (default: 0)
 
 **Example:**
+
 ```javascript
 {
   "jql": "project = PROJ AND status = 'To Do'",
@@ -94,15 +139,19 @@ Search for issues using JQL (Jira Query Language).
 ```
 
 #### `get_issue`
+
 Retrieve detailed information about a specific issue.
 
 **Parameters:**
+
 - `issueIdOrKey` (string): The issue ID or key (e.g., "PROJ-123")
 
 #### `create_issue`
+
 Create a new Jira issue.
 
 **Parameters:**
+
 - `project` (string): Project key
 - `summary` (string): Issue summary/title
 - `description` (string, optional): Issue description
@@ -112,9 +161,11 @@ Create a new Jira issue.
 - `labels` (array, optional): Array of label strings
 
 #### `update_issue`
+
 Update an existing issue.
 
 **Parameters:**
+
 - `issueIdOrKey` (string): The issue ID or key
 - `summary` (string, optional): New summary
 - `description` (string, optional): New description
@@ -123,51 +174,64 @@ Update an existing issue.
 - `labels` (array, optional): New labels array
 
 #### `transition_issue`
+
 Change the status of an issue through workflow transitions.
 
 **Parameters:**
+
 - `issueIdOrKey` (string): The issue ID or key
 - `transitionId` (string): The transition ID to execute
 
 #### `get_issue_transitions`
+
 Get available transitions for an issue.
 
 **Parameters:**
+
 - `issueIdOrKey` (string): The issue ID or key
 
 #### `assign_issue`
+
 Assign an issue to a user.
 
 **Parameters:**
+
 - `issueIdOrKey` (string): The issue ID or key
 - `assignee` (string): Account ID of the assignee
 
 #### `delete_issue`
+
 Delete an issue.
 
 **Parameters:**
+
 - `issueIdOrKey` (string): The issue ID or key
 
 ### Comment Operations
 
 #### `add_comment`
+
 Add a comment to an issue.
 
 **Parameters:**
+
 - `issueIdOrKey` (string): The issue ID or key
 - `body` (string): Comment text
 
 ### Project Operations
 
 #### `list_projects`
+
 List all accessible projects.
 
 **Parameters:** None
 
 #### `get_project`
+
 Get detailed information about a specific project.
 
 **Parameters:**
+
 - `projectIdOrKey` (string): The project ID or key
 
 ## Error Handling
