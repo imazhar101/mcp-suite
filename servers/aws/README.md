@@ -5,6 +5,7 @@ AWS MCP Server provides Model Context Protocol tools for interacting with AWS se
 ## Features
 
 ### DynamoDB
+
 - List tables
 - Describe table schema
 - Put, get, update, delete items
@@ -12,12 +13,14 @@ AWS MCP Server provides Model Context Protocol tools for interacting with AWS se
 - Batch operations
 
 ### Lambda
+
 - List functions
 - Get function details
 - Invoke functions
 - Update function code and configuration
 
 ### API Gateway
+
 - REST API management (v1)
 - HTTP/WebSocket API management (v2)
 - Resource and method management
@@ -36,15 +39,67 @@ export AWS_SECRET_ACCESS_KEY=your-secret-key
 
 Or use AWS profiles, IAM roles, or other AWS credential methods.
 
-## Usage
+## Installation & Usage
+
+### Option 1: npm Package (Recommended)
 
 ```bash
-npx @mcp-suite/aws-server
+# Install globally
+npm install -g @imazhar101/mcp-aws-server
+
+# Or run directly with npx
+npx @imazhar101/mcp-aws-server
+```
+
+### Option 2: Build from Source
+
+```bash
+# From project root
+npm install
+npm run build
+
+# The server will be available at:
+./dist/servers/aws/src/index.js
+```
+
+## Cline MCP Configuration
+
+To use this server with Cline (VS Code extension), add the following to your Cline MCP settings:
+
+**File Location:**
+
+- **macOS**: `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+- **Windows**: `%APPDATA%/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+- **Linux**: `~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+
+**Configuration:**
+
+```json
+{
+  "mcpServers": {
+    "aws-integration": {
+      "command": "npx",
+      "args": ["@imazhar101/mcp-aws-server"],
+      "env": {
+        "AWS_REGION": "us-east-1",
+        "AWS_ACCESS_KEY_ID": "your-access-key-id",
+        "AWS_SECRET_ACCESS_KEY": "your-secret-access-key"
+      },
+      "disabled": false,
+      "alwaysAllow": [
+        "dynamodb_list_tables",
+        "lambda_list_functions",
+        "apigateway_list_rest_apis"
+      ]
+    }
+  }
+}
 ```
 
 ## Tools
 
 ### DynamoDB Tools
+
 - `dynamodb_list_tables` - List all DynamoDB tables
 - `dynamodb_describe_table` - Get table schema and details
 - `dynamodb_put_item` - Insert or replace an item
@@ -55,6 +110,7 @@ npx @mcp-suite/aws-server
 - `dynamodb_scan` - Scan all items in a table
 
 ### Lambda Tools
+
 - `lambda_list_functions` - List all Lambda functions
 - `lambda_get_function` - Get function details
 - `lambda_invoke_function` - Invoke a function
@@ -62,6 +118,7 @@ npx @mcp-suite/aws-server
 - `lambda_update_function_configuration` - Update function settings
 
 ### API Gateway Tools
+
 - `apigateway_list_rest_apis` - List REST APIs
 - `apigateway_create_rest_api` - Create a new REST API
 - `apigateway_get_resources` - Get API resources
@@ -79,6 +136,7 @@ npx @mcp-suite/aws-server
 The server requires appropriate AWS IAM permissions for the services you want to use:
 
 ### DynamoDB
+
 - `dynamodb:ListTables`
 - `dynamodb:DescribeTable`
 - `dynamodb:PutItem`
@@ -91,6 +149,7 @@ The server requires appropriate AWS IAM permissions for the services you want to
 - `dynamodb:BatchWriteItem`
 
 ### Lambda
+
 - `lambda:ListFunctions`
 - `lambda:GetFunction`
 - `lambda:InvokeFunction`
@@ -98,6 +157,7 @@ The server requires appropriate AWS IAM permissions for the services you want to
 - `lambda:UpdateFunctionConfiguration`
 
 ### API Gateway
+
 - `apigateway:GET`
 - `apigateway:POST`
 - `apigateway:PUT`

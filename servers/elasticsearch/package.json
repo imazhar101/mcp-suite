@@ -1,6 +1,6 @@
 {
   "name": "@imazhar101/mcp-elasticsearch-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Elasticsearch MCP server for search, analytics, and document management",
   "main": "dist/servers/elasticsearch/src/index.js",
   "type": "module",

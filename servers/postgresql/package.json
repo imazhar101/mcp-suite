@@ -1,6 +1,6 @@
 {
   "name": "@imazhar101/mcp-postgresql-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "PostgreSQL MCP server for database management and query execution",
   "type": "module",
   "main": "dist/servers/postgresql/src/index.js",

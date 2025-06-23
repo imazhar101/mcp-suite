@@ -44,7 +44,19 @@ A comprehensive Model Context Protocol (MCP) server for interacting with Canvas 
 - **Comprehensive audit trails** for grade modifications
 - **Support for all Canvas grading events**
 
-## Installation
+## Installation & Usage
+
+### Option 1: npm Package (Recommended)
+
+```bash
+# Install globally
+npm install -g @imazhar101/mcp-canvas-server
+
+# Or run directly with npx
+npx @imazhar101/mcp-canvas-server
+```
+
+### Option 2: Build from Source
 
 1. Clone this repository
 2. Install dependencies:
@@ -55,6 +67,44 @@ A comprehensive Model Context Protocol (MCP) server for interacting with Canvas 
    ```bash
    npm run build
    ```
+
+## Configuration
+
+Set the following environment variables:
+
+```bash
+export CANVAS_BASE_URL="https://your-school.instructure.com"
+export CANVAS_API_TOKEN="your-canvas-api-token"
+```
+
+## Cline MCP Configuration
+
+To use this server with Cline (VS Code extension), add the following to your Cline MCP settings:
+
+**File Location:**
+
+- **macOS**: `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+- **Windows**: `%APPDATA%/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+- **Linux**: `~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+
+**Configuration:**
+
+```json
+{
+  "mcpServers": {
+    "canvas-lms": {
+      "command": "npx",
+      "args": ["@imazhar101/mcp-canvas-server"],
+      "env": {
+        "CANVAS_BASE_URL": "https://your-school.instructure.com",
+        "CANVAS_API_TOKEN": "your-canvas-api-token"
+      },
+      "disabled": false,
+      "alwaysAllow": ["list_courses", "get_course", "list_enrollments"]
+    }
+  }
+}
+```
 
 ## Development
 
@@ -536,6 +586,7 @@ The server provides comprehensive error handling:
 **Problem**: `401 Unauthorized` or `Invalid access token`
 
 **Solutions**:
+
 - Verify your `CANVAS_API_TOKEN` is correct and has not expired
 - Ensure the token has appropriate permissions for the operations you're attempting
 - Check that your Canvas instance URL in `CANVAS_BASE_URL` is correct
@@ -549,6 +600,7 @@ The server provides comprehensive error handling:
 **Problem**: `403 Forbidden` with rate limit messages
 
 **Solutions**:
+
 - Canvas API has rate limits (typically 3000 requests per hour per token)
 - Implement delays between bulk operations
 - Consider using multiple API tokens for high-volume operations
@@ -559,6 +611,7 @@ The server provides comprehensive error handling:
 **Problem**: Connection timeouts or network errors
 
 **Solutions**:
+
 - Verify your Canvas instance is accessible from your network
 - Check firewall settings if running in corporate environment
 - Test basic connectivity: `ping your-canvas-instance.instructure.com`
@@ -569,6 +622,7 @@ The server provides comprehensive error handling:
 **Problem**: `Unknown tool` or `Method not found` errors
 
 **Solutions**:
+
 - Ensure you're using the exact tool name from the documentation
 - Check that the server is running the latest version
 - Verify the tool is properly registered in the main server class
@@ -579,6 +633,7 @@ The server provides comprehensive error handling:
 **Problem**: `Insufficient privileges` or specific Canvas permission errors
 
 **Solutions**:
+
 - Verify your Canvas user account has the required permissions
 - Admin tools require account admin privileges
 - Course operations require appropriate course-level permissions
@@ -589,6 +644,7 @@ The server provides comprehensive error handling:
 **Problem**: Invalid parameter or malformed request errors
 
 **Solutions**:
+
 - Check that all required parameters are provided
 - Verify date formats use ISO 8601 format (e.g., `2024-01-15T00:00:00Z`)
 - Ensure numeric IDs are passed as strings, not numbers

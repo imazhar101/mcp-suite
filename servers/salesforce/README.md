@@ -2,6 +2,60 @@
 
 A Model Context Protocol (MCP) server for Salesforce CRM operations using REST APIs. This server provides CRUD (Create, Read, Update, Delete) operations for Salesforce objects.
 
+## Installation & Usage
+
+### Option 1: npm Package (Recommended)
+
+```bash
+# Install globally
+npm install -g @imazhar101/mcp-salesforce-server
+
+# Or run directly with npx
+npx @imazhar101/mcp-salesforce-server
+```
+
+### Option 2: Build from Source
+
+```bash
+# From project root
+npm install
+npm run build
+
+# The server will be available at:
+./dist/servers/salesforce/src/index.js
+```
+
+## Cline MCP Configuration
+
+To use this server with Cline (VS Code extension), add the following to your Cline MCP settings:
+
+**File Location:**
+
+- **macOS**: `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+- **Windows**: `%APPDATA%/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+- **Linux**: `~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+
+**Configuration:**
+
+```json
+{
+  "mcpServers": {
+    "salesforce-integration": {
+      "command": "npx",
+      "args": ["@imazhar101/mcp-salesforce-server"],
+      "env": {
+        "SALESFORCE_LOGIN_URL": "https://login.salesforce.com",
+        "SALESFORCE_USERNAME": "your-username",
+        "SALESFORCE_PASSWORD": "your-password",
+        "SALESFORCE_SECURITY_TOKEN": "your-security-token"
+      },
+      "disabled": false,
+      "alwaysAllow": ["query_records", "create_record", "update_record"]
+    }
+  }
+}
+```
+
 ## Features
 
 - **OAuth Authentication**: Automatic token management with persistence and auto-renewal
@@ -32,6 +86,7 @@ export SALESFORCE_LOGIN_URL="https://login.salesforce.com"  # Optional, defaults
 **Automatic Authentication**: The server automatically authenticates on the first API call and handles token management transparently. Access tokens are stored in environment variables (`SALESFORCE_ACCESS_TOKEN` and `SALESFORCE_INSTANCE_URL`) and automatically renewed when they expire.
 
 **Setting up a Connected App:**
+
 1. Go to Setup → App Manager → New Connected App
 2. Enable OAuth Settings
 3. Add OAuth Scopes: `Full access (full)` or specific scopes
@@ -43,6 +98,7 @@ export SALESFORCE_LOGIN_URL="https://login.salesforce.com"  # Optional, defaults
 **Note**: All tools automatically handle authentication using the environment variables above. No manual authentication is required.
 
 ### Query Records
+
 Execute SOQL queries to retrieve data:
 
 ```json
@@ -53,6 +109,7 @@ Execute SOQL queries to retrieve data:
 ```
 
 ### Create Records
+
 Create new records in Salesforce:
 
 ```json
@@ -68,6 +125,7 @@ Create new records in Salesforce:
 ```
 
 ### Read Records
+
 Retrieve specific records by ID:
 
 ```json
@@ -80,6 +138,7 @@ Retrieve specific records by ID:
 ```
 
 ### Update Records
+
 Update existing records:
 
 ```json
@@ -95,6 +154,7 @@ Update existing records:
 ```
 
 ### Delete Records
+
 Delete records from Salesforce:
 
 ```json
@@ -106,6 +166,7 @@ Delete records from Salesforce:
 ```
 
 ### Describe Objects
+
 Get metadata information about Salesforce objects:
 
 ```json
@@ -116,6 +177,7 @@ Get metadata information about Salesforce objects:
 ```
 
 ### List Available Objects
+
 List all available Salesforce object types (returns only object names):
 
 ```json
@@ -141,6 +203,7 @@ List all available Salesforce object types (returns only object names):
 ## Error Handling
 
 The server provides detailed error messages for common issues:
+
 - Invalid SOQL syntax
 - Missing required fields
 - Permission errors

@@ -1,6 +1,6 @@
 {
   "name": "@imazhar101/mcp-bitbucket-server",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Bitbucket MCP Server - Provides tools for interacting with Bitbucket API",
   "type": "module",
   "main": "dist/servers/bitbucket/src/index.js",

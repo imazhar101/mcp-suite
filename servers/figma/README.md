@@ -2,6 +2,57 @@
 
 A Model Context Protocol (MCP) server that provides tools for interacting with the Figma API. This server enables you to retrieve files, components, styles, comments, and more from your Figma workspace.
 
+## Installation & Usage
+
+### Option 1: npm Package (Recommended)
+
+```bash
+# Install globally
+npm install -g @imazhar101/mcp-figma-server
+
+# Or run directly with npx
+npx @imazhar101/mcp-figma-server
+```
+
+### Option 2: Build from Source
+
+```bash
+# From project root
+npm install
+npm run build
+
+# The server will be available at:
+./dist/servers/figma/src/index.js
+```
+
+## Cline MCP Configuration
+
+To use this server with Cline (VS Code extension), add the following to your Cline MCP settings:
+
+**File Location:**
+
+- **macOS**: `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+- **Windows**: `%APPDATA%/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+- **Linux**: `~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+
+**Configuration:**
+
+```json
+{
+  "mcpServers": {
+    "figma-integration": {
+      "command": "npx",
+      "args": ["@imazhar101/mcp-figma-server"],
+      "env": {
+        "FIGMA_ACCESS_TOKEN": "your-figma-token"
+      },
+      "disabled": false,
+      "alwaysAllow": ["get_file", "list_files", "get_comments"]
+    }
+  }
+}
+```
+
 ## Features
 
 ### File Operations
