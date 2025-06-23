@@ -2,6 +2,7 @@
 const { execSync } = require("child_process");
 const { existsSync, writeFileSync, mkdirSync } = require("fs");
 const { join } = require("path");
+const readline = require("readline");
 
 class ProgressBar {
   constructor(total, width = 30) {
@@ -116,7 +117,86 @@ function buildShared() {
   }
 }
 
-function main() {
+function displayServerMenu(servers) {
+  console.log("\n📦 Available servers to build:");
+  console.log("─".repeat(40));
+  
+  servers.forEach((server, index) => {
+    console.log(`${index + 1}. ${server}`);
+  });
+  
+  console.log(`${servers.length + 1}. all (build all servers)`);
+  console.log("─".repeat(40));
+}
+
+function getUserChoice(servers) {
+  return new Promise((resolve) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+
+    displayServerMenu(servers);
+    rl.question("\n🔧 Enter your choice (number): ", (answer) => {
+      rl.close();
+      const choice = parseInt(answer.trim());
+      
+      if (choice >= 1 && choice <= servers.length) {
+        resolve([servers[choice - 1]]);
+      } else if (choice === servers.length + 1) {
+        resolve(servers);
+      } else {
+        console.log("❌ Invalid choice. Please try again.");
+        resolve(getUserChoice(servers));
+      }
+    });
+  });
+}
+
+function parseCommandLineArgs() {
+  const args = process.argv.slice(2);
+  if (args.length === 0) {
+    return null;
+  }
+
+  const serverArg = args.find(arg => arg.startsWith('--server='));
+  if (serverArg) {
+    const serverName = serverArg.split('=')[1];
+    if (serverName === 'all') {
+      return 'all';
+    }
+    return [serverName];
+  }
+
+  return null;
+}
+
+function buildSelectedServers(selectedServers) {
+  console.log(`\n🚀 Building ${selectedServers.length} server(s): ${selectedServers.join(", ")}\n`);
+
+  const progressBar = new ProgressBar(selectedServers.length);
+  let successful = 0;
+  let failed = 0;
+
+  for (let i = 0; i < selectedServers.length; i++) {
+    const server = selectedServers[i];
+    if (buildServer(server, progressBar, i, selectedServers.length)) {
+      successful++;
+    } else {
+      failed++;
+    }
+  }
+
+  console.log(`\n📊 Build Summary:`);
+  console.log(`✅ Successful: ${successful}`);
+  console.log(`❌ Failed: ${failed}`);
+  
+  if (failed > 0) {
+    process.exit(1);
+  }
+}
+
+async function main() {
   // Build shared modules first
   if (!buildShared()) {
     process.exit(1);
@@ -129,24 +209,27 @@ function main() {
     return;
   }
 
-  console.log(`Building ${servers.length} server(s): ${servers.join(", ")}\n`);
+  // Check for command line arguments
+  const cmdArgs = parseCommandLineArgs();
+  let selectedServers;
 
-  const progressBar = new ProgressBar(servers.length);
-  let successful = 0;
-  let failed = 0;
-
-  for (let i = 0; i < servers.length; i++) {
-    const server = servers[i];
-    if (buildServer(server, progressBar, i, servers.length)) {
-      successful++;
+  if (cmdArgs === 'all') {
+    selectedServers = servers;
+  } else if (cmdArgs && Array.isArray(cmdArgs)) {
+    // Validate server name
+    const serverName = cmdArgs[0];
+    if (servers.includes(serverName)) {
+      selectedServers = cmdArgs;
     } else {
-      failed++;
+      console.log(`❌ Server "${serverName}" not found. Available servers: ${servers.join(", ")}`);
+      process.exit(1);
     }
+  } else {
+    // Interactive mode
+    selectedServers = await getUserChoice(servers);
   }
 
-  if (failed > 0) {
-    process.exit(1);
-  }
+  buildSelectedServers(selectedServers);
 }
 
 main();
