@@ -1,13 +1,16 @@
 {
   "name": "@imazhar101/mcp-jira-server",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Jira MCP server for issue management and project tracking",
   "type": "module",
-  "main": "../../dist/servers/jira/src/index.js",
+  "main": "dist/servers/jira/src/index.js",
   "bin": {
-    "mcp-jira": "../../dist/servers/jira/src/index.js"
+    "mcp-jira": "dist/servers/jira/src/index.js"
   },
-  "scripts": {},
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.6.0",
     "axios": "^1.9.0"
@@ -17,6 +20,6 @@
     "typescript": "^5.0.0"
   },
   "files": [
-    "../../dist/servers/jira"
+    "dist"
   ]
 }

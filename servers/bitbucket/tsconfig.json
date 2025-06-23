@@ -4,12 +4,16 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "../../",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "../../",
+    "paths": {
+      "shared/*": ["shared/*"]
+    }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "../../shared/**/*"],
   "exclude": ["node_modules"]
 }

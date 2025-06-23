@@ -1,15 +1,27 @@
 {
   "name": "@imazhar101/mcp-elasticsearch-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Elasticsearch MCP server for search, analytics, and document management",
-  "main": "dist/index.js",
+  "main": "dist/servers/elasticsearch/src/index.js",
   "type": "module",
+  "bin": {
+    "mcp-elasticsearch": "dist/servers/elasticsearch/src/index.js"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "tsc && node dist/index.js"
+    "dev": "tsc && node dist/index.js",
+    "prepublishOnly": "npm run build"
   },
-  "keywords": ["mcp", "elasticsearch", "search", "analytics"],
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "mcp",
+    "elasticsearch",
+    "search",
+    "analytics"
+  ],
   "author": "Azharuddin <azhar@oneorigin.us>",
   "license": "MIT",
   "dependencies": {

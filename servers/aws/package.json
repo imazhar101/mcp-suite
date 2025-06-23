@@ -1,13 +1,16 @@
 {
   "name": "@imazhar101/mcp-aws-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AWS MCP Server - Provides tools for interacting with AWS services (DynamoDB, Lambda, API Gateway)",
   "type": "module",
-  "main": "../../dist/servers/aws/src/index.js",
+  "main": "dist/servers/aws/src/index.js",
   "bin": {
-    "mcp-aws": "../../dist/servers/aws/src/index.js"
+    "mcp-aws": "dist/servers/aws/src/index.js"
   },
-  "scripts": {},
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.6.0",
     "@aws-sdk/client-dynamodb": "^3.0.0",
@@ -21,6 +24,6 @@
     "typescript": "^5.0.0"
   },
   "files": [
-    "../../dist/servers/aws"
+    "dist"
   ]
 }

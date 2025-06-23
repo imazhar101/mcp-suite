@@ -60,24 +60,17 @@ function buildServer(serverName, progressBar, current, total) {
 
   try {
     progressBar.update(current, `📦 Building ${serverName}...`);
+    
+    // Build to local dist directory within the server folder
+    const localDistPath = join(serverPath, "dist");
+    
     execSync(
-      `npx tsc --project ${serverPath}/tsconfig.json --outDir ${ROOT_DIR}/dist --rootDir ${ROOT_DIR}`,
+      `npx tsc --project ${serverPath}/tsconfig.json --outDir ${localDistPath}`,
       {
         cwd: ROOT_DIR,
         stdio: "pipe",
       }
     );
-    
-    // Create package.json in dist folder to specify ES modules
-    const distServerPath = join(ROOT_DIR, "dist", "servers", serverName);
-    if (!existsSync(distServerPath)) {
-      mkdirSync(distServerPath, { recursive: true });
-    }
-    const distPackageJsonPath = join(distServerPath, "package.json");
-    const distPackageJson = {
-      "type": "module"
-    };
-    writeFileSync(distPackageJsonPath, JSON.stringify(distPackageJson, null, 2));
     
     progressBar.update(current + 1, `✅ ${serverName} completed`);
     return true;
