@@ -1,14 +1,15 @@
 {
   "name": "@imazhar101/mcp-postgresql-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "PostgreSQL MCP server for database management and query execution",
   "type": "module",
-  "main": "../../dist/servers/postgresql/src/index.js",
+  "main": "dist/servers/postgresql/src/index.js",
   "bin": {
-    "mcp-postgresql": "../../dist/servers/postgresql/src/index.js"
+    "mcp-postgresql": "dist/servers/postgresql/src/index.js"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.6.0",
@@ -20,6 +21,6 @@
     "typescript": "^5.0.0"
   },
   "files": [
-    "../../dist/servers/postgresql"
+    "dist"
   ]
 }

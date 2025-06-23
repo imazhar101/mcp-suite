@@ -1,13 +1,16 @@
 {
   "name": "@imazhar101/mcp-figma-server",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Figma MCP server for design file management and API integration",
   "type": "module",
-  "main": "../../dist/servers/figma/src/index.js",
+  "main": "dist/servers/figma/src/index.js",
   "bin": {
-    "mcp-figma": "../../dist/servers/figma/src/index.js"
+    "mcp-figma": "dist/servers/figma/src/index.js"
   },
-  "scripts": {},
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.6.0",
     "node-fetch": "^3.3.2"
@@ -18,6 +21,6 @@
     "typescript": "^5.0.0"
   },
   "files": [
-    "../../dist/servers/figma"
+    "dist"
   ]
 }
