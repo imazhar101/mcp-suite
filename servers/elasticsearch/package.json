@@ -1,5 +1,5 @@
 {
-  "name": "@mcp-suite/elasticsearch-server",
+  "name": "@imazhar101/mcp-elasticsearch-server",
   "version": "1.0.0",
   "description": "Elasticsearch MCP server for search, analytics, and document management",
   "main": "dist/index.js",

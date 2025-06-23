@@ -1,5 +1,5 @@
 {
-  "name": "@mcp-suite/puppeteer-server",
+  "name": "@imazhar101/mcp-puppeteer-server",
   "version": "2.0.0",
   "description": "Puppeteer MCP Server - Provides tools for browser automation and web scraping",
   "type": "module",

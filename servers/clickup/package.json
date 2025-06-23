@@ -1,5 +1,5 @@
 {
-  "name": "@mcp-suite/clickup-server",
+  "name": "@imazhar101/mcp-clickup-server",
   "version": "2.0.0",
   "description": "ClickUp MCP server for task management and project organization",
   "type": "module",

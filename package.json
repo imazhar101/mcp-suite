@@ -11,7 +11,8 @@
     "lint": "eslint . --ext .ts,.js",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist/",
-    "deploy": "node scripts/deploy.js"
+    "deploy": "node scripts/deploy.js",
+    "publish": "node scripts/publish.js"
   },
   "keywords": [
     "mcp",

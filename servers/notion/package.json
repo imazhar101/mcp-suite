@@ -1,5 +1,5 @@
 {
-  "name": "@mcp-suite/notion-server",
+  "name": "@imazhar101/mcp-notion-server",
   "version": "1.0.0",
   "description": "Notion MCP server for knowledge management and collaboration",
   "type": "module",

@@ -1,5 +1,5 @@
 {
-  "name": "@mcp-suite/salesforce-server",
+  "name": "@imazhar101/mcp-salesforce-server",
   "version": "1.0.0",
   "description": "Salesforce MCP server for CRUD operations using REST APIs",
   "type": "module",

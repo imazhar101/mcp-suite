@@ -1,5 +1,5 @@
 {
-  "name": "@mcp-suite/postgresql-server",
+  "name": "@imazhar101/mcp-postgresql-server",
   "version": "1.0.0",
   "description": "PostgreSQL MCP server for database management and query execution",
   "type": "module",
