@@ -22,6 +22,7 @@ mcp-suite/
 │   ├── bitbucket/     # Bitbucket server for repository management
 │   ├── aws/           # AWS services (DynamoDB, Lambda, API Gateway)
 │   ├── puppeteer/     # Puppeteer server for browser automation
+│   ├── paypal/        # PayPal server for payment processing and management
 │   └── elasticsearch/ # Elasticsearch server for search and analytics
 ├── scripts/           # Build and deployment scripts
 ├── config/            # Environment-specific configurations
@@ -309,6 +310,32 @@ terminate_all_sessions, expire_mobile_sessions, merge_user, split_user, get_grad
 store_custom_data, load_custom_data, delete_custom_data, list_course_nicknames,
 get_course_nickname, set_course_nickname, remove_course_nickname, clear_course_nicknames,
 upload_user_file, get_pandata_events_token
+```
+
+</details>
+
+<details>
+<summary><strong>💳 PayPal Server</strong> - Payment processing and transaction management</summary>
+
+### [PayPal Server](servers/paypal/README.md)
+
+**Package:** `@mcp-suite/paypal-server`  
+**Description:** Comprehensive PayPal integration for payment processing, transaction management, and PayPal API operations with OAuth authentication.
+
+**Quick Setup:**
+
+- `PAYPAL_CLIENT_ID` - Your PayPal application client ID
+- `PAYPAL_CLIENT_SECRET` - Your PayPal application client secret
+- `PAYPAL_ENVIRONMENT` - Environment ("sandbox" or "production", defaults to "sandbox")
+
+**Key Features:** Payment creation and execution, transaction management (sales, authorizations, captures, refunds), OAuth authentication with automatic token management, webhook event monitoring, multi-environment support, and comprehensive PayPal API coverage.
+
+**Available Tools (9):**
+
+```
+paypal_create_payment, paypal_execute_payment, paypal_get_payment, paypal_list_payments,
+paypal_refund_sale, paypal_capture_authorization, paypal_void_authorization,
+paypal_get_webhook_events, paypal_test_connection
 ```
 
 </details>
