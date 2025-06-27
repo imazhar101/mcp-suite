@@ -91,7 +91,8 @@ export class QuizTools {
             },
             show_correct_answers_at: {
               type: "string",
-              description: "Date when correct answers become visible (ISO 8601)",
+              description:
+                "Date when correct answers become visible (ISO 8601)",
             },
             hide_correct_answers_at: {
               type: "string",
@@ -204,7 +205,8 @@ export class QuizTools {
             },
             show_correct_answers_at: {
               type: "string",
-              description: "Date when correct answers become visible (ISO 8601)",
+              description:
+                "Date when correct answers become visible (ISO 8601)",
             },
             hide_correct_answers_at: {
               type: "string",
@@ -472,7 +474,8 @@ export class QuizTools {
                   },
                   answer_weight: {
                     type: "number",
-                    description: "Answer weight (0 for incorrect, 100 for correct)",
+                    description:
+                      "Answer weight (0 for incorrect, 100 for correct)",
                   },
                   answer_comments: {
                     type: "string",
@@ -619,7 +622,8 @@ export class QuizTools {
                   },
                   answer_weight: {
                     type: "number",
-                    description: "Answer weight (0 for incorrect, 100 for correct)",
+                    description:
+                      "Answer weight (0 for incorrect, 100 for correct)",
                   },
                   answer_comments: {
                     type: "string",

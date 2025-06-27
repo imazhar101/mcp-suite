@@ -7,7 +7,7 @@ export interface PuppeteerOptions {
 
 export interface NavigateParams {
   url: string;
-  waitUntil?: 'load' | 'domcontentloaded' | 'networkidle0' | 'networkidle2';
+  waitUntil?: "load" | "domcontentloaded" | "networkidle0" | "networkidle2";
   timeout?: number;
 }
 
@@ -15,7 +15,7 @@ export interface ScreenshotParams {
   selector?: string;
   fullPage?: boolean;
   quality?: number;
-  type?: 'png' | 'jpeg' | 'webp';
+  type?: "png" | "jpeg" | "webp";
   clip?: {
     x: number;
     y: number;
@@ -26,7 +26,7 @@ export interface ScreenshotParams {
 
 export interface ClickParams {
   selector: string;
-  button?: 'left' | 'right' | 'middle';
+  button?: "left" | "right" | "middle";
   clickCount?: number;
   delay?: number;
 }

@@ -34,7 +34,11 @@ class SalesforceServer {
       apiVersion,
     };
 
-    this.logger.info(`Salesforce server starting with${accessToken ? '' : 'out'} stored access token`);
+    this.logger.info(
+      `Salesforce server starting with${
+        accessToken ? "" : "out"
+      } stored access token`
+    );
 
     this.salesforceService = new SalesforceService(config, this.logger);
 
@@ -82,7 +86,8 @@ class SalesforceServer {
               text: JSON.stringify(
                 {
                   success: false,
-                  error: error instanceof Error ? error.message : "Unknown error",
+                  error:
+                    error instanceof Error ? error.message : "Unknown error",
                 },
                 null,
                 2
@@ -125,7 +130,7 @@ class SalesforceServer {
             args.sobject_type,
             args.id
           );
-          
+
         case "salesforce_bulk_delete":
           return await this.salesforceService.bulkDelete(
             args.sobject_type,
@@ -147,11 +152,14 @@ class SalesforceServer {
       }
     } catch (error) {
       // Enhanced error handling for authentication issues
-      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-      
-      if (errorMessage.includes("OAuth credentials not available") || 
-          errorMessage.includes("Auto-authentication failed") ||
-          errorMessage.includes("Not authenticated")) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred";
+
+      if (
+        errorMessage.includes("OAuth credentials not available") ||
+        errorMessage.includes("Auto-authentication failed") ||
+        errorMessage.includes("Not authenticated")
+      ) {
         return {
           success: false,
           error: `Authentication failed. Please ensure the following environment variables are set correctly:
@@ -164,13 +172,13 @@ Optional environment variables:
 - SALESFORCE_GRANT_TYPE: OAuth grant type (defaults to "password")
 - SALESFORCE_LOGIN_URL: Salesforce login URL (defaults to "https://login.salesforce.com")
 
-Original error: ${errorMessage}`
+Original error: ${errorMessage}`,
         };
       }
 
       return {
         success: false,
-        error: errorMessage
+        error: errorMessage,
       };
     }
   }

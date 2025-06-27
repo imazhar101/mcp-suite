@@ -57,20 +57,22 @@ export class APIGatewayService {
   async listRestApis(): Promise<APIGatewayRestAPI[]> {
     const command = new GetRestApisCommand({});
     const response = await this.restClient.send(command);
-    
-    return response.items?.map((api: any) => ({
-      id: api.id!,
-      name: api.name!,
-      description: api.description,
-      version: api.version,
-      createdDate: api.createdDate,
-    })) || [];
+
+    return (
+      response.items?.map((api: any) => ({
+        id: api.id!,
+        name: api.name!,
+        description: api.description,
+        version: api.version,
+        createdDate: api.createdDate,
+      })) || []
+    );
   }
 
   async getRestApi(apiId: string): Promise<APIGatewayRestAPI> {
     const command = new GetRestApiCommand({ restApiId: apiId });
     const response = await this.restClient.send(command);
-    
+
     return {
       id: response.id!,
       name: response.name!,
@@ -92,9 +94,9 @@ export class APIGatewayService {
       version,
       endpointConfiguration,
     });
-    
+
     const response = await this.restClient.send(command);
-    
+
     return {
       id: response.id!,
       name: response.name!,
@@ -112,14 +114,18 @@ export class APIGatewayService {
   async getResources(apiId: string): Promise<APIGatewayResource[]> {
     const command = new GetResourcesCommand({ restApiId: apiId });
     const response = await this.restClient.send(command);
-    
-    return response.items?.map((resource: any) => ({
-      id: resource.id!,
-      parentId: resource.parentId,
-      pathPart: resource.pathPart!,
-      path: resource.path!,
-      resourceMethods: resource.resourceMethods ? Object.keys(resource.resourceMethods) : undefined,
-    })) || [];
+
+    return (
+      response.items?.map((resource: any) => ({
+        id: resource.id!,
+        parentId: resource.parentId,
+        pathPart: resource.pathPart!,
+        path: resource.path!,
+        resourceMethods: resource.resourceMethods
+          ? Object.keys(resource.resourceMethods)
+          : undefined,
+      })) || []
+    );
   }
 
   async createResource(
@@ -132,9 +138,9 @@ export class APIGatewayService {
       parentId,
       pathPart,
     });
-    
+
     const response = await this.restClient.send(command);
-    
+
     return {
       id: response.id!,
       parentId: response.parentId,
@@ -171,9 +177,9 @@ export class APIGatewayService {
       requestParameters: options?.requestParameters,
       requestModels: options?.requestModels,
     });
-    
+
     const response = await this.restClient.send(command);
-    
+
     return {
       httpMethod: response.httpMethod!,
       resourceId,
@@ -205,9 +211,9 @@ export class APIGatewayService {
       resourceId,
       httpMethod,
     });
-    
+
     const response = await this.restClient.send(command);
-    
+
     return {
       httpMethod: response.httpMethod!,
       resourceId,
@@ -234,7 +240,7 @@ export class APIGatewayService {
       integrationHttpMethod,
       credentials,
     });
-    
+
     return await this.restClient.send(command);
   }
 
@@ -261,9 +267,9 @@ export class APIGatewayService {
       stageName,
       description,
     });
-    
+
     const response = await this.restClient.send(command);
-    
+
     return {
       id: response.id!,
       description: response.description,
@@ -275,12 +281,14 @@ export class APIGatewayService {
   async getDeployments(apiId: string): Promise<APIGatewayDeployment[]> {
     const command = new GetDeploymentsCommand({ restApiId: apiId });
     const response = await this.restClient.send(command);
-    
-    return response.items?.map((deployment: any) => ({
-      id: deployment.id!,
-      description: deployment.description,
-      createdDate: deployment.createdDate,
-    })) || [];
+
+    return (
+      response.items?.map((deployment: any) => ({
+        id: deployment.id!,
+        description: deployment.description,
+        createdDate: deployment.createdDate,
+      })) || []
+    );
   }
 
   async getStages(apiId: string): Promise<any[]> {
@@ -301,7 +309,7 @@ export class APIGatewayService {
       deploymentId,
       description,
     });
-    
+
     return await this.restClient.send(command);
   }
 
@@ -329,12 +337,14 @@ export class APIGatewayService {
       name,
       description,
       throttle,
-      quota: quota ? {
-        limit: quota.limit,
-        period: quota.period as any,
-      } : undefined,
+      quota: quota
+        ? {
+            limit: quota.limit,
+            period: quota.period as any,
+          }
+        : undefined,
     });
-    
+
     return await this.restClient.send(command);
   }
 
@@ -354,7 +364,7 @@ export class APIGatewayService {
       description,
       enabled,
     });
-    
+
     return await this.restClient.send(command);
   }
 
@@ -379,7 +389,7 @@ export class APIGatewayService {
       Version: version,
       RouteSelectionExpression: routeSelectionExpression,
     });
-    
+
     return await this.v2Client.send(command);
   }
 
@@ -406,7 +416,7 @@ export class APIGatewayService {
       Target: target,
       AuthorizationType: authorizationType as any,
     });
-    
+
     return await this.v2Client.send(command);
   }
 
@@ -436,11 +446,14 @@ export class APIGatewayService {
       IntegrationUri: integrationUri,
       IntegrationMethod: integrationMethod,
     });
-    
+
     return await this.v2Client.send(command);
   }
 
-  async deleteV2Integration(apiId: string, integrationId: string): Promise<void> {
+  async deleteV2Integration(
+    apiId: string,
+    integrationId: string
+  ): Promise<void> {
     const command = new DeleteIntegrationV2Command({
       ApiId: apiId,
       IntegrationId: integrationId,
@@ -466,7 +479,7 @@ export class APIGatewayService {
       Description: description,
       DeploymentId: deploymentId,
     });
-    
+
     return await this.v2Client.send(command);
   }
 

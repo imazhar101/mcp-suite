@@ -40,10 +40,7 @@ export class QuizService {
     return response.data;
   }
 
-  async createQuiz(
-    courseId: string,
-    params: QuizCreateParams
-  ): Promise<Quiz> {
+  async createQuiz(courseId: string, params: QuizCreateParams): Promise<Quiz> {
     const requestData: any = {
       quiz: {},
     };

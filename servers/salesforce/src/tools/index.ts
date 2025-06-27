@@ -108,7 +108,8 @@ export const salesforceTools: McpTool[] = [
   },
   {
     name: "salesforce_bulk_delete",
-    description: "Delete multiple records from Salesforce using the Composite API",
+    description:
+      "Delete multiple records from Salesforce using the Composite API",
     inputSchema: {
       type: "object",
       properties: {
@@ -126,7 +127,8 @@ export const salesforceTools: McpTool[] = [
         },
         all_or_none: {
           type: "boolean",
-          description: "If true, the operation will fail if any record fails to delete. If false, partial success is allowed.",
+          description:
+            "If true, the operation will fail if any record fails to delete. If false, partial success is allowed.",
           default: false,
         },
       },

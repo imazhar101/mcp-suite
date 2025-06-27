@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-export * from './src/index.js';
+export * from "./src/index.js";

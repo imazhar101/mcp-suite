@@ -319,7 +319,7 @@ upload_user_file, get_pandata_events_token
 
 ### [PayPal Server](servers/paypal/README.md)
 
-**Package:** `@imazhar101/paypal-server`  
+**Package:** `@imazhar101/mcp-paypal-server`  
 **Description:** Comprehensive PayPal integration for payment processing, transaction management, and PayPal API operations with OAuth authentication.
 
 **Quick Setup:**

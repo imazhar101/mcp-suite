@@ -1,242 +1,244 @@
-import { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { Tool } from "@modelcontextprotocol/sdk/types.js";
 
 export const puppeteerTools: Tool[] = [
   {
-    name: 'puppeteer_launch',
-    description: 'Launch a new Puppeteer browser instance with configurable options',
+    name: "puppeteer_launch",
+    description:
+      "Launch a new Puppeteer browser instance with configurable options",
     inputSchema: {
-      type: 'object',
+      type: "object",
       properties: {
         headless: {
-          type: 'boolean',
-          description: 'Run browser in headless mode (default: true)'
+          type: "boolean",
+          description: "Run browser in headless mode (default: true)",
         },
         args: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Additional browser launch arguments'
+          type: "array",
+          items: { type: "string" },
+          description: "Additional browser launch arguments",
         },
         executablePath: {
-          type: 'string',
-          description: 'Path to browser executable'
+          type: "string",
+          description: "Path to browser executable",
         },
         timeout: {
-          type: 'number',
-          description: 'Launch timeout in milliseconds (default: 30000)'
-        }
-      }
-    }
+          type: "number",
+          description: "Launch timeout in milliseconds (default: 30000)",
+        },
+      },
+    },
   },
   {
-    name: 'puppeteer_navigate',
-    description: 'Navigate to a specific URL',
+    name: "puppeteer_navigate",
+    description: "Navigate to a specific URL",
     inputSchema: {
-      type: 'object',
+      type: "object",
       properties: {
         url: {
-          type: 'string',
-          description: 'URL to navigate to'
+          type: "string",
+          description: "URL to navigate to",
         },
         waitUntil: {
-          type: 'string',
-          enum: ['load', 'domcontentloaded', 'networkidle0', 'networkidle2'],
-          description: 'When to consider navigation successful (default: networkidle2)'
+          type: "string",
+          enum: ["load", "domcontentloaded", "networkidle0", "networkidle2"],
+          description:
+            "When to consider navigation successful (default: networkidle2)",
         },
         timeout: {
-          type: 'number',
-          description: 'Navigation timeout in milliseconds (default: 30000)'
-        }
+          type: "number",
+          description: "Navigation timeout in milliseconds (default: 30000)",
+        },
       },
-      required: ['url']
-    }
+      required: ["url"],
+    },
   },
   {
-    name: 'puppeteer_screenshot',
-    description: 'Take a screenshot of the current page or a specific element',
+    name: "puppeteer_screenshot",
+    description: "Take a screenshot of the current page or a specific element",
     inputSchema: {
-      type: 'object',
+      type: "object",
       properties: {
         selector: {
-          type: 'string',
-          description: 'CSS selector to screenshot specific element'
+          type: "string",
+          description: "CSS selector to screenshot specific element",
         },
         fullPage: {
-          type: 'boolean',
-          description: 'Take full page screenshot (default: false)'
+          type: "boolean",
+          description: "Take full page screenshot (default: false)",
         },
         quality: {
-          type: 'number',
+          type: "number",
           minimum: 0,
           maximum: 100,
-          description: 'Image quality for JPEG (0-100)'
+          description: "Image quality for JPEG (0-100)",
         },
         type: {
-          type: 'string',
-          enum: ['png', 'jpeg', 'webp'],
-          description: 'Image format (default: png)'
+          type: "string",
+          enum: ["png", "jpeg", "webp"],
+          description: "Image format (default: png)",
         },
         clip: {
-          type: 'object',
+          type: "object",
           properties: {
-            x: { type: 'number' },
-            y: { type: 'number' },
-            width: { type: 'number' },
-            height: { type: 'number' }
+            x: { type: "number" },
+            y: { type: "number" },
+            width: { type: "number" },
+            height: { type: "number" },
           },
-          required: ['x', 'y', 'width', 'height'],
-          description: 'Clip screenshot to specific coordinates'
-        }
-      }
-    }
+          required: ["x", "y", "width", "height"],
+          description: "Clip screenshot to specific coordinates",
+        },
+      },
+    },
   },
   {
-    name: 'puppeteer_click',
-    description: 'Click on an element specified by CSS selector',
+    name: "puppeteer_click",
+    description: "Click on an element specified by CSS selector",
     inputSchema: {
-      type: 'object',
+      type: "object",
       properties: {
         selector: {
-          type: 'string',
-          description: 'CSS selector of element to click'
+          type: "string",
+          description: "CSS selector of element to click",
         },
         button: {
-          type: 'string',
-          enum: ['left', 'right', 'middle'],
-          description: 'Mouse button to use (default: left)'
+          type: "string",
+          enum: ["left", "right", "middle"],
+          description: "Mouse button to use (default: left)",
         },
         clickCount: {
-          type: 'number',
-          description: 'Number of clicks (default: 1)'
+          type: "number",
+          description: "Number of clicks (default: 1)",
         },
         delay: {
-          type: 'number',
-          description: 'Delay between clicks in milliseconds (default: 0)'
-        }
+          type: "number",
+          description: "Delay between clicks in milliseconds (default: 0)",
+        },
       },
-      required: ['selector']
-    }
+      required: ["selector"],
+    },
   },
   {
-    name: 'puppeteer_fill',
-    description: 'Fill an input field with text',
+    name: "puppeteer_fill",
+    description: "Fill an input field with text",
     inputSchema: {
-      type: 'object',
+      type: "object",
       properties: {
         selector: {
-          type: 'string',
-          description: 'CSS selector of input element to fill'
+          type: "string",
+          description: "CSS selector of input element to fill",
         },
         value: {
-          type: 'string',
-          description: 'Text to fill into the input'
+          type: "string",
+          description: "Text to fill into the input",
         },
         delay: {
-          type: 'number',
-          description: 'Delay between keystrokes in milliseconds (default: 0)'
-        }
+          type: "number",
+          description: "Delay between keystrokes in milliseconds (default: 0)",
+        },
       },
-      required: ['selector', 'value']
-    }
+      required: ["selector", "value"],
+    },
   },
   {
-    name: 'puppeteer_select',
-    description: 'Select options from a dropdown/select element',
+    name: "puppeteer_select",
+    description: "Select options from a dropdown/select element",
     inputSchema: {
-      type: 'object',
+      type: "object",
       properties: {
         selector: {
-          type: 'string',
-          description: 'CSS selector of select element'
+          type: "string",
+          description: "CSS selector of select element",
         },
         values: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Array of values to select'
-        }
+          type: "array",
+          items: { type: "string" },
+          description: "Array of values to select",
+        },
       },
-      required: ['selector', 'values']
-    }
+      required: ["selector", "values"],
+    },
   },
   {
-    name: 'puppeteer_hover',
-    description: 'Hover over an element',
+    name: "puppeteer_hover",
+    description: "Hover over an element",
     inputSchema: {
-      type: 'object',
+      type: "object",
       properties: {
         selector: {
-          type: 'string',
-          description: 'CSS selector of element to hover over'
-        }
+          type: "string",
+          description: "CSS selector of element to hover over",
+        },
       },
-      required: ['selector']
-    }
+      required: ["selector"],
+    },
   },
   {
-    name: 'puppeteer_evaluate',
-    description: 'Execute JavaScript code in the browser context',
+    name: "puppeteer_evaluate",
+    description: "Execute JavaScript code in the browser context",
     inputSchema: {
-      type: 'object',
+      type: "object",
       properties: {
         script: {
-          type: 'string',
-          description: 'JavaScript code to execute'
+          type: "string",
+          description: "JavaScript code to execute",
         },
         args: {
-          type: 'array',
-          description: 'Arguments to pass to the script'
-        }
+          type: "array",
+          description: "Arguments to pass to the script",
+        },
       },
-      required: ['script']
-    }
+      required: ["script"],
+    },
   },
   {
-    name: 'puppeteer_wait_for_selector',
-    description: 'Wait for an element to appear on the page',
+    name: "puppeteer_wait_for_selector",
+    description: "Wait for an element to appear on the page",
     inputSchema: {
-      type: 'object',
+      type: "object",
       properties: {
         selector: {
-          type: 'string',
-          description: 'CSS selector to wait for'
+          type: "string",
+          description: "CSS selector to wait for",
         },
         timeout: {
-          type: 'number',
-          description: 'Timeout in milliseconds (default: 30000)'
+          type: "number",
+          description: "Timeout in milliseconds (default: 30000)",
         },
         visible: {
-          type: 'boolean',
-          description: 'Wait for element to be visible'
+          type: "boolean",
+          description: "Wait for element to be visible",
         },
         hidden: {
-          type: 'boolean',
-          description: 'Wait for element to be hidden'
-        }
+          type: "boolean",
+          description: "Wait for element to be hidden",
+        },
       },
-      required: ['selector']
-    }
+      required: ["selector"],
+    },
   },
   {
-    name: 'puppeteer_get_console_logs',
-    description: 'Get browser console logs',
+    name: "puppeteer_get_console_logs",
+    description: "Get browser console logs",
     inputSchema: {
-      type: 'object',
-      properties: {}
-    }
+      type: "object",
+      properties: {},
+    },
   },
   {
-    name: 'puppeteer_get_page_info',
-    description: 'Get current page information (URL, title, viewport)',
+    name: "puppeteer_get_page_info",
+    description: "Get current page information (URL, title, viewport)",
     inputSchema: {
-      type: 'object',
-      properties: {}
-    }
+      type: "object",
+      properties: {},
+    },
   },
   {
-    name: 'puppeteer_close',
-    description: 'Close the browser instance',
+    name: "puppeteer_close",
+    description: "Close the browser instance",
     inputSchema: {
-      type: 'object',
-      properties: {}
-    }
-  }
+      type: "object",
+      properties: {},
+    },
+  },
 ];
