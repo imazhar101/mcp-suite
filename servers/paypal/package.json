@@ -1,6 +1,6 @@
 {
   "name": "@imazhar101/mcp-paypal-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "PayPal MCP server for payment processing and transaction management",
   "type": "module",
   "main": "dist/servers/paypal/src/index.js",

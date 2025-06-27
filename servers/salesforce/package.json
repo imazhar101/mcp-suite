@@ -1,6 +1,6 @@
 {
   "name": "@imazhar101/mcp-salesforce-server",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Salesforce MCP server for CRUD operations using REST APIs",
   "type": "module",
   "main": "dist/servers/salesforce/src/index.js",

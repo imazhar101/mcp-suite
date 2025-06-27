@@ -1,6 +1,6 @@
 {
   "name": "@imazhar101/mcp-aws-server",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "AWS MCP Server - Provides tools for interacting with AWS services (DynamoDB, Lambda, API Gateway)",
   "type": "module",
   "main": "dist/servers/aws/src/index.js",
