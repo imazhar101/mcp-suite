@@ -302,7 +302,9 @@ class ElasticsearchServer {
       case "elasticsearch_bulk_operation":
         // Limit bulk operations to prevent overwhelming the system
         if (args.operations && args.operations.length > 100) {
-          throw new Error("Bulk operations are limited to 100 operations per request");
+          throw new Error(
+            "Bulk operations are limited to 100 operations per request"
+          );
         }
         return {
           content: [
@@ -327,7 +329,11 @@ class ElasticsearchServer {
             {
               type: "text",
               text: JSON.stringify(
-                await service.deleteByQuery(args.index, args.query, args.refresh),
+                await service.deleteByQuery(
+                  args.index,
+                  args.query,
+                  args.refresh
+                ),
                 null,
                 2
               ),
@@ -361,14 +367,18 @@ class ElasticsearchServer {
 
   async run(): Promise<void> {
     // Get Elasticsearch configuration from environment variables
-    const elasticsearchNode = process.env.ELASTICSEARCH_NODE || "http://localhost:9200";
-    
+    const elasticsearchNode =
+      process.env.ELASTICSEARCH_NODE || "http://localhost:9200";
+
     const config: ElasticsearchConfig = {
       node: elasticsearchNode,
     };
 
     // Add authentication if provided
-    if (process.env.ELASTICSEARCH_USERNAME && process.env.ELASTICSEARCH_PASSWORD) {
+    if (
+      process.env.ELASTICSEARCH_USERNAME &&
+      process.env.ELASTICSEARCH_PASSWORD
+    ) {
       config.auth = {
         username: process.env.ELASTICSEARCH_USERNAME,
         password: process.env.ELASTICSEARCH_PASSWORD,
@@ -385,7 +395,9 @@ class ElasticsearchServer {
     }
 
     if (process.env.ELASTICSEARCH_REQUEST_TIMEOUT) {
-      config.requestTimeout = parseInt(process.env.ELASTICSEARCH_REQUEST_TIMEOUT);
+      config.requestTimeout = parseInt(
+        process.env.ELASTICSEARCH_REQUEST_TIMEOUT
+      );
     }
 
     this.elasticsearchService = new ElasticsearchService(config);

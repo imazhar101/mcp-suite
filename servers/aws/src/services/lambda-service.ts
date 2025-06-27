@@ -25,21 +25,23 @@ export class LambdaService {
   async listFunctions(): Promise<LambdaFunctionInfo[]> {
     const command = new ListFunctionsCommand({});
     const response = await this.client.send(command);
-    
-    return response.Functions?.map((func: any) => ({
-      functionName: func.FunctionName!,
-      runtime: func.Runtime!,
-      handler: func.Handler!,
-      description: func.Description,
-      timeout: func.Timeout,
-      memorySize: func.MemorySize,
-    })) || [];
+
+    return (
+      response.Functions?.map((func: any) => ({
+        functionName: func.FunctionName!,
+        runtime: func.Runtime!,
+        handler: func.Handler!,
+        description: func.Description,
+        timeout: func.Timeout,
+        memorySize: func.MemorySize,
+      })) || []
+    );
   }
 
   async getFunction(functionName: string): Promise<LambdaFunctionInfo> {
     const command = new GetFunctionCommand({ FunctionName: functionName });
     const response = await this.client.send(command);
-    
+
     if (!response.Configuration) {
       throw new Error(`Function ${functionName} not found`);
     }
@@ -116,7 +118,9 @@ export class LambdaService {
       Description: options.description,
       Timeout: options.timeout,
       MemorySize: options.memorySize,
-      Environment: options.environment ? { Variables: options.environment } : undefined,
+      Environment: options.environment
+        ? { Variables: options.environment }
+        : undefined,
       Handler: options.handler,
       Runtime: options.runtime as any,
     });
@@ -127,12 +131,14 @@ export class LambdaService {
   async invokeFunction(params: LambdaInvokeParams): Promise<any> {
     const command = new InvokeCommand({
       FunctionName: params.functionName,
-      Payload: params.payload ? new TextEncoder().encode(JSON.stringify(params.payload)) : undefined,
+      Payload: params.payload
+        ? new TextEncoder().encode(JSON.stringify(params.payload))
+        : undefined,
       InvocationType: params.invocationType || "RequestResponse",
     });
 
     const response = await this.client.send(command);
-    
+
     if (response.Payload) {
       const payloadString = new TextDecoder().decode(response.Payload);
       try {
@@ -141,7 +147,7 @@ export class LambdaService {
         return payloadString;
       }
     }
-    
+
     return null;
   }
 
@@ -151,12 +157,15 @@ export class LambdaService {
     return response.Layers || [];
   }
 
-  async publishVersion(functionName: string, description?: string): Promise<any> {
+  async publishVersion(
+    functionName: string,
+    description?: string
+  ): Promise<any> {
     const command = new PublishVersionCommand({
       FunctionName: functionName,
       Description: description,
     });
-    
+
     return await this.client.send(command);
   }
 
@@ -172,7 +181,7 @@ export class LambdaService {
       FunctionVersion: functionVersion,
       Description: description,
     });
-    
+
     return await this.client.send(command);
   }
 

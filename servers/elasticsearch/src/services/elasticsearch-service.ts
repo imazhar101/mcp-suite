@@ -1,4 +1,4 @@
-import { Client } from '@elastic/elasticsearch';
+import { Client } from "@elastic/elasticsearch";
 import {
   ElasticsearchConfig,
   SearchOptions,
@@ -9,7 +9,7 @@ import {
   BulkOperation,
   AggregationOptions,
   CreateIndexOptions,
-} from '../types/index.js';
+} from "../types/index.js";
 
 export class ElasticsearchService {
   private client: Client;
@@ -21,11 +21,15 @@ export class ElasticsearchService {
       maxRetries: config.maxRetries || 3,
       requestTimeout: config.requestTimeout || 30000,
       sniffOnStart: config.sniffOnStart || false,
-      sniffInterval: config.sniffInterval || false
+      sniffInterval: config.sniffInterval || false,
     });
   }
 
-  async testConnection(): Promise<{ connected: boolean; cluster_name?: string; version?: string }> {
+  async testConnection(): Promise<{
+    connected: boolean;
+    cluster_name?: string;
+    version?: string;
+  }> {
     try {
       const response = await this.client.info();
       return {
@@ -47,20 +51,20 @@ export class ElasticsearchService {
 
   async listIndices(): Promise<IndexInfo[]> {
     const response = await this.client.cat.indices({
-      format: 'json',
-      h: 'health,status,index,uuid,pri,rep,docs.count,docs.deleted,store.size,pri.store.size',
+      format: "json",
+      h: "health,status,index,uuid,pri,rep,docs.count,docs.deleted,store.size,pri.store.size",
     });
     return response.map((item: any) => ({
-      health: item.health || 'unknown',
-      status: item.status || 'unknown',
-      index: item.index || '',
-      uuid: item.uuid || '',
-      pri: parseInt(item.pri || '0'),
-      rep: parseInt(item.rep || '0'),
-      'docs.count': parseInt(item['docs.count'] || '0'),
-      'docs.deleted': parseInt(item['docs.deleted'] || '0'),
-      'store.size': item['store.size'] || '0b',
-      'pri.store.size': item['pri.store.size'] || '0b',
+      health: item.health || "unknown",
+      status: item.status || "unknown",
+      index: item.index || "",
+      uuid: item.uuid || "",
+      pri: parseInt(item.pri || "0"),
+      rep: parseInt(item.rep || "0"),
+      "docs.count": parseInt(item["docs.count"] || "0"),
+      "docs.deleted": parseInt(item["docs.deleted"] || "0"),
+      "store.size": item["store.size"] || "0b",
+      "pri.store.size": item["pri.store.size"] || "0b",
     }));
   }
 
@@ -78,17 +82,23 @@ export class ElasticsearchService {
         settings: settings[index]?.settings,
       };
     } catch (error) {
-      throw new Error(`Failed to get index info: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to get index info: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
     }
   }
 
-  async createIndex(options: CreateIndexOptions): Promise<{ acknowledged: boolean; shards_acknowledged: boolean }> {
+  async createIndex(
+    options: CreateIndexOptions
+  ): Promise<{ acknowledged: boolean; shards_acknowledged: boolean }> {
     const body: any = {};
-    
+
     if (options.mappings) {
       body.mappings = options.mappings;
     }
-    
+
     if (options.settings) {
       body.settings = options.settings;
     }
@@ -135,7 +145,10 @@ export class ElasticsearchService {
     }
 
     if (options.highlight) {
-      searchParams.body = { ...searchParams.body, highlight: options.highlight };
+      searchParams.body = {
+        ...searchParams.body,
+        highlight: options.highlight,
+      };
     }
 
     if (options.aggs) {
@@ -143,19 +156,28 @@ export class ElasticsearchService {
     }
 
     if (options.track_total_hits !== undefined) {
-      searchParams.body = { ...searchParams.body, track_total_hits: options.track_total_hits };
+      searchParams.body = {
+        ...searchParams.body,
+        track_total_hits: options.track_total_hits,
+      };
     }
 
     const response = await this.client.search(searchParams);
-    
+
     // Transform the response to match our SearchResult interface
     return {
       took: response.took,
       timed_out: response.timed_out,
       hits: {
         total: {
-          value: typeof response.hits.total === 'number' ? response.hits.total : (response.hits.total?.value || 0),
-          relation: typeof response.hits.total === 'object' ? (response.hits.total?.relation || 'eq') : 'eq',
+          value:
+            typeof response.hits.total === "number"
+              ? response.hits.total
+              : response.hits.total?.value || 0,
+          relation:
+            typeof response.hits.total === "object"
+              ? response.hits.total?.relation || "eq"
+              : "eq",
         },
         max_score: response.hits.max_score || 0,
         hits: response.hits.hits.map((hit: any) => ({
@@ -172,7 +194,7 @@ export class ElasticsearchService {
 
   async count(index: string, query?: any): Promise<{ count: number }> {
     const params: any = { index };
-    
+
     if (query) {
       params.body = { query };
     }
@@ -222,7 +244,12 @@ export class ElasticsearchService {
     };
   }
 
-  async updateDocument(index: string, id: string, document: any, refresh?: boolean): Promise<any> {
+  async updateDocument(
+    index: string,
+    id: string,
+    document: any,
+    refresh?: boolean
+  ): Promise<any> {
     const params: any = {
       index,
       id,
@@ -236,13 +263,17 @@ export class ElasticsearchService {
     const response = await this.client.update(params);
     return {
       _index: response._index,
-      _id: response._id || '',
+      _id: response._id || "",
       _version: response._version,
       result: response.result,
     };
   }
 
-  async deleteDocument(index: string, id: string, refresh?: boolean): Promise<any> {
+  async deleteDocument(
+    index: string,
+    id: string,
+    refresh?: boolean
+  ): Promise<any> {
     const params: any = { index, id };
 
     if (refresh) {
@@ -261,16 +292,16 @@ export class ElasticsearchService {
   async bulkOperation(operation: BulkOperation): Promise<any> {
     const body: any[] = [];
 
-    operation.operations.forEach(op => {
+    operation.operations.forEach((op) => {
       const action: any = { [op.action]: { _index: operation.index } };
-      
+
       if (op.id) {
         action[op.action]._id = op.id;
       }
 
       body.push(action);
 
-      if (op.action !== 'delete' && op.document) {
+      if (op.action !== "delete" && op.document) {
         body.push(op.document);
       }
     });
@@ -282,7 +313,7 @@ export class ElasticsearchService {
     }
 
     const response = await this.client.bulk(params);
-    
+
     return {
       took: response.took,
       errors: response.errors,
@@ -315,7 +346,7 @@ export class ElasticsearchService {
     }
 
     const response = await this.client.search(searchParams);
-    
+
     return {
       took: response.took,
       hits: {
@@ -325,7 +356,11 @@ export class ElasticsearchService {
     };
   }
 
-  async deleteByQuery(index: string, query: any, refresh?: boolean): Promise<any> {
+  async deleteByQuery(
+    index: string,
+    query: any,
+    refresh?: boolean
+  ): Promise<any> {
     const params: any = {
       index,
       body: { query },
@@ -338,7 +373,7 @@ export class ElasticsearchService {
     }
 
     const response = await this.client.deleteByQuery(params);
-    
+
     return {
       took: response.took,
       timed_out: response.timed_out,
@@ -355,7 +390,11 @@ export class ElasticsearchService {
     };
   }
 
-  async reindex(sourceIndex: string, destIndex: string, query?: any): Promise<any> {
+  async reindex(
+    sourceIndex: string,
+    destIndex: string,
+    query?: any
+  ): Promise<any> {
     const reindexParams: any = {
       source: { index: sourceIndex },
       dest: { index: destIndex },
@@ -366,7 +405,7 @@ export class ElasticsearchService {
     }
 
     const response = await this.client.reindex(reindexParams);
-    
+
     return {
       took: response.took,
       timed_out: response.timed_out,
@@ -387,13 +426,13 @@ export class ElasticsearchService {
 
   async getNodeStats(): Promise<any> {
     const response = await this.client.nodes.stats({
-      metric: ['indices', 'jvm', 'process', 'fs'],
+      metric: ["indices", "jvm", "process", "fs"],
     });
-    
+
     // Simplify the response to avoid huge data dumps
     const simplifiedStats: any = {};
-    
-    Object.keys(response.nodes).forEach(nodeId => {
+
+    Object.keys(response.nodes).forEach((nodeId) => {
       const node = response.nodes[nodeId];
       simplifiedStats[nodeId] = {
         name: node.name,
@@ -420,7 +459,7 @@ export class ElasticsearchService {
         },
       };
     });
-    
+
     return simplifiedStats;
   }
 }

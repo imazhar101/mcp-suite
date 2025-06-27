@@ -28,7 +28,9 @@ export class SalesforceService {
 
   private getBaseUrl(): string {
     if (!this.config.instanceUrl) {
-      throw new Error("Salesforce instance URL not configured. Please authenticate first using salesforce_oauth_login.");
+      throw new Error(
+        "Salesforce instance URL not configured. Please authenticate first using salesforce_oauth_login."
+      );
     }
     return `${this.config.instanceUrl}/services/data/${this.apiVersion}`;
   }
@@ -48,13 +50,15 @@ export class SalesforceService {
     }
 
     if (!this.isAuthenticated) {
-      throw new Error("Not authenticated. Please use salesforce_oauth_login to authenticate first.");
+      throw new Error(
+        "Not authenticated. Please use salesforce_oauth_login to authenticate first."
+      );
     }
 
     const url = `${this.getBaseUrl()}${endpoint}`;
-    
+
     const headers: Record<string, string> = {
-      "Authorization": `Bearer ${this.config.accessToken}`,
+      Authorization: `Bearer ${this.config.accessToken}`,
       "Content-Type": "application/json",
     };
 
@@ -69,19 +73,21 @@ export class SalesforceService {
 
     try {
       this.logger.debug(`Making ${method} request to: ${url}`);
-      
+
       const response = await fetch(url, options);
-      
+
       if (!response.ok) {
         // Check if it's an authentication error (401 Unauthorized)
         if (response.status === 401 && this.hasOAuthCredentials()) {
-          this.logger.warn("Access token expired, attempting re-authentication");
+          this.logger.warn(
+            "Access token expired, attempting re-authentication"
+          );
           const authResult = await this.autoAuthenticate();
           if (authResult.success) {
             // Retry the request with the new token
             options.headers = {
               ...options.headers,
-              "Authorization": `Bearer ${this.config.accessToken}`,
+              Authorization: `Bearer ${this.config.accessToken}`,
             };
             const retryResponse = await fetch(url, options);
             if (retryResponse.ok) {
@@ -95,7 +101,7 @@ export class SalesforceService {
 
         const errorBody = await response.text();
         let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
-        
+
         try {
           const errorJson = JSON.parse(errorBody);
           if (Array.isArray(errorJson) && errorJson.length > 0) {
@@ -104,7 +110,7 @@ export class SalesforceService {
         } catch (e) {
           // If parsing fails, use the original error message
         }
-        
+
         throw new Error(errorMessage);
       }
 
@@ -120,11 +126,15 @@ export class SalesforceService {
     }
   }
 
-  async query(soql: string): Promise<{ success: boolean; data?: SalesforceQueryResponse; error?: string }> {
+  async query(soql: string): Promise<{
+    success: boolean;
+    data?: SalesforceQueryResponse;
+    error?: string;
+  }> {
     try {
       const encodedQuery = encodeURIComponent(soql);
       const response = await this.makeRequest(`/query?q=${encodedQuery}`);
-      
+
       return {
         success: true,
         data: response,
@@ -132,7 +142,8 @@ export class SalesforceService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
@@ -140,10 +151,18 @@ export class SalesforceService {
   async create(
     sobjectType: string,
     record: Omit<SalesforceRecord, "Id">
-  ): Promise<{ success: boolean; data?: SalesforceCreateResponse; error?: string }> {
+  ): Promise<{
+    success: boolean;
+    data?: SalesforceCreateResponse;
+    error?: string;
+  }> {
     try {
-      const response = await this.makeRequest(`/sobjects/${sobjectType}`, "POST", record);
-      
+      const response = await this.makeRequest(
+        `/sobjects/${sobjectType}`,
+        "POST",
+        record
+      );
+
       return {
         success: true,
         data: response,
@@ -151,7 +170,8 @@ export class SalesforceService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
@@ -163,14 +183,14 @@ export class SalesforceService {
   ): Promise<{ success: boolean; data?: SalesforceRecord; error?: string }> {
     try {
       let endpoint = `/sobjects/${sobjectType}/${id}`;
-      
+
       if (fields && fields.length > 0) {
         const fieldsParam = fields.join(",");
         endpoint += `?fields=${fieldsParam}`;
       }
-      
+
       const response = await this.makeRequest(endpoint);
-      
+
       return {
         success: true,
         data: response,
@@ -178,7 +198,8 @@ export class SalesforceService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
@@ -187,10 +208,14 @@ export class SalesforceService {
     sobjectType: string,
     id: string,
     record: Omit<SalesforceRecord, "Id">
-  ): Promise<{ success: boolean; data?: SalesforceUpdateResponse; error?: string }> {
+  ): Promise<{
+    success: boolean;
+    data?: SalesforceUpdateResponse;
+    error?: string;
+  }> {
     try {
       await this.makeRequest(`/sobjects/${sobjectType}/${id}`, "PATCH", record);
-      
+
       return {
         success: true,
         data: { success: true, errors: [] },
@@ -198,7 +223,8 @@ export class SalesforceService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
@@ -206,10 +232,14 @@ export class SalesforceService {
   async delete(
     sobjectType: string,
     id: string
-  ): Promise<{ success: boolean; data?: SalesforceDeleteResponse; error?: string }> {
+  ): Promise<{
+    success: boolean;
+    data?: SalesforceDeleteResponse;
+    error?: string;
+  }> {
     try {
       await this.makeRequest(`/sobjects/${sobjectType}/${id}`, "DELETE");
-      
+
       return {
         success: true,
         data: { success: true, errors: [] },
@@ -217,16 +247,21 @@ export class SalesforceService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
-  
+
   async bulkDelete(
     sobjectType: string,
     ids: string[],
     allOrNone: boolean = false
-  ): Promise<{ success: boolean; data?: SalesforceBulkDeleteResponse; error?: string }> {
+  ): Promise<{
+    success: boolean;
+    data?: SalesforceBulkDeleteResponse;
+    error?: string;
+  }> {
     try {
       if (!ids || ids.length === 0) {
         return {
@@ -234,21 +269,26 @@ export class SalesforceService {
           error: "No IDs provided for bulk deletion",
         };
       }
-      
+
       if (ids.length > 200) {
         return {
           success: false,
-          error: "Maximum of 200 records can be deleted in a single bulk delete operation",
+          error:
+            "Maximum of 200 records can be deleted in a single bulk delete operation",
         };
       }
-      
+
       // For objects of the same type, we can use the Composite API's sObject Collections
-      const endpoint = `/composite/sobjects?ids=${ids.join(",")}&allOrNone=${allOrNone}`;
+      const endpoint = `/composite/sobjects?ids=${ids.join(
+        ","
+      )}&allOrNone=${allOrNone}`;
       const response = await this.makeRequest(endpoint, "DELETE");
-      
+
       // Check if any records failed to delete when allOrNone is false
-      const hasErrors = response.results && response.results.some((result: any) => !result.success);
-      
+      const hasErrors =
+        response.results &&
+        response.results.some((result: any) => !result.success);
+
       return {
         success: !hasErrors,
         data: response,
@@ -256,17 +296,22 @@ export class SalesforceService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
 
-  async describe(
-    sobjectType: string
-  ): Promise<{ success: boolean; data?: SalesforceDescribeResponse; error?: string }> {
+  async describe(sobjectType: string): Promise<{
+    success: boolean;
+    data?: SalesforceDescribeResponse;
+    error?: string;
+  }> {
     try {
-      const response = await this.makeRequest(`/sobjects/${sobjectType}/describe`);
-      
+      const response = await this.makeRequest(
+        `/sobjects/${sobjectType}/describe`
+      );
+
       return {
         success: true,
         data: response,
@@ -274,18 +319,24 @@ export class SalesforceService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
 
-  async listSObjects(): Promise<{ success: boolean; data?: { sobjects: string[] }; error?: string }> {
+  async listSObjects(): Promise<{
+    success: boolean;
+    data?: { sobjects: string[] };
+    error?: string;
+  }> {
     try {
       const response = await this.makeRequest("/sobjects");
-      
+
       // Extract only the names from the sobjects array to reduce payload size
-      const objectNames = response.sobjects?.map((sobject: any) => sobject.name) || [];
-      
+      const objectNames =
+        response.sobjects?.map((sobject: any) => sobject.name) || [];
+
       return {
         success: true,
         data: { sobjects: objectNames },
@@ -293,12 +344,17 @@ export class SalesforceService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
 
-  async authenticateWithOAuth(oauthConfig: SalesforceOAuthConfig): Promise<{ success: boolean; data?: SalesforceAuthResponse; error?: string }> {
+  async authenticateWithOAuth(oauthConfig: SalesforceOAuthConfig): Promise<{
+    success: boolean;
+    data?: SalesforceAuthResponse;
+    error?: string;
+  }> {
     try {
       const loginUrl = oauthConfig.loginUrl || "https://login.salesforce.com";
       const tokenUrl = `${loginUrl}/services/oauth2/token`;
@@ -324,18 +380,19 @@ export class SalesforceService {
       if (!response.ok) {
         const errorBody = await response.text();
         let errorMessage = `OAuth authentication failed: HTTP ${response.status}`;
-        
+
         try {
           const errorJson = JSON.parse(errorBody);
-          errorMessage = errorJson.error_description || errorJson.error || errorMessage;
+          errorMessage =
+            errorJson.error_description || errorJson.error || errorMessage;
         } catch (e) {
           // If parsing fails, use the original error message
         }
-        
+
         throw new Error(errorMessage);
       }
 
-      const authResponse = await response.json() as SalesforceAuthResponse;
+      const authResponse = (await response.json()) as SalesforceAuthResponse;
 
       // Update the service configuration with the new tokens
       this.config.accessToken = authResponse.access_token;
@@ -346,7 +403,9 @@ export class SalesforceService {
       process.env.SALESFORCE_ACCESS_TOKEN = authResponse.access_token;
       process.env.SALESFORCE_INSTANCE_URL = authResponse.instance_url;
 
-      this.logger.info("Successfully authenticated with Salesforce OAuth and stored tokens");
+      this.logger.info(
+        "Successfully authenticated with Salesforce OAuth and stored tokens"
+      );
 
       return {
         success: true,
@@ -356,7 +415,8 @@ export class SalesforceService {
       this.logger.error("OAuth authentication failed", error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
@@ -365,7 +425,11 @@ export class SalesforceService {
     return this.isAuthenticated;
   }
 
-  getAuthenticationStatus(): { authenticated: boolean; instanceUrl?: string; hasAccessToken: boolean } {
+  getAuthenticationStatus(): {
+    authenticated: boolean;
+    instanceUrl?: string;
+    hasAccessToken: boolean;
+  } {
     return {
       authenticated: this.isAuthenticated,
       instanceUrl: this.config.instanceUrl,
@@ -382,7 +446,11 @@ export class SalesforceService {
     );
   }
 
-  private async autoAuthenticate(): Promise<{ success: boolean; data?: SalesforceAuthResponse; error?: string }> {
+  private async autoAuthenticate(): Promise<{
+    success: boolean;
+    data?: SalesforceAuthResponse;
+    error?: string;
+  }> {
     if (!this.hasOAuthCredentials()) {
       return {
         success: false,
@@ -396,7 +464,8 @@ export class SalesforceService {
       username: process.env.SALESFORCE_USERNAME!,
       password: process.env.SALESFORCE_PASSWORD!,
       grantType: process.env.SALESFORCE_GRANT_TYPE || "password",
-      loginUrl: process.env.SALESFORCE_LOGIN_URL || "https://login.salesforce.com",
+      loginUrl:
+        process.env.SALESFORCE_LOGIN_URL || "https://login.salesforce.com",
     };
 
     return await this.authenticateWithOAuth(oauthConfig);
