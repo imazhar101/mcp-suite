@@ -22,6 +22,7 @@ mcp-suite/
 │   ├── bitbucket/     # Bitbucket server for repository management
 │   ├── aws/           # AWS services (DynamoDB, Lambda, API Gateway)
 │   ├── puppeteer/     # Puppeteer server for browser automation
+│   ├── paypal/        # PayPal server for payment processing and management
 │   └── elasticsearch/ # Elasticsearch server for search and analytics
 ├── scripts/           # Build and deployment scripts
 ├── config/            # Environment-specific configurations
@@ -57,7 +58,7 @@ For detailed setup instructions with AI coding assistants like Continue.dev, Cla
 
 ### [Jira Server](servers/jira/README.md)
 
-**Package:** `@mcp-suite/jira-server`  
+**Package:** `@imazhar101/jira-server`  
 **Description:** Comprehensive Jira integration for issue management, project tracking, and workflow automation.
 
 **Quick Setup:**
@@ -83,7 +84,7 @@ assign_issue, delete_issue
 
 ### [PostgreSQL Server](servers/postgresql/README.md)
 
-**Package:** `@mcp-suite/postgresql-server`  
+**Package:** `@imazhar101/postgresql-server`  
 **Description:** PostgreSQL database management and query execution server for database operations, schema inspection, and analytics.
 
 **Quick Setup:**
@@ -105,7 +106,7 @@ execute_query, list_tables, get_database_stats, test_connection
 
 ### [Salesforce Server](servers/salesforce/README.md)
 
-**Package:** `@mcp-suite/salesforce-server`  
+**Package:** `@imazhar101/salesforce-server`  
 **Description:** Salesforce CRM integration with CRUD operations using REST APIs and OAuth authentication support.
 
 **Quick Setup:**
@@ -129,7 +130,7 @@ salesforce_delete, salesforce_describe, salesforce_list_objects
 
 ### [Bitbucket Server](servers/bitbucket/README.md)
 
-**Package:** `@mcp-suite/bitbucket-server`  
+**Package:** `@imazhar101/bitbucket-server`  
 **Description:** Comprehensive Bitbucket integration for repository management, pull request operations, code reviews, and team collaboration workflows.
 
 **Quick Setup:**
@@ -143,7 +144,7 @@ salesforce_delete, salesforce_describe, salesforce_list_objects
 **Available Tools (40):**
 
 ```
-get_repositories, get_repository, get_pull_requests, get_pull_request, 
+get_repositories, get_repository, get_pull_requests, get_pull_request,
 create_pull_request, update_pull_request, merge_pull_request, decline_pull_request,
 get_pull_request_activity, get_pull_request_comments, create_pull_request_comment,
 update_pull_request_comment, delete_pull_request_comment, get_pull_request_diff,
@@ -162,7 +163,7 @@ get_pull_requests_for_commit, get_pull_request_statuses
 
 ### [ClickUp Server](servers/clickup/README.md)
 
-**Package:** `@mcp-suite/clickup-server`  
+**Package:** `@imazhar101/clickup-server`  
 **Description:** Comprehensive ClickUp integration for task management, project organization, time tracking, and team collaboration.
 
 **Quick Setup:**
@@ -189,7 +190,7 @@ create_time_entry, get_goals, create_goal
 
 ### [Figma Server](servers/figma/README.md)
 
-**Package:** `@mcp-suite/figma-server`  
+**Package:** `@imazhar101/figma-server`  
 **Description:** Figma API integration for retrieving files, components, styles, comments, and managing design workflows.
 
 **Quick Setup:**
@@ -214,7 +215,7 @@ get_file_styles
 
 ### [Canvas Server](servers/canvas/README.md)
 
-**Package:** `@mcp-suite/canvas-server`  
+**Package:** `@imazhar101/canvas-server`  
 **Description:** Comprehensive Canvas LMS integration for course management, enrollment operations, grading, and administrative tasks.
 
 **Quick Setup:**
@@ -314,11 +315,37 @@ upload_user_file, get_pandata_events_token
 </details>
 
 <details>
+<summary><strong>💳 PayPal Server</strong> - Payment processing and transaction management</summary>
+
+### [PayPal Server](servers/paypal/README.md)
+
+**Package:** `@imazhar101/paypal-server`  
+**Description:** Comprehensive PayPal integration for payment processing, transaction management, and PayPal API operations with OAuth authentication.
+
+**Quick Setup:**
+
+- `PAYPAL_CLIENT_ID` - Your PayPal application client ID
+- `PAYPAL_CLIENT_SECRET` - Your PayPal application client secret
+- `PAYPAL_ENVIRONMENT` - Environment ("sandbox" or "production", defaults to "sandbox")
+
+**Key Features:** Payment creation and execution, transaction management (sales, authorizations, captures, refunds), OAuth authentication with automatic token management, webhook event monitoring, multi-environment support, and comprehensive PayPal API coverage.
+
+**Available Tools (9):**
+
+```
+paypal_create_payment, paypal_execute_payment, paypal_get_payment, paypal_list_payments,
+paypal_refund_sale, paypal_capture_authorization, paypal_void_authorization,
+paypal_get_webhook_events, paypal_test_connection
+```
+
+</details>
+
+<details>
 <summary><strong>☁️ AWS Server</strong> - AWS services integration for DynamoDB, Lambda, and API Gateway</summary>
 
 ### [AWS Server](servers/aws/README.md)
 
-**Package:** `@mcp-suite/aws-server`  
+**Package:** `@imazhar101/aws-server`  
 **Description:** Comprehensive AWS integration for DynamoDB, Lambda, and API Gateway services with full CRUD operations and management capabilities.
 
 **Quick Setup:**
@@ -350,7 +377,7 @@ apigatewayv2_get_integrations, apigatewayv2_create_integration
 
 ### [Puppeteer Server](servers/puppeteer/README.md)
 
-**Package:** `@mcp-suite/puppeteer-server`  
+**Package:** `@imazhar101/puppeteer-server`  
 **Description:** Browser automation server using Puppeteer for web scraping, testing, and automated browsing tasks.
 
 **Quick Setup:**
@@ -368,7 +395,7 @@ No environment variables required for basic usage.
 
 ### [Elasticsearch Server](servers/elasticsearch/README.md)
 
-**Package:** `@mcp-suite/elasticsearch-server`  
+**Package:** `@imazhar101/elasticsearch-server`  
 **Description:** Comprehensive Elasticsearch integration for search, analytics, and document management with built-in data limiting controls.
 
 **Quick Setup:**

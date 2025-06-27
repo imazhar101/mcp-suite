@@ -45,6 +45,29 @@
       "prompts": []
     },
     {
+      "name": "paypal",
+      "displayName": "PayPal Server",
+      "description": "PayPal payment processing and transaction management with OAuth authentication",
+      "version": "1.0.0",
+      "category": "payments",
+      "capabilities": ["tools"],
+      "requiredEnvVars": ["PAYPAL_CLIENT_ID", "PAYPAL_CLIENT_SECRET"],
+      "optionalEnvVars": ["PAYPAL_ENVIRONMENT"],
+      "tools": [
+        "paypal_create_payment",
+        "paypal_execute_payment",
+        "paypal_get_payment",
+        "paypal_list_payments",
+        "paypal_refund_sale",
+        "paypal_capture_authorization",
+        "paypal_void_authorization",
+        "paypal_get_webhook_events",
+        "paypal_test_connection"
+      ],
+      "resources": [],
+      "prompts": []
+    },
+    {
       "name": "salesforce",
       "displayName": "Salesforce Server",
       "description": "Salesforce CRM CRUD operations using REST APIs with OAuth authentication",

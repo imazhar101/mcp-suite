@@ -13,6 +13,7 @@ const servers = [
     'figma',
     'jira',
     'notion',
+    'paypal',
     'postgresql',
     'puppeteer',
     'salesforce'

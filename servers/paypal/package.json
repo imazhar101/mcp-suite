@@ -1,0 +1,46 @@
+{
+  "name": "@imazhar101/paypal-server",
+  "version": "1.0.0",
+  "description": "PayPal MCP server for payment processing and transaction management",
+  "type": "module",
+  "main": "dist/servers/paypal/src/index.js",
+  "bin": {
+    "mcp-paypal": "dist/servers/paypal/src/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "paypal",
+    "payments",
+    "transactions",
+    "ecommerce",
+    "api",
+    "integration"
+  ],
+  "author": "Azharuddin <azhar@oneorigin.us>",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "axios": "^1.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imazhar101/mcp-suite.git",
+    "directory": "servers/paypal"
+  },
+  "bugs": {
+    "url": "https://github.com/imazhar101/mcp-suite/issues"
+  },
+  "homepage": "https://github.com/imazhar101/mcp-suite/tree/main/servers/paypal"
+}

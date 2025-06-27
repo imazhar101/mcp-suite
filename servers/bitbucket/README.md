@@ -104,7 +104,7 @@ To use this server with Cline (VS Code extension), add the following to your Cli
 1. **Install the package:**
 
 ```bash
-npm install @mcp-suite/bitbucket-server
+npm install @imazhar101/bitbucket-server
 ```
 
 2. **Environment Configuration:**
