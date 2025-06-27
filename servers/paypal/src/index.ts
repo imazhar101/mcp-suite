@@ -75,6 +75,7 @@ class PayPalServer {
 
   private async handleToolCall(toolName: string, args: any): Promise<any> {
     switch (toolName) {
+      // Legacy payment tools
       case "paypal_create_payment":
         return await this.createPayment(args);
       case "paypal_execute_payment":
@@ -108,6 +109,99 @@ class PayPalServer {
         return await this.paypalService.getWebhookEvents(args);
       case "paypal_test_connection":
         return await this.paypalService.testConnection();
+
+      // Invoice management tools
+      case "paypal_create_invoice":
+        return await this.paypalService.createInvoice(args);
+      case "paypal_list_invoices":
+        return await this.paypalService.listInvoices(args);
+      case "paypal_get_invoice":
+        return await this.paypalService.getInvoice(args.invoice_id);
+      case "paypal_send_invoice":
+        return await this.paypalService.sendInvoice(args.invoice_id, args);
+      case "paypal_send_invoice_reminder":
+        return await this.paypalService.sendInvoiceReminder(
+          args.invoice_id,
+          args
+        );
+      case "paypal_cancel_sent_invoice":
+        return await this.paypalService.cancelSentInvoice(
+          args.invoice_id,
+          args
+        );
+      case "paypal_generate_invoice_qr_code":
+        return await this.paypalService.generateInvoiceQrCode(
+          args.invoice_id,
+          args
+        );
+
+      // Order management tools
+      case "paypal_create_order":
+        return await this.paypalService.createOrder(args);
+      case "paypal_get_order":
+        return await this.paypalService.getOrder(args.order_id, args.fields);
+      case "paypal_capture_order":
+        return await this.paypalService.captureOrder(
+          args.order_id,
+          args.payment_source
+        );
+
+      // Dispute management tools
+      case "paypal_list_disputes":
+        return await this.paypalService.listDisputes(args);
+      case "paypal_get_dispute":
+        return await this.paypalService.getDispute(args.dispute_id);
+      case "paypal_accept_dispute_claim":
+        return await this.paypalService.acceptDisputeClaim(
+          args.dispute_id,
+          args
+        );
+
+      // Shipment tracking tools
+      case "paypal_create_shipment_tracking":
+        return await this.paypalService.createShipmentTracking(
+          args.transaction_id,
+          args
+        );
+      case "paypal_get_shipment_tracking":
+        return await this.paypalService.getShipmentTracking(
+          args.transaction_id
+        );
+
+      // Catalog management tools
+      case "paypal_create_product":
+        return await this.paypalService.createProduct(args);
+      case "paypal_list_products":
+        return await this.paypalService.listProducts(args);
+      case "paypal_get_product":
+        return await this.paypalService.getProduct(args.product_id);
+      case "paypal_update_product":
+        return await this.paypalService.updateProduct(
+          args.product_id,
+          args.operations
+        );
+
+      // Subscription management tools
+      case "paypal_create_subscription_plan":
+        return await this.paypalService.createSubscriptionPlan(args);
+      case "paypal_list_subscription_plans":
+        return await this.paypalService.listSubscriptionPlans(args);
+      case "paypal_get_subscription_plan":
+        return await this.paypalService.getSubscriptionPlan(args.plan_id);
+      case "paypal_create_subscription":
+        return await this.paypalService.createSubscription(args);
+      case "paypal_get_subscription":
+        return await this.paypalService.getSubscription(args.subscription_id);
+      case "paypal_cancel_subscription":
+        return await this.paypalService.cancelSubscription(
+          args.subscription_id,
+          args.reason
+        );
+
+      // Reporting tools
+      case "paypal_list_transactions":
+        return await this.paypalService.listTransactions(args);
+
       default:
         throw new McpError(
           ErrorCode.MethodNotFound,

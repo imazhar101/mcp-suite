@@ -9,7 +9,7 @@ A comprehensive PayPal integration for the Model Context Protocol (MCP) that ena
 - **OAuth Authentication**: Automatic token management with refresh capabilities
 - **Webhook Events**: Monitor and retrieve PayPal webhook events
 - **Multi-Environment**: Support for both sandbox and production environments
-- **Comprehensive API Coverage**: 9 tools covering core PayPal operations
+- **Comprehensive API Coverage**: 43 tools covering PayPal operations
 
 ## Installation
 
@@ -77,114 +77,103 @@ export PAYPAL_ENVIRONMENT="sandbox"
 npx @imazhar101/mcp-paypal-server
 ```
 
-## Available Tools
+## Available Tools (43 total)
 
-### 1. paypal_create_payment
+### Payment Processing
+- **paypal_create_payment** - Create a new PayPal payment with specified intent (sale, authorize, order)
+- **paypal_execute_payment** - Execute a PayPal payment after user approval
+- **paypal_get_payment** - Get details of a specific PayPal payment
+- **paypal_list_payments** - List PayPal payments with optional filtering
 
-Create a new PayPal payment with specified intent.
+### Transaction Management
+- **paypal_refund_sale** - Refund a completed PayPal sale
+- **paypal_capture_authorization** - Capture funds from a PayPal authorization
+- **paypal_void_authorization** - Void a PayPal authorization
+- **paypal_list_transactions** - List PayPal transactions with filtering and pagination
 
-**Parameters:**
+### Order Management (v2 API)
+- **paypal_create_order** - Create a new PayPal order
+- **paypal_get_order** - Get details of a specific PayPal order
+- **paypal_capture_order** - Capture payment for a PayPal order
 
-- `intent` (required): Payment intent - "sale", "authorize", or "order"
-- `amount` (required): Payment amount with total and currency
-- `return_url` (required): URL to redirect after successful payment
-- `cancel_url` (required): URL to redirect after cancelled payment
-- `description`: Payment description
-- `invoice_number`: Invoice number for tracking
-- `items`: Array of item details
-- `payer_info`: Payer information (email, name)
+### Invoice Management
+- **paypal_create_invoice** - Create a new PayPal invoice
+- **paypal_list_invoices** - List PayPal invoices with optional filtering and pagination
+- **paypal_get_invoice** - Get details of a specific PayPal invoice
+- **paypal_send_invoice** - Send a PayPal invoice to recipients
+- **paypal_send_invoice_reminder** - Send a reminder for an existing PayPal invoice
+- **paypal_cancel_sent_invoice** - Cancel a sent PayPal invoice
+- **paypal_generate_invoice_qr_code** - Generate a QR code for a PayPal invoice
 
-**Example:**
+### Product Catalog
+- **paypal_create_product** - Create a new product in PayPal catalog
+- **paypal_list_products** - List products in PayPal catalog with pagination
+- **paypal_get_product** - Get details of a specific product from PayPal catalog
+- **paypal_update_product** - Update an existing product in PayPal catalog
 
-```json
-{
-  "intent": "sale",
-  "amount": {
-    "total": "10.00",
-    "currency": "USD"
-  },
-  "description": "Test payment",
-  "return_url": "https://example.com/success",
-  "cancel_url": "https://example.com/cancel"
-}
-```
+### Subscription Management
+- **paypal_create_subscription_plan** - Create a new subscription plan in PayPal
+- **paypal_list_subscription_plans** - List subscription plans with pagination
+- **paypal_get_subscription_plan** - Get details of a specific subscription plan
+- **paypal_create_subscription** - Create a new subscription
+- **paypal_get_subscription** - Get details of a specific subscription
+- **paypal_cancel_subscription** - Cancel an active subscription
 
-### 2. paypal_execute_payment
+### Dispute Management
+- **paypal_list_disputes** - List PayPal disputes with optional filtering
+- **paypal_get_dispute** - Get detailed information about a specific PayPal dispute
+- **paypal_accept_dispute_claim** - Accept a PayPal dispute claim
 
-Execute a PayPal payment after user approval.
+### Shipping & Tracking
+- **paypal_create_shipment_tracking** - Create a shipment tracking record for PayPal
+- **paypal_get_shipment_tracking** - Get shipment tracking information from PayPal
 
-**Parameters:**
+### Monitoring & Utilities
+- **paypal_get_webhook_events** - Get PayPal webhook events for monitoring transactions
+- **paypal_test_connection** - Test the PayPal API connection and authentication
 
-- `payment_id` (required): Payment ID to execute
-- `payer_id` (required): Payer ID from PayPal approval
-- `transactions`: Optional transaction details for verification
+### Key Features by Category
 
-### 3. paypal_get_payment
+#### Payment Processing
+Create and manage payments with support for:
+- Multiple payment intents (sale, authorize, order)
+- Detailed item breakdown and shipping information
+- Custom payer information and return/cancel URLs
+- Payment execution with payer approval
 
-Get details of a specific PayPal payment.
+#### Invoice System
+Complete invoicing capabilities including:
+- Rich invoice creation with merchant/billing info
+- Item management with taxes and discounts
+- Invoice sending and reminder notifications
+- QR code generation for easy payment
 
-**Parameters:**
+#### Subscription Management
+Full subscription lifecycle management:
+- Product catalog management
+- Flexible billing cycles and pricing
+- Subscription creation and cancellation
+- Payment preferences and setup fees
 
-- `payment_id` (required): Payment ID to retrieve
+#### Order Management (v2 API)
+Modern PayPal Orders API support:
+- Enhanced order creation with detailed breakdown
+- Purchase unit management
+- Capture and authorization handling
+- Advanced payer and application context
 
-### 4. paypal_list_payments
+#### Dispute Resolution
+Comprehensive dispute management:
+- List and filter disputes by status
+- Detailed dispute information retrieval
+- Claim acceptance with refund/replace options
 
-List PayPal payments with optional filtering.
-
-**Parameters:**
-
-- `count`: Number of payments to return (max 20)
-- `start_index`: Starting index for pagination
-- `start_time`: Start time filter (RFC 3339 format)
-- `end_time`: End time filter (RFC 3339 format)
-- `sort_by`: Sort field ("create_time" or "update_time")
-- `sort_order`: Sort order ("asc" or "desc")
-
-### 5. paypal_refund_sale
-
-Refund a completed PayPal sale.
-
-**Parameters:**
-
-- `sale_id` (required): Sale ID to refund
-- `amount`: Refund amount (leave empty for full refund)
-- `description`: Refund description
-- `invoice_number`: Invoice number for tracking
-
-### 6. paypal_capture_authorization
-
-Capture funds from a PayPal authorization.
-
-**Parameters:**
-
-- `authorization_id` (required): Authorization ID to capture
-- `amount` (required): Amount to capture with total and currency
-- `is_final_capture`: Whether this is the final capture
-
-### 7. paypal_void_authorization
-
-Void a PayPal authorization.
-
-**Parameters:**
-
-- `authorization_id` (required): Authorization ID to void
-
-### 8. paypal_get_webhook_events
-
-Get PayPal webhook events for monitoring transactions.
-
-**Parameters:**
-
-- `page_size`: Number of events to return (max 300)
-- `start_time`: Start time filter (RFC 3339 format)
-- `end_time`: End time filter (RFC 3339 format)
-- `transaction_id`: Filter by transaction ID
-
-### 9. paypal_test_connection
-
-Test the PayPal API connection and authentication.
-
-**Parameters:** None
+#### Shipping Integration
+Shipment tracking capabilities:
+- Multiple carrier support (FedEx, UPS, USPS, DHL, etc.)
+- Real-time tracking status updates
+- Buyer notification options
+- Item-level tracking details
 
 ## Development
 
@@ -276,13 +265,19 @@ The server includes comprehensive error handling:
 
 ## Supported PayPal Features
 
-- ✅ Payment creation and execution
+- ✅ Payment creation and execution (Classic API)
+- ✅ Order management (v2 API)
 - ✅ Authorization and capture
-- ✅ Sale refunds
-- ✅ Payment listing and retrieval
+- ✅ Sale refunds and void operations
+- ✅ Invoice creation and management
+- ✅ Product catalog management
+- ✅ Subscription plans and billing
+- ✅ Dispute management and resolution
+- ✅ Shipment tracking integration
+- ✅ Transaction listing and retrieval
 - ✅ Webhook event monitoring
 - ✅ OAuth token management
-- ✅ Multi-environment support
+- ✅ Multi-environment support (sandbox/production)
 
 ## Contributing
 
