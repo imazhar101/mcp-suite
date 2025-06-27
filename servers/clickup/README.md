@@ -65,7 +65,7 @@ To use this server with Cline (VS Code extension), add the following to your Cli
 ## Installation
 
 ```bash
-npm install @mcp-suite/clickup-server
+npm install @imazhar101/clickup-server
 ```
 
 ## Configuration
@@ -94,7 +94,7 @@ Add to your `claude_desktop_config.json`:
   "mcpServers": {
     "clickup": {
       "command": "npx",
-      "args": ["@mcp-suite/clickup-server"],
+      "args": ["@imazhar101/clickup-server"],
       "env": {
         "CLICKUP_API_TOKEN": "your_clickup_api_token_here"
       }
@@ -108,7 +108,7 @@ Add to your `claude_desktop_config.json`:
 Run the server:
 
 ```bash
-npx @mcp-suite/clickup-server
+npx @imazhar101/clickup-server
 ```
 
 ## Available Tools

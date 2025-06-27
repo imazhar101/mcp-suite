@@ -105,7 +105,7 @@ npm install
 ### Starting the Server
 
 ```bash
-npx @mcp-suite/puppeteer-server
+npx @imazhar101/puppeteer-server
 ```
 
 ### Example Usage

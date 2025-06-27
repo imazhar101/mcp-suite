@@ -1,5 +1,5 @@
 {
-  "name": "@mcp-suite/paypal-server",
+  "name": "@imazhar101/paypal-server",
   "version": "1.0.0",
   "description": "PayPal MCP server for payment processing and transaction management",
   "type": "module",

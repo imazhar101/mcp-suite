@@ -16,7 +16,7 @@ A comprehensive PayPal integration for the Model Context Protocol (MCP) that ena
 ### From npm
 
 ```bash
-npm install @mcp-suite/paypal-server
+npm install @imazhar101/paypal-server
 ```
 
 ### From source
@@ -57,7 +57,7 @@ Add to your Claude Code configuration:
   "mcpServers": {
     "paypal": {
       "command": "npx",
-      "args": ["@mcp-suite/paypal-server"],
+      "args": ["@imazhar101/paypal-server"],
       "env": {
         "PAYPAL_CLIENT_ID": "your-client-id",
         "PAYPAL_CLIENT_SECRET": "your-client-secret",
@@ -74,7 +74,7 @@ Add to your Claude Code configuration:
 export PAYPAL_CLIENT_ID="your-client-id"
 export PAYPAL_CLIENT_SECRET="your-client-secret"
 export PAYPAL_ENVIRONMENT="sandbox"
-npx @mcp-suite/paypal-server
+npx @imazhar101/paypal-server
 ```
 
 ## Available Tools
