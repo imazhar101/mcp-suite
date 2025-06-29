@@ -23,6 +23,7 @@ mcp-suite/
 │   ├── aws/           # AWS services (DynamoDB, Lambda, API Gateway)
 │   ├── puppeteer/     # Puppeteer server for browser automation
 │   ├── paypal/        # PayPal server for payment processing and management
+│   ├── stripe/        # Stripe server for payment processing and subscriptions
 │   └── elasticsearch/ # Elasticsearch server for search and analytics
 ├── scripts/           # Build and deployment scripts
 ├── config/            # Environment-specific configurations
@@ -336,6 +337,59 @@ upload_user_file, get_pandata_events_token
 paypal_create_payment, paypal_execute_payment, paypal_get_payment, paypal_list_payments,
 paypal_refund_sale, paypal_capture_authorization, paypal_void_authorization,
 paypal_get_webhook_events, paypal_test_connection
+```
+
+</details>
+
+<details>
+<summary><strong>💳 Stripe Server</strong> - Comprehensive payment processing and subscription management</summary>
+
+### [Stripe Server](servers/stripe/README.md)
+
+**Package:** `@imazhar101/mcp-stripe-server`  
+**Description:** Comprehensive Stripe payment processing integration for payments, customers, subscriptions, and billing management with full API coverage.
+
+**Quick Setup:**
+
+- `STRIPE_SECRET_KEY` - Your Stripe secret key (test or live mode)
+- `STRIPE_WEBHOOK_SECRET` - Your webhook secret for signature verification (optional)
+
+**Key Features:** Payment intent management, customer lifecycle management, subscription and billing automation, product catalog management, refund processing, webhook integration, and comprehensive Stripe API coverage for modern payment processing.
+
+**Available Tools (33):**
+
+```
+# Connection & Testing (1)
+stripe_test_connection
+
+# Payment Intents (5)
+stripe_create_payment_intent, stripe_get_payment_intent, stripe_confirm_payment_intent,
+stripe_cancel_payment_intent, stripe_list_payment_intents
+
+# Customer Management (4)
+stripe_create_customer, stripe_get_customer, stripe_update_customer, stripe_list_customers
+
+# Payment Methods (3)
+stripe_create_payment_method, stripe_attach_payment_method, stripe_list_payment_methods
+
+# Refunds (2)
+stripe_create_refund, stripe_get_refund
+
+# Products & Catalog (4)
+stripe_create_product, stripe_list_products, stripe_create_price, stripe_list_prices
+
+# Subscriptions (4)
+stripe_create_subscription, stripe_get_subscription, stripe_cancel_subscription,
+stripe_list_subscriptions
+
+# Invoices (2)
+stripe_create_invoice, stripe_list_invoices
+
+# Webhooks (2)
+stripe_create_webhook_endpoint, stripe_list_webhook_endpoints
+
+# Charges (2)
+stripe_list_charges, stripe_get_charge
 ```
 
 </details>
