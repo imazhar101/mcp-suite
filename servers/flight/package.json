@@ -1,0 +1,44 @@
+{
+  "name": "@imazhar101/mcp-flight-server",
+  "version": "1.0.0",
+  "description": "Flight MCP server for flight booking using Duffel API",
+  "type": "module",
+  "main": "dist/servers/flight/src/index.js",
+  "bin": {
+    "mcp-flight": "dist/servers/flight/src/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "flight",
+    "booking",
+    "duffel",
+    "travel",
+    "model-context-protocol"
+  ],
+  "author": "Azharuddin <imazhar101@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.6",
+    "axios": "^1.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imazhar101/mcp-suite.git",
+    "directory": "servers/flight"
+  },
+  "bugs": {
+    "url": "https://github.com/imazhar101/mcp-suite/issues"
+  },
+  "homepage": "https://github.com/imazhar101/mcp-suite/tree/main/servers/flight"
+}
