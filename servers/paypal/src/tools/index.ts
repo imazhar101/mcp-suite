@@ -1769,7 +1769,8 @@ export const paypalTools: McpTool[] = [
   },
   {
     name: "paypal_list_transactions",
-    description: "List PayPal transactions with filtering and pagination",
+    description:
+      "List PayPal transactions with filtering and pagination. Note: The date range between start_date and end_date cannot exceed 31 days.",
     inputSchema: {
       type: "object",
       properties: {
@@ -1814,11 +1815,13 @@ export const paypalTools: McpTool[] = [
         },
         start_date: {
           type: "string",
-          description: "Start date filter (YYYY-MM-DD)",
+          description:
+            "Start date filter (format: 2023-01-01T00:00:00.000Z). Note: Date range cannot exceed 31 days from end_date.",
         },
         end_date: {
           type: "string",
-          description: "End date filter (YYYY-MM-DD)",
+          description:
+            "End date filter (format: 2023-01-01T00:00:00.000Z). Note: Date range cannot exceed 31 days from start_date.",
         },
         payment_instrument_type: {
           type: "string",
