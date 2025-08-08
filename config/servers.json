@@ -87,6 +87,22 @@
       ],
       "resources": [],
       "prompts": []
+    },
+    {
+      "name": "aijobsearch",
+      "displayName": "AI Job Search Server",
+      "description": "AI-powered job search with skills extraction and job matching",
+      "version": "1.0.0",
+      "category": "ai",
+      "capabilities": ["tools"],
+      "requiredEnvVars": ["AIJOBSEARCH_API_TOKEN"],
+      "optionalEnvVars": ["AIJOBSEARCH_API_URL"],
+      "tools": [
+        "extract_skills",
+        "match_jobs"
+      ],
+      "resources": [],
+      "prompts": []
     }
   ]
 }
