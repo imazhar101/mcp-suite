@@ -110,6 +110,14 @@ class RipplingServer {
       case "rippling_get_open_interviews_and_feedbacks":
         return await this.ripplingService.getOpenInterviewsAndFeedbacks(args);
 
+      // Update Feedback Form Response
+      case "rippling_update_feedback_form_response":
+        return await this.ripplingService.updateFeedbackFormResponse(args);
+
+      // Get Alerts
+      case "rippling_get_alerts":
+        return await this.ripplingService.getAlerts(args);
+
       default:
         throw new McpError(
           ErrorCode.MethodNotFound,

@@ -41,6 +41,46 @@ export interface OpenInterviewsAndFeedbacksRequest {
   timezone?: string;
 }
 
+export interface UpdateFeedbackFormResponseRequest {
+  feedbackFormResponse: {
+    // Required core fields
+    id: string;
+    role: string;
+    submittedBy: string;
+    interview: string;
+    applicant: string;
+    overallRating: number;
+    status: string;
+    formResponse: {
+      answers: Array<{
+        questionKey: string;
+        value: any;
+        sectionKey?: string;
+      }>;
+      comments: Array<{
+        questionKey: string;
+        createdAt: string;
+        anonymous: boolean;
+        text: string | null;
+        author: string | null;
+      }>;
+    };
+    // Required reference fields (must be provided from original feedback)
+    owner: string;
+    milestone: string;
+    // Optional fields with defaults
+    type?: string;
+
+    [key: string]: any; // Allow additional properties from the full object
+  };
+}
+
+export interface GetAlertsRequest {
+  readStatus?: "READ_STATUS_ALL" | "READ_STATUS_READ" | "READ_STATUS_UNREAD";
+  pageSize?: number;
+  pageToken?: string;
+}
+
 export interface Employee {
   id: string;
   fullName: string;

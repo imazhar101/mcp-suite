@@ -4,11 +4,11 @@ import {
   RipplingServiceResponse,
   EmploymentRolesRequest,
   ListEmployeesRequest,
-  Employee,
-  EmploymentRole,
   DocumentFolderContentsRequest,
   ActionRequestFiltersRequest,
   OpenInterviewsAndFeedbacksRequest,
+  UpdateFeedbackFormResponseRequest,
+  GetAlertsRequest,
 } from "../types/index.js";
 
 export class RipplingService {
@@ -500,7 +500,9 @@ export class RipplingService {
 
       // Make request to the documents platform API
       const response = await this.makeRequest(
-        `/document_tree/get_folder_contents/?parent=${encodeURIComponent(parent)}&resource=${encodeURIComponent(resource)}`,
+        `/document_tree/get_folder_contents/?parent=${encodeURIComponent(
+          parent
+        )}&resource=${encodeURIComponent(resource)}`,
         {},
         "/api/documents_platform/api"
       );
@@ -616,7 +618,7 @@ export class RipplingService {
 
       // Build column filter metadata
       const columnFilterMetadata: any = {};
-      
+
       if (actionTypes.length > 0) {
         columnFilterMetadata.action_type = {
           filter_type: "IN",
@@ -625,37 +627,45 @@ export class RipplingService {
       }
 
       // Check if requestedByRoles parameter was explicitly provided (even if empty)
-      const requestedByRolesProvided = request.hasOwnProperty('requestedByRoles');
-      
+      const requestedByRolesProvided =
+        request.hasOwnProperty("requestedByRoles");
+
       this.logger.debug("Filter logic debug", {
         requestedByRolesProvided,
         requestedByRolesLength: requestedByRoles.length,
         pendingReviewerRolesLength: pendingReviewerRoles.length,
         userId: this.config.userId,
       });
-      
+
       if (requestedByRolesProvided) {
         // If requestedByRoles is provided (even empty), use current user's ID to show their own requests
-        const rolesToUse = requestedByRoles.length > 0 ? requestedByRoles : [this.config.userId];
+        const rolesToUse =
+          requestedByRoles.length > 0 ? requestedByRoles : [this.config.userId];
         columnFilterMetadata.requested_by_roles = {
           filter_type: "IN",
           values: rolesToUse,
         };
-        this.logger.debug("Using requested_by_roles filter", { values: rolesToUse });
+        this.logger.debug("Using requested_by_roles filter", {
+          values: rolesToUse,
+        });
       } else if (pendingReviewerRoles.length > 0) {
         // Handle explicit pending reviewer roles (actions to review)
         columnFilterMetadata.pending_reviewer_roles = {
           filter_type: "IN",
           values: pendingReviewerRoles,
         };
-        this.logger.debug("Using pending_reviewer_roles filter (explicit)", { values: pendingReviewerRoles });
+        this.logger.debug("Using pending_reviewer_roles filter (explicit)", {
+          values: pendingReviewerRoles,
+        });
       } else {
         // Default to current user's pending reviews if no specific filter is provided
         columnFilterMetadata.pending_reviewer_roles = {
           filter_type: "IN",
           values: [this.config.userId],
         };
-        this.logger.debug("Using pending_reviewer_roles filter (default)", { values: [this.config.userId] });
+        this.logger.debug("Using pending_reviewer_roles filter (default)", {
+          values: [this.config.userId],
+        });
       }
 
       const requestBody = {
@@ -687,7 +697,9 @@ export class RipplingService {
         queryParams.append("includeRoleDetails", "true");
       }
 
-      const endpoint = `/action_request/filters/find_paginated/${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+      const endpoint = `/action_request/filters/find_paginated/${
+        queryParams.toString() ? `?${queryParams.toString()}` : ""
+      }`;
 
       this.logger.debug("Final request body", {
         endpoint,
@@ -753,30 +765,114 @@ export class RipplingService {
         timezone,
       });
 
-      // Build query parameters
+      // Build query parameters for interviews endpoint
       const queryParams = new URLSearchParams();
       queryParams.append("searchQuery", searchQuery);
       queryParams.append("timezone", timezone);
 
       const endpoint = `/feedback_form_response/get_open_interviews_and_feedbacks_for_employee?${queryParams.toString()}`;
 
+      // Get the main interviews and feedbacks data
       const response = await this.makeRequest(
         endpoint,
         {},
         "/api/ats2_provisioning/api"
       );
 
+      // Extract unique applicant IDs from all interview sections
+      const applicantIds = new Set<string>();
+      const allInterviews = [
+        ...(response.todayInterviews || []),
+        ...(response.pendingInterviewsAndFeedbacks || []),
+        ...(response.upcomingInterviews || []),
+      ];
+
+      allInterviews.forEach((interview: any) => {
+        if (interview.applicant?.id) {
+          applicantIds.add(interview.applicant.id);
+        }
+      });
+
+      // Fetch applicant info for each unique applicant
+      const applicantInfoMap = new Map<string, any>();
+
+      if (applicantIds.size > 0) {
+        this.logger.debug("Fetching applicant info for applicants", {
+          applicantCount: applicantIds.size,
+          applicantIds: Array.from(applicantIds),
+        });
+
+        const applicantInfoPromises = Array.from(applicantIds).map(
+          async (applicantId) => {
+            const applicantQueryParams = new URLSearchParams();
+            applicantQueryParams.append("applicant", applicantId);
+            applicantQueryParams.append("owner", this.config.company); // Use company as fallback for owner
+            applicantQueryParams.append("populate", "all");
+
+            const applicantEndpoint = `/applicant/get_applicant_info?${applicantQueryParams.toString()}`;
+            const applicantInfo = await this.makeRequest(
+              applicantEndpoint,
+              {},
+              "/api/ats2_provisioning/api"
+            );
+
+            return { applicantId, applicantInfo };
+          }
+        );
+
+        const applicantResults = await Promise.all(applicantInfoPromises);
+        applicantResults.forEach(({ applicantId, applicantInfo }) => {
+          if (applicantInfo?.applicant) {
+            applicantInfoMap.set(applicantId, {
+              owner: applicantInfo.applicant.owner,
+              currentMilestone: applicantInfo.applicant.currentMilestoneName,
+            });
+          }
+        });
+      }
+
+      // Enhance the response by adding owner and currentMilestone to each interview
+      const enhanceInterview = (interview: any) => {
+        if (
+          interview.applicant?.id &&
+          applicantInfoMap.has(interview.applicant.id)
+        ) {
+          const additionalInfo = applicantInfoMap.get(interview.applicant.id);
+          return {
+            ...interview,
+            applicant: {
+              ...interview.applicant,
+              owner: additionalInfo?.owner,
+              currentMilestone: additionalInfo?.currentMilestone,
+            },
+          };
+        }
+        return interview;
+      };
+
+      const enhancedResponse = {
+        todayInterviews: (response.todayInterviews || []).map(enhanceInterview),
+        pendingInterviewsAndFeedbacks: (
+          response.pendingInterviewsAndFeedbacks || []
+        ).map(enhanceInterview),
+        upcomingInterviews: (response.upcomingInterviews || []).map(
+          enhanceInterview
+        ),
+      };
+
       this.logger.info("Open interviews and feedbacks retrieved successfully", {
         searchQuery,
         timezone,
-        todayInterviewsCount: response.todayInterviews?.length || 0,
-        pendingInterviewsAndFeedbacksCount: response.pendingInterviewsAndFeedbacks?.length || 0,
-        upcomingInterviewsCount: response.upcomingInterviews?.length || 0,
+        todayInterviewsCount: enhancedResponse.todayInterviews.length,
+        pendingInterviewsAndFeedbacksCount:
+          enhancedResponse.pendingInterviewsAndFeedbacks.length,
+        upcomingInterviewsCount: enhancedResponse.upcomingInterviews.length,
+        applicantInfoFetched: applicantInfoMap.size,
       });
 
       return {
         success: true,
-        data: response,
+        data: enhancedResponse,
         message: "Open interviews and feedbacks retrieved successfully",
       };
     } catch (error) {
@@ -790,6 +886,236 @@ export class RipplingService {
       if (error instanceof Error) {
         if (error.message.includes("404")) {
           errorMessage = "Interviews and feedbacks not found";
+        } else if (error.message.includes("403")) {
+          errorMessage =
+            "Access denied. Please check your permissions and authentication";
+        } else if (error.message.includes("401")) {
+          errorMessage =
+            "Authentication failed. Please check your token and credentials";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      return {
+        success: false,
+        error: errorMessage,
+      };
+    }
+  }
+
+  async updateFeedbackFormResponse(
+    request: UpdateFeedbackFormResponseRequest
+  ): Promise<RipplingServiceResponse> {
+    try {
+      const { feedbackFormResponse } = request;
+
+      // Validate that required metadata fields are provided
+      const requiredFields = [
+        "id",
+        "role",
+        "owner",
+        "applicant",
+        "milestone",
+        "interview",
+        "overallRating",
+        "formResponse",
+      ];
+
+      for (const field of requiredFields) {
+        if (!feedbackFormResponse[field]) {
+          throw new Error(
+            `Missing required field: ${field}. This field must be provided from the original feedback response.`
+          );
+        }
+      }
+
+      // Ensure required fields from config and defaults are included
+      const enhancedFeedbackFormResponse = {
+        ...feedbackFormResponse,
+        // Required fields from config
+        company: this.config.company,
+        // Standard fields with defaults
+        applicantDocument: feedbackFormResponse.applicantDocument ?? null,
+        assessmentDocuments: feedbackFormResponse.assessmentDocuments ?? null,
+        isDeleted: feedbackFormResponse.isDeleted ?? false,
+        external_on_changes: feedbackFormResponse.external_on_changes ?? [],
+        startedAt: feedbackFormResponse.startedAt ?? null,
+        reminderSentAt: feedbackFormResponse.reminderSentAt ?? null,
+        type: feedbackFormResponse.type || "INTERVIEW",
+        feedbackFormName: feedbackFormResponse.feedbackFormName || "Default",
+        feedbackFormDescription:
+          feedbackFormResponse.feedbackFormDescription ?? null,
+        reminderEtas: feedbackFormResponse.reminderEtas ?? [],
+        _cls: feedbackFormResponse._cls || "FeedbackFormResponse",
+        lock: feedbackFormResponse.lock ?? null,
+        applicant_document: feedbackFormResponse.applicant_document ?? null,
+        // Force status to SUBMITTED when updating feedback
+        status: "SUBMITTED",
+        // Force submittedBy to current user
+        submittedBy: this.config.userId,
+        // Set completedAt to current timestamp when submitting
+        completedAt:
+          feedbackFormResponse.completedAt || new Date().toISOString(),
+      };
+
+      this.logger.debug("Updating feedback form response", {
+        feedbackId: enhancedFeedbackFormResponse.id,
+        interviewId: enhancedFeedbackFormResponse.interview,
+        overallRating: enhancedFeedbackFormResponse.overallRating,
+        status: enhancedFeedbackFormResponse.status,
+        company: enhancedFeedbackFormResponse.company,
+        applicant: enhancedFeedbackFormResponse.applicant,
+      });
+
+      const response = await this.makeRequest(
+        "/feedback_form_response/update_feedback_form_response",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            feedbackFormResponse: enhancedFeedbackFormResponse,
+          }),
+        },
+        "/api/ats2_provisioning/api"
+      );
+
+      // Simplify the response as requested
+      const simplifiedResponse = {
+        id: response.id,
+        status: response.status,
+        overallRating: response.overallRating,
+        completedAt: response.completedAt,
+        updatedAt: response.updatedAt,
+        interview: {
+          id: response.interview?.id,
+          name: response.interview?.name,
+          status: response.interview?.status,
+        },
+        applicant: response.applicant,
+        jobReq: response.jobReq,
+        formResponse: {
+          answers: response.formResponse?.answers || [],
+          comments: response.formResponse?.comments || [],
+        },
+      };
+
+      this.logger.info("Feedback form response updated successfully", {
+        feedbackId: response.id,
+        status: response.status,
+        completedAt: response.completedAt,
+      });
+
+      return {
+        success: true,
+        data: simplifiedResponse,
+        message: "Feedback form response updated successfully",
+      };
+    } catch (error) {
+      this.logger.error("Failed to update feedback form response", {
+        feedbackId: request.feedbackFormResponse?.id,
+        error,
+      });
+
+      let errorMessage = "Unknown error occurred";
+      if (error instanceof Error) {
+        if (error.message.includes("404")) {
+          errorMessage = "Feedback form response not found";
+        } else if (error.message.includes("403")) {
+          errorMessage =
+            "Access denied. Please check your permissions and authentication";
+        } else if (error.message.includes("401")) {
+          errorMessage =
+            "Authentication failed. Please check your token and credentials";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      return {
+        success: false,
+        error: errorMessage,
+      };
+    }
+  }
+
+  async getAlerts(
+    request: GetAlertsRequest = {}
+  ): Promise<RipplingServiceResponse> {
+    try {
+      const {
+        readStatus = "READ_STATUS_ALL",
+        pageSize = 30,
+        pageToken = "",
+      } = request;
+
+      this.logger.debug("Retrieving alerts from automation system", {
+        readStatus,
+        pageSize,
+        pageToken,
+      });
+
+      const requestBody = {
+        company_id: this.config.company,
+        role_id: this.config.role,
+        read_status: readStatus,
+        page_request: {
+          page_size: pageSize,
+          page_token: pageToken,
+        },
+      };
+
+      const response = await this.makeRequest(
+        "/automation.alerts.v1.AlertService/GetAlerts",
+        {
+          method: "POST",
+          body: JSON.stringify(requestBody),
+        }
+      );
+
+      // Debug: Log the raw response structure
+      this.logger.debug("Raw alerts API response", {
+        responseKeys: Object.keys(response || {}),
+        alertsLength: response?.alert?.length || 0,
+        sampleAlert: response?.alert?.[0] || null,
+        fullResponse: JSON.stringify(response, null, 2),
+      });
+
+      // Simplify alerts to only include html_content renamed as alert
+      const simplifiedAlerts = (response.alert || []).map((alert: any) => ({
+        alert: alert.html_content || "",
+        created_at: alert.created_at || "",
+      }));
+
+      this.logger.info("Alerts retrieved successfully", {
+        readStatus,
+        pageSize,
+        alertCount: simplifiedAlerts.length,
+        hasNextPage: !!response.next_page_token,
+      });
+
+      return {
+        success: true,
+        data: {
+          alerts: simplifiedAlerts,
+          nextPageToken: response.next_page_token || null,
+          totalCount: response.total_count || 0,
+          readStatus,
+          pageSize,
+        },
+        message: "Alerts retrieved successfully",
+      };
+    } catch (error) {
+      this.logger.error("Failed to retrieve alerts", {
+        readStatus: request.readStatus,
+        pageSize: request.pageSize,
+        pageToken: request.pageToken,
+        error,
+      });
+
+      let errorMessage = "Unknown error occurred";
+      if (error instanceof Error) {
+        if (error.message.includes("404")) {
+          errorMessage = "Alerts not found";
         } else if (error.message.includes("403")) {
           errorMessage =
             "Access denied. Please check your permissions and authentication";
