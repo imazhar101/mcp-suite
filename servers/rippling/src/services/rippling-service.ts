@@ -8,6 +8,7 @@ import {
   EmploymentRole,
   DocumentFolderContentsRequest,
   ActionRequestFiltersRequest,
+  OpenInterviewsAndFeedbacksRequest,
 } from "../types/index.js";
 
 export class RipplingService {
@@ -723,6 +724,72 @@ export class RipplingService {
       if (error instanceof Error) {
         if (error.message.includes("404")) {
           errorMessage = "Action requests not found";
+        } else if (error.message.includes("403")) {
+          errorMessage =
+            "Access denied. Please check your permissions and authentication";
+        } else if (error.message.includes("401")) {
+          errorMessage =
+            "Authentication failed. Please check your token and credentials";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      return {
+        success: false,
+        error: errorMessage,
+      };
+    }
+  }
+
+  async getOpenInterviewsAndFeedbacks(
+    request: OpenInterviewsAndFeedbacksRequest = {}
+  ): Promise<RipplingServiceResponse> {
+    try {
+      const { searchQuery = "", timezone = "America/Phoenix" } = request;
+
+      this.logger.debug("Retrieving open interviews and feedbacks", {
+        searchQuery,
+        timezone,
+      });
+
+      // Build query parameters
+      const queryParams = new URLSearchParams();
+      queryParams.append("searchQuery", searchQuery);
+      queryParams.append("timezone", timezone);
+
+      const endpoint = `/feedback_form_response/get_open_interviews_and_feedbacks_for_employee?${queryParams.toString()}`;
+
+      const response = await this.makeRequest(
+        endpoint,
+        {},
+        "/api/ats2_provisioning/api"
+      );
+
+      this.logger.info("Open interviews and feedbacks retrieved successfully", {
+        searchQuery,
+        timezone,
+        todayInterviewsCount: response.todayInterviews?.length || 0,
+        pendingInterviewsAndFeedbacksCount: response.pendingInterviewsAndFeedbacks?.length || 0,
+        upcomingInterviewsCount: response.upcomingInterviews?.length || 0,
+      });
+
+      return {
+        success: true,
+        data: response,
+        message: "Open interviews and feedbacks retrieved successfully",
+      };
+    } catch (error) {
+      this.logger.error("Failed to retrieve open interviews and feedbacks", {
+        searchQuery: request.searchQuery,
+        timezone: request.timezone,
+        error,
+      });
+
+      let errorMessage = "Unknown error occurred";
+      if (error instanceof Error) {
+        if (error.message.includes("404")) {
+          errorMessage = "Interviews and feedbacks not found";
         } else if (error.message.includes("403")) {
           errorMessage =
             "Access denied. Please check your permissions and authentication";

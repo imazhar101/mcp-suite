@@ -172,4 +172,27 @@ export const ripplingTools: Tool[] = [
       required: [],
     },
   },
+
+  // Open Interviews and Feedbacks
+  {
+    name: "rippling_get_open_interviews_and_feedbacks",
+    description:
+      "Get open interviews and feedbacks for an employee from ATS. Returns today's interviews, pending interviews/feedbacks, and upcoming interviews.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        searchQuery: {
+          type: "string",
+          description: "Optional search query to filter results",
+          default: "",
+        },
+        timezone: {
+          type: "string",
+          description: "Timezone for the request (default: America/Phoenix)",
+          default: "America/Phoenix",
+        },
+      },
+      required: [],
+    },
+  },
 ];

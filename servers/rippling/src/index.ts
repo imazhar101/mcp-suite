@@ -106,6 +106,10 @@ class RipplingServer {
       case "rippling_get_action_request_filters":
         return await this.ripplingService.getActionRequestFilters(args);
 
+      // Open Interviews and Feedbacks
+      case "rippling_get_open_interviews_and_feedbacks":
+        return await this.ripplingService.getOpenInterviewsAndFeedbacks(args);
+
       default:
         throw new McpError(
           ErrorCode.MethodNotFound,

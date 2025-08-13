@@ -36,6 +36,11 @@ export interface ActionRequestFiltersRequest {
   includeRoleDetails?: boolean;
 }
 
+export interface OpenInterviewsAndFeedbacksRequest {
+  searchQuery?: string;
+  timezone?: string;
+}
+
 export interface Employee {
   id: string;
   fullName: string;
