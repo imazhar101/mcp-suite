@@ -1,0 +1,42 @@
+{
+  "name": "@imazhar101/mcp-rippling-server",
+  "version": "1.0.0",
+  "description": "Rippling MCP server for HR and employee management",
+  "type": "module",
+  "main": "dist/servers/rippling/src/index.js",
+  "bin": {
+    "mcp-rippling": "dist/servers/rippling/src/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "rippling",
+    "hr",
+    "employee-management",
+    "model-context-protocol"
+  ],
+  "author": "Azharuddin <imazhar101@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imazhar101/mcp-suite.git",
+    "directory": "servers/rippling"
+  },
+  "bugs": {
+    "url": "https://github.com/imazhar101/mcp-suite/issues"
+  },
+  "homepage": "https://github.com/imazhar101/mcp-suite/tree/main/servers/rippling"
+}
