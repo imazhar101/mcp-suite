@@ -105,4 +105,16 @@ export const ripplingTools: Tool[] = [
       required: ["resource"],
     },
   },
+
+  // Anniversary Information
+  {
+    name: "rippling_get_anniversary_information",
+    description:
+      "Get anniversary email settings and information from Rippling anniversary app",
+    inputSchema: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+  },
 ];

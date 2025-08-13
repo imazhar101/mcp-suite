@@ -542,4 +542,49 @@ export class RipplingService {
       };
     }
   }
+
+  async getAnniversaryInformation(): Promise<RipplingServiceResponse> {
+    try {
+      this.logger.debug("Retrieving anniversary information");
+
+      // Make request to the anniversary app API
+      const response = await this.makeRequest(
+        "/role_anniversary_email_settings/get_anniversary_information",
+        {},
+        "/api/anniversary_app/api"
+      );
+
+      this.logger.info("Anniversary information retrieved successfully");
+
+      return {
+        success: true,
+        data: response,
+        message: "Anniversary information retrieved successfully",
+      };
+    } catch (error) {
+      this.logger.error("Failed to retrieve anniversary information", {
+        error,
+      });
+
+      let errorMessage = "Unknown error occurred";
+      if (error instanceof Error) {
+        if (error.message.includes("404")) {
+          errorMessage = "Anniversary information not found";
+        } else if (error.message.includes("403")) {
+          errorMessage =
+            "Access denied. Please check your permissions and authentication";
+        } else if (error.message.includes("401")) {
+          errorMessage =
+            "Authentication failed. Please check your token and credentials";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      return {
+        success: false,
+        error: errorMessage,
+      };
+    }
+  }
 }

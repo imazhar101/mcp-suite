@@ -97,6 +97,10 @@ class RipplingServer {
       case "rippling_get_document_folder_contents":
         return await this.ripplingService.getDocumentFolderContents(args);
 
+      // Anniversary Information
+      case "rippling_get_anniversary_information":
+        return await this.ripplingService.getAnniversaryInformation();
+
       default:
         throw new McpError(
           ErrorCode.MethodNotFound,
