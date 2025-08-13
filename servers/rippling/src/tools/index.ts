@@ -83,4 +83,26 @@ export const ripplingTools: Tool[] = [
       required: [],
     },
   },
+
+  // Documents
+  {
+    name: "rippling_get_document_folder_contents",
+    description:
+      "Get folder contents from Rippling documents platform. Returns files and folders in the specified folder",
+    inputSchema: {
+      type: "object",
+      properties: {
+        parent: {
+          type: "string",
+          description: "The parent folder ID (default: 'root')",
+          default: "root",
+        },
+        resource: {
+          type: "string",
+          description: "The resource ID to filter documents by",
+        },
+      },
+      required: ["resource"],
+    },
+  },
 ];

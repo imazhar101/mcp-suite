@@ -20,6 +20,11 @@ export interface ListEmployeesRequest {
   searchQuery?: string;
 }
 
+export interface DocumentFolderContentsRequest {
+  parent?: string;
+  resource: string;
+}
+
 export interface Employee {
   id: string;
   fullName: string;

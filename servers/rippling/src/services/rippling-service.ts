@@ -6,6 +6,7 @@ import {
   ListEmployeesRequest,
   Employee,
   EmploymentRole,
+  DocumentFolderContentsRequest,
 } from "../types/index.js";
 
 export class RipplingService {
@@ -466,6 +467,64 @@ export class RipplingService {
       if (error instanceof Error) {
         if (error.message.includes("404")) {
           errorMessage = "Terminated employees not found";
+        } else if (error.message.includes("403")) {
+          errorMessage =
+            "Access denied. Please check your permissions and authentication";
+        } else if (error.message.includes("401")) {
+          errorMessage =
+            "Authentication failed. Please check your token and credentials";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      return {
+        success: false,
+        error: errorMessage,
+      };
+    }
+  }
+
+  async getDocumentFolderContents(
+    request: DocumentFolderContentsRequest
+  ): Promise<RipplingServiceResponse> {
+    try {
+      const { parent = "root", resource } = request;
+
+      this.logger.debug("Retrieving document folder contents", {
+        parent,
+        resource,
+      });
+
+      // Make request to the documents platform API
+      const response = await this.makeRequest(
+        `/document_tree/get_folder_contents/?parent=${encodeURIComponent(parent)}&resource=${encodeURIComponent(resource)}`,
+        {},
+        "/api/documents_platform/api"
+      );
+
+      this.logger.info("Document folder contents retrieved successfully", {
+        parent,
+        resource,
+        itemCount: Array.isArray(response) ? response.length : 0,
+      });
+
+      return {
+        success: true,
+        data: response,
+        message: "Document folder contents retrieved successfully",
+      };
+    } catch (error) {
+      this.logger.error("Failed to retrieve document folder contents", {
+        parent: request.parent,
+        resource: request.resource,
+        error,
+      });
+
+      let errorMessage = "Unknown error occurred";
+      if (error instanceof Error) {
+        if (error.message.includes("404")) {
+          errorMessage = "Folder or resource not found";
         } else if (error.message.includes("403")) {
           errorMessage =
             "Access denied. Please check your permissions and authentication";

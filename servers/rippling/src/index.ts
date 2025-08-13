@@ -93,6 +93,10 @@ class RipplingServer {
       case "rippling_list_terminated_employees":
         return await this.ripplingService.listTerminatedEmployees(args);
 
+      // Documents
+      case "rippling_get_document_folder_contents":
+        return await this.ripplingService.getDocumentFolderContents(args);
+
       default:
         throw new McpError(
           ErrorCode.MethodNotFound,
