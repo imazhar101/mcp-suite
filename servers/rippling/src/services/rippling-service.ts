@@ -7,6 +7,7 @@ import {
   Employee,
   EmploymentRole,
   DocumentFolderContentsRequest,
+  ActionRequestFiltersRequest,
 } from "../types/index.js";
 
 export class RipplingService {
@@ -570,6 +571,158 @@ export class RipplingService {
       if (error instanceof Error) {
         if (error.message.includes("404")) {
           errorMessage = "Anniversary information not found";
+        } else if (error.message.includes("403")) {
+          errorMessage =
+            "Access denied. Please check your permissions and authentication";
+        } else if (error.message.includes("401")) {
+          errorMessage =
+            "Authentication failed. Please check your token and credentials";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      return {
+        success: false,
+        error: errorMessage,
+      };
+    }
+  }
+
+  async getActionRequestFilters(
+    request: ActionRequestFiltersRequest = {}
+  ): Promise<RipplingServiceResponse> {
+    try {
+      const {
+        pageSize = 30,
+        actionTypes = [],
+        pendingReviewerRoles = [],
+        requestedByRoles = [],
+        sortColumn = "dateRequested",
+        sortOrder = "DESC",
+        includeRoleDetails = true,
+      } = request;
+
+      this.logger.debug("Retrieving action request filters", {
+        pageSize,
+        actionTypes,
+        pendingReviewerRoles,
+        requestedByRoles,
+        sortColumn,
+        sortOrder,
+        includeRoleDetails,
+      });
+
+      // Build column filter metadata
+      const columnFilterMetadata: any = {};
+      
+      if (actionTypes.length > 0) {
+        columnFilterMetadata.action_type = {
+          filter_type: "IN",
+          values: actionTypes,
+        };
+      }
+
+      // Check if requestedByRoles parameter was explicitly provided (even if empty)
+      const requestedByRolesProvided = request.hasOwnProperty('requestedByRoles');
+      
+      this.logger.debug("Filter logic debug", {
+        requestedByRolesProvided,
+        requestedByRolesLength: requestedByRoles.length,
+        pendingReviewerRolesLength: pendingReviewerRoles.length,
+        userId: this.config.userId,
+      });
+      
+      if (requestedByRolesProvided) {
+        // If requestedByRoles is provided (even empty), use current user's ID to show their own requests
+        const rolesToUse = requestedByRoles.length > 0 ? requestedByRoles : [this.config.userId];
+        columnFilterMetadata.requested_by_roles = {
+          filter_type: "IN",
+          values: rolesToUse,
+        };
+        this.logger.debug("Using requested_by_roles filter", { values: rolesToUse });
+      } else if (pendingReviewerRoles.length > 0) {
+        // Handle explicit pending reviewer roles (actions to review)
+        columnFilterMetadata.pending_reviewer_roles = {
+          filter_type: "IN",
+          values: pendingReviewerRoles,
+        };
+        this.logger.debug("Using pending_reviewer_roles filter (explicit)", { values: pendingReviewerRoles });
+      } else {
+        // Default to current user's pending reviews if no specific filter is provided
+        columnFilterMetadata.pending_reviewer_roles = {
+          filter_type: "IN",
+          values: [this.config.userId],
+        };
+        this.logger.debug("Using pending_reviewer_roles filter (default)", { values: [this.config.userId] });
+      }
+
+      const requestBody = {
+        pageSize,
+        paginationParams: {
+          pageSize,
+          empFilterMetadata: {},
+          targetEmpFilterMetadata: {},
+          columnFilterMetadata,
+          sortingMetadata: {
+            columnIndex: 0,
+            order: sortOrder,
+            columnId: sortColumn,
+            column: {
+              sort: true,
+              id: sortColumn,
+              type: "text",
+              data: sortColumn,
+              sortKey: sortColumn,
+            },
+          },
+        },
+        readPreference: "SECONDARY_PREFERRED",
+      };
+
+      // Build query parameters
+      const queryParams = new URLSearchParams();
+      if (includeRoleDetails) {
+        queryParams.append("includeRoleDetails", "true");
+      }
+
+      const endpoint = `/action_request/filters/find_paginated/${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+
+      this.logger.debug("Final request body", {
+        endpoint,
+        requestBody: JSON.stringify(requestBody, null, 2),
+      });
+
+      const response = await this.makeRequest(endpoint, {
+        method: "POST",
+        body: JSON.stringify(requestBody),
+      });
+
+      this.logger.info("Action request filters retrieved successfully", {
+        pageSize,
+        dataCount: response.data?.length || 0,
+        visibleRowCount: response.visibleRowCount,
+        cursor: response.cursor,
+      });
+
+      return {
+        success: true,
+        data: response,
+        message: "Action request filters retrieved successfully",
+      };
+    } catch (error) {
+      this.logger.error("Failed to retrieve action request filters", {
+        pageSize: request.pageSize,
+        actionTypes: request.actionTypes,
+        pendingReviewerRoles: request.pendingReviewerRoles,
+        requestedByRoles: request.requestedByRoles,
+        error,
+      });
+
+      let errorMessage = "Unknown error occurred";
+      if (error instanceof Error) {
+        if (error.message.includes("404")) {
+          errorMessage = "Action requests not found";
         } else if (error.message.includes("403")) {
           errorMessage =
             "Access denied. Please check your permissions and authentication";

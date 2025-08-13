@@ -117,4 +117,59 @@ export const ripplingTools: Tool[] = [
       required: [],
     },
   },
+
+  // Action Request Filters
+  {
+    name: "rippling_get_action_request_filters",
+    description:
+      "Get filtered action requests with pagination. Use 'requestedByRoles' to see actions YOU submitted (your own requests). Use 'pendingReviewerRoles' to see actions waiting for YOUR review. Defaults to showing actions pending your review if neither is specified.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        pageSize: {
+          type: "number",
+          description: "Number of results per page (default: 30)",
+          default: 30,
+        },
+        actionTypes: {
+          type: "array",
+          items: {
+            type: "string",
+          },
+          description: "Filter by action types (e.g., LEAVE_REQUEST_APPROVAL)",
+        },
+        pendingReviewerRoles: {
+          type: "array",
+          items: {
+            type: "string",
+          },
+          description: "Role IDs for actions awaiting review. Use this to see actions waiting for approval/review by specific users.",
+        },
+        requestedByRoles: {
+          type: "array",
+          items: {
+            type: "string",
+          },
+          description: "Role IDs for actions that were submitted/requested. Use this with your user ID to see YOUR OWN submitted requests (e.g., leave requests you submitted).",
+        },
+        sortColumn: {
+          type: "string",
+          description: "Column to sort by (default: dateRequested)",
+          default: "dateRequested",
+        },
+        sortOrder: {
+          type: "string",
+          enum: ["ASC", "DESC"],
+          description: "Sort order (default: DESC)",
+          default: "DESC",
+        },
+        includeRoleDetails: {
+          type: "boolean",
+          description: "Include role details in the response (default: true)",
+          default: true,
+        },
+      },
+      required: [],
+    },
+  },
 ];

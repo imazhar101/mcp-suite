@@ -26,6 +26,7 @@ class RipplingServer {
       token: getEnvVar("RIPPLING_TOKEN"),
       role: getEnvVar("RIPPLING_ROLE"),
       company: getEnvVar("RIPPLING_COMPANY"),
+      userId: getEnvVar("RIPPLING_USER_ID"),
     };
 
     this.ripplingService = new RipplingService(config, this.logger);
@@ -100,6 +101,10 @@ class RipplingServer {
       // Anniversary Information
       case "rippling_get_anniversary_information":
         return await this.ripplingService.getAnniversaryInformation();
+
+      // Action Request Filters
+      case "rippling_get_action_request_filters":
+        return await this.ripplingService.getActionRequestFilters(args);
 
       default:
         throw new McpError(

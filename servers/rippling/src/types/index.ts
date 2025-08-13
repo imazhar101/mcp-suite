@@ -2,6 +2,7 @@ export interface RipplingConfig {
   token: string;
   role: string;
   company: string;
+  userId: string;
 }
 
 export interface RipplingServiceResponse {
@@ -23,6 +24,16 @@ export interface ListEmployeesRequest {
 export interface DocumentFolderContentsRequest {
   parent?: string;
   resource: string;
+}
+
+export interface ActionRequestFiltersRequest {
+  pageSize?: number;
+  actionTypes?: string[];
+  pendingReviewerRoles?: string[];
+  requestedByRoles?: string[];
+  sortColumn?: string;
+  sortOrder?: "ASC" | "DESC";
+  includeRoleDetails?: boolean;
 }
 
 export interface Employee {
