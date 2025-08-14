@@ -1,0 +1,25 @@
+{
+  "name": "@imazhar101/mcp-aijobsearch-server",
+  "version": "1.0.0",
+  "description": "AI Job Search MCP server for skills extraction and job matching",
+  "type": "module",
+  "main": "dist/servers/aijobsearch/src/index.js",
+  "bin": {
+    "mcp-aijobsearch": "dist/servers/aijobsearch/src/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "axios": "^1.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}
