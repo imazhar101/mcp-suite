@@ -1,0 +1,42 @@
+{
+  "name": "@imazhar101/mcp-stripe-server",
+  "version": "1.0.4",
+  "description": "Stripe MCP server for payment processing and management",
+  "type": "module",
+  "main": "dist/servers/stripe/src/index.js",
+  "bin": {
+    "mcp-stripe": "dist/servers/stripe/src/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "stripe",
+    "payments",
+    "model-context-protocol"
+  ],
+  "author": "Azharuddin <imazhar101@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.6",
+    "stripe": "^17.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imazhar101/mcp-suite.git",
+    "directory": "servers/stripe"
+  },
+  "bugs": {
+    "url": "https://github.com/imazhar101/mcp-suite/issues"
+  },
+  "homepage": "https://github.com/imazhar101/mcp-suite/tree/main/servers/stripe"
+}
