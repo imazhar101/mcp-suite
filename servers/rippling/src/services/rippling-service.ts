@@ -486,6 +486,91 @@ export class RipplingService {
     }
   }
 
+  async getSignedDocuments(): Promise<RipplingServiceResponse> {
+    try {
+      const role = this.config.role;
+
+      this.logger.debug("Retrieving signed documents", {
+        role,
+      });
+
+      // Build query parameters
+      const params = new URLSearchParams();
+      params.append("role", role);
+
+      // Add all requested fields from the API example
+      const fields = [
+        "archived",
+        "companyDocument",
+        "createdAt",
+        "displayName",
+        "finalPdfUrl",
+        "id",
+        "isAmended",
+        "isConfidential",
+        "isDeleted",
+        "isUploadedDoc",
+        "name",
+        "signableCompanyDocument",
+        "signableDocument",
+        "signatureDate",
+        "type",
+        "updatedAt",
+        "uploadedBy",
+        "userDisplayName",
+      ];
+
+      // Add requested fields as separate parameters
+      fields.forEach(field => {
+        params.append("requested_fields", field);
+      });
+
+      // Make request to the signed documents API
+      const response = await this.makeRequest(
+        `/signed_documents/getAllIdsAndPageSize/?${params.toString()}`,
+        {},
+        "/api/hub/api"
+      );
+
+      this.logger.info("Signed documents retrieved successfully", {
+        role,
+        documentCount: response.ids ? response.ids.length : 0,
+        itemsAvailable: response.itemsAvailable,
+      });
+
+      return {
+        success: true,
+        data: response,
+        message: "Signed documents retrieved successfully",
+      };
+    } catch (error) {
+      this.logger.error("Failed to retrieve signed documents", {
+        role: this.config.role,
+        error,
+      });
+
+      let errorMessage = "Unknown error occurred";
+      if (error instanceof Error) {
+        if (error.message.includes("404")) {
+          errorMessage = "Signed documents not found or role invalid";
+        } else if (error.message.includes("403")) {
+          errorMessage =
+            "Access denied. Please check your permissions and authentication";
+        } else if (error.message.includes("401")) {
+          errorMessage =
+            "Authentication failed. Please check your token and credentials";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      return {
+        success: false,
+        error: errorMessage,
+      };
+    }
+  }
+
   async getAnniversaryInformation(): Promise<RipplingServiceResponse> {
     try {
       this.logger.debug("Retrieving anniversary information");

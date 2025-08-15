@@ -84,6 +84,18 @@ export const ripplingTools: Tool[] = [
     },
   },
 
+  // Signed Documents
+  {
+    name: "rippling_get_signed_documents",
+    description:
+      "Get signed documents from Rippling hub API. Returns document metadata including IDs, names, signatures, PDF URLs, and other document properties for the current user's role",
+    inputSchema: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+  },
+
   // Anniversary Information
   {
     name: "rippling_get_anniversary_information",

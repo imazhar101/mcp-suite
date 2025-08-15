@@ -94,6 +94,10 @@ class RipplingServer {
       case "rippling_list_terminated_employees":
         return await this.ripplingService.listTerminatedEmployees(args);
 
+      // Signed Documents
+      case "rippling_get_signed_documents":
+        return await this.ripplingService.getSignedDocuments();
+
       // Anniversary Information
       case "rippling_get_anniversary_information":
         return await this.ripplingService.getAnniversaryInformation();

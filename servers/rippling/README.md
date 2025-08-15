@@ -51,6 +51,19 @@ List terminated employees with optional search and pagination. Returns terminate
 - `page` (number, optional): Page number for pagination (default: 1)
 - `searchQuery` (string, optional): Search query to filter terminated employees by name
 
+### `rippling_get_signed_documents`
+Get signed documents from Rippling hub API. Returns document metadata including IDs, names, signatures, PDF URLs, and other document properties for the current user's role. Automatically includes all available fields.
+
+**Parameters:**
+None - uses the role from your configuration
+
+**Returns:**
+- `ids`: Array of document IDs
+- `pageSize`: Pagination info (null if not paginated)
+- `supportsIDBasedPagination`: Boolean indicating pagination support
+- `itemsAvailable`: Boolean indicating if items are available
+- `items`: Array of document objects with all available fields (archived, companyDocument, createdAt, displayName, finalPdfUrl, id, isAmended, isConfidential, isDeleted, isUploadedDoc, name, signableCompanyDocument, signableDocument, signatureDate, type, updatedAt, uploadedBy, userDisplayName)
+
 ### `rippling_get_anniversary_information`
 Get anniversary email settings and information from Rippling anniversary app.
 
