@@ -112,12 +112,40 @@ Get alerts from Rippling automation system. Returns paginated list of alerts wit
 
 ## Configuration
 
+### Obtaining Required Values
+
+To get the required Authorization token, Role ID, and Company ID:
+
+1. **Access Rippling Developer Console**:
+   - Go to your Rippling instance
+   - Navigate to Developer tools/API section
+
+2. **Get Authorization Token**:
+   - In the Developer Console, look for the Bearer token in the Authorization header
+   - Copy the full token value (starts with "Bearer ")
+
+3. **Get Role ID**:
+   - In the Developer Console network requests, look for `role` parameter
+   - This is typically a UUID format (e.g., `123e4567-e89b-12d3-a456-426614174000`)
+
+4. **Get Company ID**:
+   - In the Developer Console network requests, look for `company` parameter  
+   - This is also typically a UUID format
+
+5. **Get User ID**:
+   - Navigate to your profile in Rippling
+   - The User ID is visible in the profile URL: `app.rippling.com/profile/{USER_ID}`
+   - Copy the ID from the URL (e.g., `67adf91`)
+
+### Environment Variables
+
 Set the following environment variables:
 
 ```bash
 export RIPPLING_TOKEN="your_rippling_bearer_token"
 export RIPPLING_ROLE="your_rippling_role_id"
 export RIPPLING_COMPANY="your_rippling_company_id"
+export RIPPLING_USER_ID="your_rippling_user_id"
 ```
 
 ## Installation
