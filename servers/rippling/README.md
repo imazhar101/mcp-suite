@@ -51,13 +51,6 @@ List terminated employees with optional search and pagination. Returns terminate
 - `page` (number, optional): Page number for pagination (default: 1)
 - `searchQuery` (string, optional): Search query to filter terminated employees by name
 
-### `rippling_get_document_folder_contents`
-Get folder contents from Rippling documents platform. Returns files and folders in the specified folder.
-
-**Parameters:**
-- `parent` (string, optional): The parent folder ID (default: 'root')
-- `resource` (string, required): The resource ID to filter documents by
-
 ### `rippling_get_anniversary_information`
 Get anniversary email settings and information from Rippling anniversary app.
 

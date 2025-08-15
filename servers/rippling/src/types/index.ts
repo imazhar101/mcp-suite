@@ -21,11 +21,6 @@ export interface ListEmployeesRequest {
   searchQuery?: string;
 }
 
-export interface DocumentFolderContentsRequest {
-  parent?: string;
-  resource: string;
-}
-
 export interface ActionRequestFiltersRequest {
   pageSize?: number;
   actionTypes?: string[];
