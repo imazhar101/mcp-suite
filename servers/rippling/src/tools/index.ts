@@ -51,11 +51,11 @@ export const ripplingTools: Tool[] = [
     },
   },
 
-  // Leave Types
+  // Leave Policies
   {
-    name: "rippling_get_company_leave_types",
+    name: "rippling_get_eligible_leave_policies",
     description:
-      "Get all company leave types including long-term leave types. Returns available leave types for the company",
+      "Get eligible leave policies for the current user. Returns available leave policies with their IDs, names, descriptions, and scheduling constraints. Use the 'id' field from this response when making time off requests with rippling_request_time_off.",
     inputSchema: {
       type: "object",
       properties: {},
@@ -113,7 +113,7 @@ export const ripplingTools: Tool[] = [
   {
     name: "rippling_get_action_request_filters",
     description:
-      "Get filtered action requests with pagination. Use 'requestedByRoles' to see actions YOU submitted (your own requests). Use 'pendingReviewerRoles' to see actions waiting for YOUR review. Defaults to showing actions pending your review if neither is specified.",
+      "Get filtered action requests that require YOUR APPROVAL or REVIEW (not your own submissions). This shows requests from others waiting for you to approve/review, such as leave requests from your team members, expense approvals, or other workflow items. Use 'pendingReviewerRoles' to see what's waiting for your approval. For your OWN time off requests, use rippling_time_off_requests instead.",
     inputSchema: {
       type: "object",
       properties: {
@@ -359,7 +359,7 @@ export const ripplingTools: Tool[] = [
   {
     name: "rippling_time_off_requests",
     description:
-      "Get your own time off requests (leave requests) from Rippling. Returns a list of your submitted leave requests with status, dates, duration, and leave type information.",
+      "Get YOUR OWN time off requests (leave requests) that you have submitted. This shows only the leave requests you personally submitted, with their status, dates, duration, and leave type information. For requests that need your approval from others, use rippling_get_action_request_filters instead.",
     inputSchema: {
       type: "object",
       properties: {
@@ -401,6 +401,73 @@ export const ripplingTools: Tool[] = [
         },
       },
       required: [],
+    },
+  },
+
+  // Request Time Off
+  {
+    name: "rippling_request_time_off",
+    description:
+      "Submit a new time off request (leave request) to Rippling. Creates a leave request with specified dates, leave policy, and reason. The request will go through the normal approval workflow using your role ID automatically.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        leavePolicy: {
+          type: "string",
+          description:
+            "Leave policy ID for the type of leave being requested. IMPORTANT: Use the exact 'id' field returned from rippling_get_eligible_leave_policies, not the customName or any other field. This should be the actual policy ID from the get_eligible_policies endpoint (e.g., '679a38907ef7dda5d37625a0').",
+        },
+        startDate: {
+          type: "string",
+          description:
+            "Start date of the leave in YYYY-MM-DD format (e.g., '2025-08-26')",
+        },
+        endDate: {
+          type: "string",
+          description:
+            "End date of the leave in YYYY-MM-DD format (e.g., '2025-08-26'). Can be the same as startDate for single-day leave.",
+        },
+        reasonForLeave: {
+          type: "string",
+          description: "Reason or description for the leave request",
+        },
+        isOpenEnded: {
+          type: "boolean",
+          description:
+            "Whether this is an open-ended leave request. This field is required (true or false).",
+        },
+      },
+      required: [
+        "leavePolicy",
+        "startDate",
+        "endDate",
+        "reasonForLeave",
+        "isOpenEnded",
+      ],
+    },
+  },
+
+  // Cancel Time Off
+  {
+    name: "rippling_cancel_time_off",
+    description:
+      "Cancel a pending time off request in Rippling. This can be used to cancel time off requests that are still pending approval or in progress.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        actionRequestId: {
+          type: "string",
+          description:
+            "The ID of the action request to cancel. This can be obtained from the 'actionRequestId' field in the response of rippling_request_time_off or from rippling_time_off_requests.",
+        },
+        channel: {
+          type: "string",
+          description:
+            "The channel from which the cancellation is being performed (default: 'DASHBOARD')",
+          default: "DASHBOARD",
+        },
+      },
+      required: ["actionRequestId"],
     },
   },
 ];
