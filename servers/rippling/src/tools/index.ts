@@ -374,4 +374,33 @@ export const ripplingTools: Tool[] = [
       required: [],
     },
   },
+
+  // Holiday Calendar
+  {
+    name: "rippling_get_holiday_calendar",
+    description:
+      "Get holiday calendar information from Rippling. Returns holidays and calendar events for the specified role, with options to filter by time admin permissions and payable holidays only.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        roleId: {
+          type: "string",
+          description:
+            "Role ID to get holiday calendar for. If not provided, defaults to your own role ID.",
+        },
+        allowTimeAdmin: {
+          type: "boolean",
+          description: "Whether to allow time admin access (default: false)",
+          default: false,
+        },
+        onlyPayable: {
+          type: "boolean",
+          description:
+            "Whether to return only payable holidays (default: false)",
+          default: false,
+        },
+      },
+      required: [],
+    },
+  },
 ];

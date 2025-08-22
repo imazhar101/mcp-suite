@@ -9,6 +9,7 @@ import {
   UpdateFeedbackFormResponseRequest,
   GetAlertsRequest,
   TimeOffRequestsRequest,
+  HolidayCalendarRequest,
 } from "../types/index.js";
 
 export class RipplingService {
@@ -1316,6 +1317,95 @@ export class RipplingService {
       if (error instanceof Error) {
         if (error.message.includes("404")) {
           errorMessage = "Time off requests not found";
+        } else if (error.message.includes("403")) {
+          errorMessage =
+            "Access denied. Please check your permissions and authentication";
+        } else if (error.message.includes("401")) {
+          errorMessage =
+            "Authentication failed. Please check your token and credentials";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      return {
+        success: false,
+        error: errorMessage,
+      };
+    }
+  }
+
+  async getHolidayCalendar(
+    request: HolidayCalendarRequest = {}
+  ): Promise<RipplingServiceResponse> {
+    try {
+      const { roleId, allowTimeAdmin = false, onlyPayable = false } = request;
+
+      // Use the provided roleId or default to the current user's role
+      const targetRoleId = roleId || this.config.userId;
+
+      this.logger.debug("Retrieving holiday calendar", {
+        targetRoleId,
+        allowTimeAdmin,
+        onlyPayable,
+      });
+
+      const requestBody = {
+        role: targetRoleId,
+        allow_time_admin: allowTimeAdmin,
+        only_payable: onlyPayable,
+      };
+
+      const response = await this.makeRequest(
+        "/get_holiday_calendar/",
+        {
+          method: "POST",
+          body: JSON.stringify(requestBody),
+        },
+        "/api/pto/api"
+      );
+
+      // Filter to only include current year
+      const currentYear = new Date().getFullYear();
+      const currentYearHolidays = response.filter(
+        (yearData: any) => yearData.year === currentYear
+      );
+
+      this.logger.info("Holiday calendar retrieved successfully", {
+        targetRoleId,
+        allowTimeAdmin,
+        onlyPayable,
+        totalYears: response.length,
+        currentYearHolidays:
+          currentYearHolidays.length > 0
+            ? currentYearHolidays[0]?.holidays?.length
+            : 0,
+      });
+
+      return {
+        success: true,
+        data: {
+          currentYear: currentYear,
+          holidays:
+            currentYearHolidays.length > 0
+              ? currentYearHolidays[0].holidays
+              : [],
+          requestedFor: targetRoleId,
+        },
+        message: `Holiday calendar for ${currentYear} retrieved successfully`,
+      };
+    } catch (error) {
+      this.logger.error("Failed to retrieve holiday calendar", {
+        roleId: request.roleId,
+        allowTimeAdmin: request.allowTimeAdmin,
+        onlyPayable: request.onlyPayable,
+        error,
+      });
+
+      let errorMessage = "Unknown error occurred";
+      if (error instanceof Error) {
+        if (error.message.includes("404")) {
+          errorMessage = "Holiday calendar not found";
         } else if (error.message.includes("403")) {
           errorMessage =
             "Access denied. Please check your permissions and authentication";
