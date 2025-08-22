@@ -16,7 +16,8 @@ export const ripplingTools: Tool[] = [
   // Employment Roles
   {
     name: "rippling_get_employment_roles",
-    description: "Get employment roles for a specific user by user ID",
+    description:
+      "Get detailed employment roles and profile information for a specific user by user ID. Includes basic employment data plus detailed additional information and personal information field values.",
     inputSchema: {
       type: "object",
       properties: {
@@ -192,7 +193,7 @@ export const ripplingTools: Tool[] = [
   {
     name: "rippling_update_feedback_form_response",
     description:
-      "Update (submit) feedback form response for an interview. Used to submit interview feedback with ratings and comments. IMPORTANT: You must provide all required metadata fields (owner, milestone, applicant, interview, role) from the original feedback response. The 'overallRating' should be at the TOP LEVEL of feedbackFormResponse object.\n\nMANDATORY ANSWER STRUCTURE - You MUST include these 3 specific answers in formResponse.answers:\n\n1. OVERALL RECOMMENDATION (always include):\n   {\n     \"questionKey\": \"overall_recommendation\",\n     \"value\": \"[recommendation text like 'Recommend for SD2 role']\"\n   }\n\n2. NUMERIC RATING (always include - this is the overall rating as a number):\n   {\n     \"questionKey\": \"ec66ae4f-7ae7-466d-9d47-9331cd745cab\",\n     \"value\": [number 1-4, should match overallRating]\n   }\n\n3. RICH TEXT FEEDBACK (always include with sectionKey):\n   {\n     \"questionKey\": \"c8c2b292-b8c2-4832-a181-4c9d934164b5\",\n     \"value\": \"[detailed HTML formatted feedback]\",\n     \"sectionKey\": \"2dde7f2c-0a7b-45a1-94e8-2e3870d9da21\"\n   }\n\nExample payload structure:\n{\n  \"feedbackFormResponse\": {\n    \"id\": \"689b468fb2cefb15adc4b39d\",\n    \"role\": \"67ad9f21f96760f55f766b31\",\n    \"submittedBy\": \"67ad9f21f96760f55f766b31\",\n    \"interview\": \"689446440e6617deecefc228\",\n    \"overallRating\": 3,\n    \"status\": \"SUBMITTED\",\n    \"owner\": \"67d1c3295040dbd5dda97cde\",\n    \"milestone\": \"689446440e6617deecefc235\",\n    \"applicant\": \"688836e564f21d9591cc9851\",\n    \"formResponse\": {\n      \"answers\": [\n        {\n          \"questionKey\": \"overall_recommendation\",\n          \"value\": \"Recommend for SD2 role\"\n        },\n        {\n          \"questionKey\": \"ec66ae4f-7ae7-466d-9d47-9331cd745cab\",\n          \"value\": 3\n        },\n        {\n          \"questionKey\": \"c8c2b292-b8c2-4832-a181-4c9d934164b5\",\n          \"value\": \"<meta name=\\\"rteConfig\\\" content=\\\"{&quot;version&quot;:&quot;0.246.0&quot;}\\\"><p>Detailed feedback text here...</p>\",\n          \"sectionKey\": \"2dde7f2c-0a7b-45a1-94e8-2e3870d9da21\"\n        }\n      ],\n      \"comments\": [\n        {\n          \"questionKey\": \"interview_notes\",\n          \"createdAt\": \"2025-08-13T13:56:13.290000-07:00\",\n          \"anonymous\": false,\n          \"text\": \"Comment text or null\",\n          \"author\": \"Author name or null\"\n        }\n      ]\n    }\n  }\n}",
+      'Update (submit) feedback form response for an interview. Used to submit interview feedback with ratings and comments. IMPORTANT: You must provide all required metadata fields (owner, milestone, applicant, interview, role) from the original feedback response. The \'overallRating\' should be at the TOP LEVEL of feedbackFormResponse object.\n\nMANDATORY ANSWER STRUCTURE - You MUST include these 3 specific answers in formResponse.answers:\n\n1. OVERALL RECOMMENDATION (always include):\n   {\n     "questionKey": "overall_recommendation",\n     "value": "[recommendation text like \'Recommend for SD2 role\']"\n   }\n\n2. NUMERIC RATING (always include - this is the overall rating as a number):\n   {\n     "questionKey": "ec66ae4f-7ae7-466d-9d47-9331cd745cab",\n     "value": [number 1-4, should match overallRating]\n   }\n\n3. RICH TEXT FEEDBACK (always include with sectionKey):\n   {\n     "questionKey": "c8c2b292-b8c2-4832-a181-4c9d934164b5",\n     "value": "[detailed HTML formatted feedback]",\n     "sectionKey": "2dde7f2c-0a7b-45a1-94e8-2e3870d9da21"\n   }\n\nExample payload structure:\n{\n  "feedbackFormResponse": {\n    "id": "689b468fb2cefb15adc4b39d",\n    "role": "67ad9f21f96760f55f766b31",\n    "submittedBy": "67ad9f21f96760f55f766b31",\n    "interview": "689446440e6617deecefc228",\n    "overallRating": 3,\n    "status": "SUBMITTED",\n    "owner": "67d1c3295040dbd5dda97cde",\n    "milestone": "689446440e6617deecefc235",\n    "applicant": "688836e564f21d9591cc9851",\n    "formResponse": {\n      "answers": [\n        {\n          "questionKey": "overall_recommendation",\n          "value": "Recommend for SD2 role"\n        },\n        {\n          "questionKey": "ec66ae4f-7ae7-466d-9d47-9331cd745cab",\n          "value": 3\n        },\n        {\n          "questionKey": "c8c2b292-b8c2-4832-a181-4c9d934164b5",\n          "value": "<meta name=\\"rteConfig\\" content=\\"{&quot;version&quot;:&quot;0.246.0&quot;}\\"><p>Detailed feedback text here...</p>",\n          "sectionKey": "2dde7f2c-0a7b-45a1-94e8-2e3870d9da21"\n        }\n      ],\n      "comments": [\n        {\n          "questionKey": "interview_notes",\n          "createdAt": "2025-08-13T13:56:13.290000-07:00",\n          "anonymous": false,\n          "text": "Comment text or null",\n          "author": "Author name or null"\n        }\n      ]\n    }\n  }\n}',
     inputSchema: {
       type: "object",
       properties: {
@@ -348,6 +349,55 @@ export const ripplingTools: Tool[] = [
           type: "string",
           description: "Page token for pagination (empty for first page)",
           default: "",
+        },
+      },
+      required: [],
+    },
+  },
+
+  // Time Off Requests
+  {
+    name: "rippling_time_off_requests",
+    description:
+      "Get your own time off requests (leave requests) from Rippling. Returns a list of your submitted leave requests with status, dates, duration, and leave type information.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        pageSize: {
+          type: "number",
+          description: "Number of results per page (default: 30)",
+          default: 30,
+          minimum: 1,
+          maximum: 100,
+        },
+      },
+      required: [],
+    },
+  },
+
+  // Holiday Calendar
+  {
+    name: "rippling_get_holiday_calendar",
+    description:
+      "Get holiday calendar information from Rippling. Returns holidays and calendar events for the specified role, with options to filter by time admin permissions and payable holidays only.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        roleId: {
+          type: "string",
+          description:
+            "Role ID to get holiday calendar for. If not provided, defaults to your own role ID.",
+        },
+        allowTimeAdmin: {
+          type: "boolean",
+          description: "Whether to allow time admin access (default: false)",
+          default: false,
+        },
+        onlyPayable: {
+          type: "boolean",
+          description:
+            "Whether to return only payable holidays (default: false)",
+          default: false,
         },
       },
       required: [],

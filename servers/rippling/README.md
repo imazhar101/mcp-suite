@@ -14,6 +14,8 @@ A Model Context Protocol (MCP) server for Rippling HR platform integration. This
 - **Action Requests**: Filter and manage action requests with pagination
 - **Interviews & Feedback**: Manage interview feedback and ATS integration
 - **Alerts**: Access and filter alerts from the automation system
+- **Time Off Requests**: View your submitted leave requests and their status
+- **Holiday Calendar**: Access company holiday calendar for the current year
 
 ## Tools
 
@@ -21,7 +23,7 @@ A Model Context Protocol (MCP) server for Rippling HR platform integration. This
 Test the connection to Rippling API and retrieve basic information.
 
 ### `rippling_get_employment_roles`
-Get employment roles for a specific user by user ID.
+Get detailed employment roles and profile information for a specific user by user ID. Includes basic employment data plus detailed additional information and personal information field values.
 
 **Parameters:**
 - `userId` (string, required): The user ID to get employment roles for
@@ -110,6 +112,35 @@ Get alerts from Rippling automation system. Returns paginated list of alerts wit
 - `pageSize` (number, optional): Number of alerts per page (default: 30, max: 100)
 - `pageToken` (string, optional): Page token for pagination (empty for first page)
 
+### `rippling_time_off_requests`
+Get your own time off requests (leave requests) from Rippling. Returns a list of your submitted leave requests with status, dates, duration, and leave type information.
+
+**Parameters:**
+- `pageSize` (number, optional): Number of results per page (default: 30, max: 100)
+
+**Returns:**
+- `timeOffRequests`: Array of your time off requests with:
+  - `id`: Request ID
+  - `dateRequested`: When the request was submitted
+  - `status`: Current status (e.g., EXECUTED, PENDING)
+  - `decision`: Approval decision (e.g., APPROVED, DENIED)
+  - `requestType`: Type of request (e.g., LEAVE_REQUEST_APPROVAL)
+  - `requestSummary`: Details including leave policy, dates, duration, balance
+  - `roleBeingAffected`: Basic info about the employee taking leave
+
+### `rippling_get_holiday_calendar`
+Get holiday calendar information from Rippling. Returns holidays and calendar events for the current year only, with options to filter by time admin permissions and payable holidays.
+
+**Parameters:**
+- `roleId` (string, optional): Role ID to get holiday calendar for. If not provided, defaults to your own role ID
+- `allowTimeAdmin` (boolean, optional): Whether to allow time admin access (default: false)
+- `onlyPayable` (boolean, optional): Whether to return only payable holidays (default: false)
+
+**Returns:**
+- `currentYear`: The current year (e.g., 2025)
+- `holidays`: Array of holiday objects for the current year
+- `requestedFor`: Role ID the calendar was requested for
+
 ## Configuration
 
 ### Obtaining Required Values
@@ -164,7 +195,10 @@ npx @imazhar101/mcp-rippling-server
 ## API Endpoints Used
 
 - `GET /employment_roles_with_company/{userId}/` - Get employment roles for a user
+- `POST /profile/get_fields_data` - Get detailed profile field information
 - `POST /employee_list/find_paginated` - List employees with pagination and search
+- `POST /action_request/filters/find_paginated/` - Get filtered action requests (including time off requests)
+- `POST /get_holiday_calendar/` - Get holiday calendar information
 
 ## License
 

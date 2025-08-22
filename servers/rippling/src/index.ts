@@ -118,6 +118,14 @@ class RipplingServer {
       case "rippling_get_alerts":
         return await this.ripplingService.getAlerts(args);
 
+      // Time Off Requests
+      case "rippling_time_off_requests":
+        return await this.ripplingService.getTimeOffRequests(args);
+
+      // Holiday Calendar
+      case "rippling_get_holiday_calendar":
+        return await this.ripplingService.getHolidayCalendar(args);
+
       default:
         throw new McpError(
           ErrorCode.MethodNotFound,

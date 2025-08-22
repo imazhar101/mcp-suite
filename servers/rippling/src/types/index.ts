@@ -76,6 +76,16 @@ export interface GetAlertsRequest {
   pageToken?: string;
 }
 
+export interface TimeOffRequestsRequest {
+  pageSize?: number;
+}
+
+export interface HolidayCalendarRequest {
+  roleId?: string;
+  allowTimeAdmin?: boolean;
+  onlyPayable?: boolean;
+}
+
 export interface Employee {
   id: string;
   fullName: string;
