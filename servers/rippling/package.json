@@ -1,6 +1,6 @@
 {
   "name": "@imazhar101/mcp-rippling-server",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Rippling MCP server for HR and employee management",
   "type": "module",
   "main": "dist/servers/rippling/src/index.js",
@@ -21,7 +21,7 @@
   "author": "Azharuddin <imazhar101@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.6"
+    "@modelcontextprotocol/sdk": "^0.6.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

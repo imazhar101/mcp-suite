@@ -16,6 +16,7 @@ const servers = [
   "paypal",
   "postgresql",
   "puppeteer",
+  "rippling",
   "salesforce",
   "stripe",
 ];
