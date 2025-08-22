@@ -86,9 +86,9 @@ class RipplingServer {
       case "rippling_list_employees":
         return await this.ripplingService.listEmployees(args);
 
-      // Leave Types
-      case "rippling_get_company_leave_types":
-        return await this.ripplingService.getCompanyLeaveTypes();
+      // Leave Policies
+      case "rippling_get_eligible_leave_policies":
+        return await this.ripplingService.getEligibleLeavePolicies();
 
       // Terminated Employees
       case "rippling_list_terminated_employees":
@@ -125,6 +125,14 @@ class RipplingServer {
       // Holiday Calendar
       case "rippling_get_holiday_calendar":
         return await this.ripplingService.getHolidayCalendar(args);
+
+      // Request Time Off
+      case "rippling_request_time_off":
+        return await this.ripplingService.requestTimeOff(args);
+
+      // Cancel Time Off
+      case "rippling_cancel_time_off":
+        return await this.ripplingService.cancelActionRequest(args);
 
       default:
         throw new McpError(

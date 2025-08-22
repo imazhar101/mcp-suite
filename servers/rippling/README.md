@@ -7,15 +7,17 @@ A Model Context Protocol (MCP) server for Rippling HR platform integration. This
 - **Connection Testing**: Verify API connectivity and authentication
 - **Employee Management**: List and search employees with pagination
 - **Employment Roles**: Get employment role details for specific users
-- **Leave Management**: Access company leave types
+- **Leave Management**: Access eligible leave policies and submit requests
 - **Terminated Employees**: List and search terminated employees
 - **Document Management**: Access document folders and contents
 - **Anniversary Information**: Get anniversary email settings
-- **Action Requests**: Filter and manage action requests with pagination
+- **Action Requests**: View and manage requests that need your approval (from team members)
 - **Interviews & Feedback**: Manage interview feedback and ATS integration
 - **Alerts**: Access and filter alerts from the automation system
 - **Time Off Requests**: View your submitted leave requests and their status
 - **Holiday Calendar**: Access company holiday calendar for the current year
+- **Request Time Off**: Submit new time off requests with approval workflow
+- **Cancel Time Off**: Cancel pending time off requests
 
 ## Tools
 
@@ -43,8 +45,18 @@ List employees with optional search and pagination. Returns simplified employee 
 - `page` (number, optional): Page number for pagination (default: 1)
 - `searchQuery` (string, optional): Search query to filter employees by name
 
-### `rippling_get_company_leave_types`
-Get all company leave types including long-term leave types. Returns available leave types for the company.
+### `rippling_get_eligible_leave_policies`
+Get eligible leave policies for the current user. Returns available leave policies with their IDs, names, descriptions (HTML stripped), and scheduling constraints including minimum/maximum hours to schedule leave.
+
+**Returns:**
+- `id`: Policy ID to use with `rippling_request_time_off`
+- `numHours`: Number of hours for this policy type
+- `customName`: Display name of the leave policy
+- `description`: Policy description with HTML tags removed
+- `minHoursToScheduleLeave`: Minimum hours that must be scheduled in advance
+- `maxHoursToScheduleLeave`: Maximum hours that can be scheduled in advance
+- `country`: Country code for the policy
+- `leaveTypeId`: Internal leave type identifier
 
 ### `rippling_list_terminated_employees`
 List terminated employees with optional search and pagination. Returns terminated employee data including termination details.
@@ -70,7 +82,7 @@ None - uses the role from your configuration
 Get anniversary email settings and information from Rippling anniversary app.
 
 ### `rippling_get_action_request_filters`
-Get filtered action requests with pagination. Use 'requestedByRoles' to see actions YOU submitted (your own requests). Use 'pendingReviewerRoles' to see actions waiting for YOUR review. Defaults to showing actions pending your review if neither is specified.
+Get filtered action requests that require YOUR APPROVAL or REVIEW from others (not your own submissions). This shows requests from team members or colleagues waiting for you to approve/review, such as leave requests from your team, expense approvals, or other workflow items. Defaults to showing actions pending your review. For your own time off requests, use `rippling_time_off_requests` instead.
 
 **Parameters:**
 - `pageSize` (number, optional): Number of results per page (default: 30)
@@ -113,7 +125,7 @@ Get alerts from Rippling automation system. Returns paginated list of alerts wit
 - `pageToken` (string, optional): Page token for pagination (empty for first page)
 
 ### `rippling_time_off_requests`
-Get your own time off requests (leave requests) from Rippling. Returns a list of your submitted leave requests with status, dates, duration, and leave type information.
+Get YOUR OWN time off requests (leave requests) that you have personally submitted. Returns a list of only your submitted leave requests with status, dates, duration, and leave type information. For requests that need your approval from others, use `rippling_get_action_request_filters` instead.
 
 **Parameters:**
 - `pageSize` (number, optional): Number of results per page (default: 30, max: 100)
@@ -140,6 +152,71 @@ Get holiday calendar information from Rippling. Returns holidays and calendar ev
 - `currentYear`: The current year (e.g., 2025)
 - `holidays`: Array of holiday objects for the current year
 - `requestedFor`: Role ID the calendar was requested for
+
+### `rippling_request_time_off`
+Submit a new time off request (leave request) to Rippling. Creates a leave request with specified dates, leave policy, and reason. The request will go through the normal approval workflow using your role ID automatically.
+
+**Parameters:**
+- `leavePolicy` (string, required): Leave policy ID for the type of leave being requested. IMPORTANT: Use the exact 'id' field returned from `rippling_get_eligible_leave_policies`, not the customName or any other field. This should be the actual policy ID from the get_eligible_policies endpoint (e.g., `679a38907ef7dda5d37625a0`)
+- `startDate` (string, required): Start date of the leave in YYYY-MM-DD format (e.g., '2025-08-26')
+- `endDate` (string, required): End date of the leave in YYYY-MM-DD format (e.g., '2025-08-26'). Can be the same as startDate for single-day leave
+- `reasonForLeave` (string, required): Reason or description for the leave request
+- `isOpenEnded` (boolean, required): Whether this is an open-ended leave request (true or false)
+
+**Returns:**
+- `id`: ID of the submitted leave request
+- `status`: Current status of the request (e.g., "PENDING", "APPROVED")
+- `actionRequestId`: Associated action request ID for approval workflow
+- `startDate`: Requested start date
+- `endDate`: Requested end date
+- `reasonForLeave`: Reason provided for the request
+- `numDays`: Number of days requested (e.g., "1.00")
+- `numHours`: Number of hours requested (e.g., "8.00")
+- `leaveTypeName`: Human-readable name of leave type (e.g., "Work From Home")
+- `policyDisplayName`: Display name of the policy (e.g., "WFH Request")
+- `requestedByName`: Full name of the person who submitted the request
+- `isPaid`: Whether this is paid leave
+- `isAutoApproved`: Whether the request was automatically approved
+- `createdAt`: Timestamp when request was created
+- `updatedAt`: Timestamp when request was last updated
+- `fullResponse`: Complete API response object with all fields
+
+**Usage Workflow:**
+1. First, call `rippling_get_eligible_leave_policies` to get available leave policies and their IDs
+2. Find the appropriate policy using the `id` field (e.g., `679a38907ef7dda5d37625a0`)
+3. Then call `rippling_request_time_off` with the policy ID from step 2
+
+**Example:**
+```json
+{
+  "leavePolicy": "679a38907ef7dda5d37625a0",
+  "startDate": "2025-08-29",
+  "endDate": "2025-08-29", 
+  "reasonForLeave": "Working remotely for the day",
+  "isOpenEnded": false
+}
+```
+
+### `rippling_cancel_time_off`
+Cancel a pending time off request in Rippling. This can be used to cancel time off requests that are still pending approval or in progress.
+
+**Parameters:**
+- `actionRequestId` (string, required): The ID of the action request to cancel. This can be obtained from the `actionRequestId` field in the response of `rippling_request_time_off` or from `rippling_time_off_requests`
+- `channel` (string, optional): The channel from which the cancellation is being performed (default: "DASHBOARD")
+
+**Returns:**
+- `actionRequestId`: ID of the canceled action request
+- `channel`: Channel used for the cancellation
+- `canceled`: Boolean indicating successful cancellation
+- `response`: Complete API response from the cancellation
+
+**Example:**
+```json
+{
+  "actionRequestId": "68a8bf68eb628f0869e8bbc3",
+  "channel": "DASHBOARD"
+}
+```
 
 ## Configuration
 
@@ -197,8 +274,11 @@ npx @imazhar101/mcp-rippling-server
 - `GET /employment_roles_with_company/{userId}/` - Get employment roles for a user
 - `POST /profile/get_fields_data` - Get detailed profile field information
 - `POST /employee_list/find_paginated` - List employees with pagination and search
+- `POST /leave_policies/get_eligible_policies/` - Get eligible leave policies for user
 - `POST /action_request/filters/find_paginated/` - Get filtered action requests (including time off requests)
 - `POST /get_holiday_calendar/` - Get holiday calendar information
+- `POST /leave_requests/` - Submit new time off requests
+- `POST /action_request/cancel` - Cancel pending action requests
 
 ## License
 

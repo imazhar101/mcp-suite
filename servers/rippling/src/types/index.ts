@@ -86,6 +86,84 @@ export interface HolidayCalendarRequest {
   onlyPayable?: boolean;
 }
 
+export interface RequestTimeOffRequest {
+  roleId?: string;
+  leavePolicy: string;
+  startDate: string;
+  endDate: string;
+  reasonForLeave: string;
+  isOpenEnded: boolean;
+}
+
+export interface LeaveRequestResponse {
+  id: string;
+  company: string;
+  createdAt: string;
+  updatedAt: string;
+  startDate: string;
+  endDate: string;
+  reasonForLeave: string;
+  status: string;
+  processedAt: string | null;
+  comments: string | null;
+  numMinutes: string;
+  role: string;
+  startDateStartTime: string | null;
+  endDateStartTime: string | null;
+  startDateCustomHours: number;
+  endDateCustomHours: number;
+  leavePolicy: string;
+  companyLeaveType: string;
+  requestedBy: string;
+  processedBy: string | null;
+  leaveType: string;
+  leaveTypeUniqueId: string;
+  numHours: string;
+  policyDisplayName: string;
+  processedByName: string | null;
+  requestedByName: string;
+  externalId: string | null;
+  partialDays: any[];
+  isPaid: boolean;
+  managedBy: string | null;
+  finalizedStatus: string | null;
+  tag: string | null;
+  actionRequestId: string;
+  leaveOccurrence: string | null;
+  validate_before_save: boolean;
+  skipValidation: boolean;
+  startDateHalfDay: boolean;
+  endDateHalfDay: boolean;
+  startDateMinutes: string;
+  endDateMinutes: string;
+  numDays: string;
+  numWeeks: string;
+  isAutoApproved: boolean;
+  spokeLeaveRequest: string | null;
+  covidSickType: string | null;
+  paySource: string | null;
+  originalLeavePolicy: string | null;
+  originalCompanyLeaveType: string | null;
+  hours_by_company_leave_type_id: Record<string, number>;
+  longTermLeaveStatus: string | null;
+  occurrenceEndDate: string | null;
+  occurrenceStartDate: string | null;
+  occurrenceBased: boolean;
+  isOpenEnded: boolean;
+  leaveRequestAttachments: any[];
+  policyAccrueInDays: boolean;
+  accountingBasis: string;
+  leaveTypeName: string;
+  proofOfLeaves: any[];
+  isFirstInOccurrenceAndSeq: boolean;
+  countrySpecificDetails: any;
+}
+
+export interface CancelActionRequestRequest {
+  actionRequestId: string;
+  channel?: string;
+}
+
 export interface Employee {
   id: string;
   fullName: string;

@@ -10,6 +10,9 @@ import {
   GetAlertsRequest,
   TimeOffRequestsRequest,
   HolidayCalendarRequest,
+  RequestTimeOffRequest,
+  LeaveRequestResponse,
+  CancelActionRequestRequest,
 } from "../types/index.js";
 
 export class RipplingService {
@@ -270,48 +273,64 @@ export class RipplingService {
     }
   }
 
-  async getCompanyLeaveTypes(): Promise<RipplingServiceResponse> {
+  async getEligibleLeavePolicies(): Promise<RipplingServiceResponse> {
     try {
-      this.logger.debug("Retrieving company leave types");
+      this.logger.debug("Retrieving eligible leave policies");
+
+      const requestBody = {
+        role: this.config.userId,
+        includeLongTerm: true,
+        includeTerminated: false,
+      };
 
       const data = await this.makeRequest(
-        "/company_leave_types/get_sorted_company_leave_types/?includeLongTerm=true",
-        {},
+        "/leave_policies/get_eligible_policies/",
+        {
+          method: "POST",
+          body: JSON.stringify(requestBody),
+        },
         "/api/pto/api"
       );
 
-      // Filter out deleted items and simplify the response
-      const filteredLeaveTypes = Array.isArray(data)
-        ? data
-            .filter((leaveType: any) => !leaveType.isDeleted)
-            .map((leaveType: any) => ({
-              leaveType: leaveType.leaveType,
-              name: leaveType.name,
-              description: leaveType.description,
-              isUnpaid: leaveType.isUnpaid,
-              country: leaveType.country,
-              countrySpecificLeaveType: leaveType.countrySpecificLeaveType,
-              isDeleted: leaveType.isDeleted,
-            }))
+      // Helper function to strip HTML tags from description
+      const stripHtml = (html: string | null | undefined): string => {
+        if (!html) return "";
+        return html.replace(/<[^>]*>/g, "").trim();
+      };
+
+      // Simplify the response to only include specified fields
+      const simplifiedPolicies = Array.isArray(data)
+        ? data.map((policy: any) => ({
+            id: policy.id,
+            numHours: policy.numHours,
+            customName: policy.customName,
+            description: stripHtml(policy.description),
+            minHoursToScheduleLeave: policy.minHoursToScheduleLeave,
+            maxHoursToScheduleLeave: policy.maxHoursToScheduleLeave,
+            country: policy.country,
+            leaveTypeId: policy.leaveTypeId,
+          }))
         : [];
 
-      this.logger.info("Company leave types retrieved successfully", {
-        totalCount: Array.isArray(data) ? data.length : 0,
-        filteredCount: filteredLeaveTypes.length,
+      this.logger.info("Eligible leave policies retrieved successfully", {
+        totalCount: simplifiedPolicies.length,
+        role: this.config.userId,
       });
 
       return {
         success: true,
-        data: filteredLeaveTypes,
-        message: "Company leave types retrieved successfully",
+        data: simplifiedPolicies,
+        message: "Eligible leave policies retrieved successfully",
       };
     } catch (error) {
-      this.logger.error("Failed to retrieve company leave types", { error });
+      this.logger.error("Failed to retrieve eligible leave policies", {
+        error,
+      });
 
       let errorMessage = "Unknown error occurred";
       if (error instanceof Error) {
         if (error.message.includes("404")) {
-          errorMessage = "Company leave types not found";
+          errorMessage = "Leave policies not found";
         } else if (error.message.includes("403")) {
           errorMessage =
             "Access denied. Please check your permissions and authentication";
@@ -1412,6 +1431,213 @@ export class RipplingService {
         } else if (error.message.includes("401")) {
           errorMessage =
             "Authentication failed. Please check your token and credentials";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      return {
+        success: false,
+        error: errorMessage,
+      };
+    }
+  }
+
+  async requestTimeOff(
+    request: RequestTimeOffRequest
+  ): Promise<RipplingServiceResponse> {
+    try {
+      const {
+        roleId,
+        leavePolicy,
+        startDate,
+        endDate,
+        reasonForLeave,
+        isOpenEnded,
+      } = request;
+
+      // Use the provided roleId or default to the current user's role
+      const targetRoleId = roleId || this.config.userId;
+
+      // Validate all required fields are provided
+      if (
+        !leavePolicy ||
+        !startDate ||
+        !endDate ||
+        !reasonForLeave ||
+        isOpenEnded === undefined
+      ) {
+        throw new Error(
+          "All parameters are required: leavePolicy, startDate, endDate, reasonForLeave, and isOpenEnded must be provided"
+        );
+      }
+
+      this.logger.debug("Submitting time off request", {
+        targetRoleId,
+        leavePolicy,
+        startDate,
+        endDate,
+        reasonForLeave,
+        isOpenEnded,
+      });
+
+      const requestBody = {
+        role: targetRoleId,
+        leavePolicy: leavePolicy,
+        startDate: startDate,
+        endDate: endDate,
+        isOpenEnded: isOpenEnded,
+        updatedProofOfLeaves: null,
+        reasonForLeave: reasonForLeave,
+        proofOfLeaves: [],
+        company: this.config.company,
+      };
+
+      const response = await this.makeRequest(
+        "/leave_requests/",
+        {
+          method: "POST",
+          body: JSON.stringify(requestBody),
+        },
+        "/api/pto/api"
+      );
+
+      this.logger.info("Time off request submitted successfully", {
+        targetRoleId,
+        leavePolicy,
+        startDate,
+        endDate,
+        requestId: response.id,
+        status: response.status,
+        actionRequestId: response.actionRequestId,
+        leaveTypeName: response.leaveTypeName,
+        policyDisplayName: response.policyDisplayName,
+      });
+
+      // Return the complete response from the API with key fields highlighted
+      const leaveRequest: LeaveRequestResponse = response;
+
+      return {
+        success: true,
+        data: {
+          // Key summary fields
+          id: leaveRequest.id,
+          status: leaveRequest.status,
+          actionRequestId: leaveRequest.actionRequestId,
+          startDate: leaveRequest.startDate,
+          endDate: leaveRequest.endDate,
+          reasonForLeave: leaveRequest.reasonForLeave,
+          numDays: leaveRequest.numDays,
+          numHours: leaveRequest.numHours,
+          leaveTypeName: leaveRequest.leaveTypeName,
+          policyDisplayName: leaveRequest.policyDisplayName,
+          requestedByName: leaveRequest.requestedByName,
+          isPaid: leaveRequest.isPaid,
+          isAutoApproved: leaveRequest.isAutoApproved,
+          createdAt: leaveRequest.createdAt,
+          updatedAt: leaveRequest.updatedAt,
+
+          // Complete response for advanced use cases
+          fullResponse: leaveRequest,
+        },
+        message: `Time off request submitted successfully. Status: ${leaveRequest.status}`,
+      };
+    } catch (error) {
+      this.logger.error("Failed to submit time off request", {
+        roleId: request.roleId,
+        leavePolicy: request.leavePolicy,
+        startDate: request.startDate,
+        endDate: request.endDate,
+        error,
+      });
+
+      let errorMessage = "Unknown error occurred";
+      if (error instanceof Error) {
+        if (error.message.includes("404")) {
+          errorMessage = "Leave policy not found or invalid";
+        } else if (error.message.includes("403")) {
+          errorMessage =
+            "Access denied. Please check your permissions and authentication";
+        } else if (error.message.includes("401")) {
+          errorMessage =
+            "Authentication failed. Please check your token and credentials";
+        } else if (error.message.includes("400")) {
+          errorMessage =
+            "Bad request. Please check the date format (YYYY-MM-DD) and leave policy ID";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      return {
+        success: false,
+        error: errorMessage,
+      };
+    }
+  }
+
+  async cancelActionRequest(
+    request: CancelActionRequestRequest
+  ): Promise<RipplingServiceResponse> {
+    try {
+      const { actionRequestId, channel = "DASHBOARD" } = request;
+
+      // Validate required fields
+      if (!actionRequestId) {
+        throw new Error("actionRequestId is required");
+      }
+
+      this.logger.debug("Canceling action request", {
+        actionRequestId,
+        channel,
+      });
+
+      const requestBody = {
+        actionRequestId: actionRequestId,
+        channel: channel,
+      };
+
+      const response = await this.makeRequest("/action_request/cancel", {
+        method: "POST",
+        body: JSON.stringify(requestBody),
+      });
+
+      this.logger.info("Action request canceled successfully", {
+        actionRequestId,
+        channel,
+        response,
+      });
+
+      return {
+        success: true,
+        data: {
+          actionRequestId: actionRequestId,
+          channel: channel,
+          canceled: true,
+          response: response,
+        },
+        message: "Action request canceled successfully",
+      };
+    } catch (error) {
+      this.logger.error("Failed to cancel action request", {
+        actionRequestId: request.actionRequestId,
+        channel: request.channel,
+        error,
+      });
+
+      let errorMessage = "Unknown error occurred";
+      if (error instanceof Error) {
+        if (error.message.includes("404")) {
+          errorMessage = "Action request not found or already processed";
+        } else if (error.message.includes("403")) {
+          errorMessage =
+            "Access denied. You may not have permission to cancel this request";
+        } else if (error.message.includes("401")) {
+          errorMessage =
+            "Authentication failed. Please check your token and credentials";
+        } else if (error.message.includes("400")) {
+          errorMessage =
+            "Bad request. The action request may no longer be cancellable";
         } else {
           errorMessage = error.message;
         }
