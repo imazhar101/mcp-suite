@@ -76,6 +76,10 @@ export interface GetAlertsRequest {
   pageToken?: string;
 }
 
+export interface TimeOffRequestsRequest {
+  pageSize?: number;
+}
+
 export interface Employee {
   id: string;
   fullName: string;

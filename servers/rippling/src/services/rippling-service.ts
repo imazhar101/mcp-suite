@@ -8,6 +8,7 @@ import {
   OpenInterviewsAndFeedbacksRequest,
   UpdateFeedbackFormResponseRequest,
   GetAlertsRequest,
+  TimeOffRequestsRequest,
 } from "../types/index.js";
 
 export class RipplingService {
@@ -115,13 +116,54 @@ export class RipplingService {
         throw new Error("User ID is required and cannot be empty");
       }
 
-      this.logger.debug("Retrieving employment roles", {
-        userId: request.userId,
-      });
-
-      const data = await this.makeRequest(
-        `/employment_roles_with_company/${request.userId}/`
+      this.logger.debug(
+        "Retrieving employment roles with detailed field data",
+        {
+          userId: request.userId,
+        }
       );
+
+      // Make parallel requests for employment roles and detailed field data
+      const [data, additionalInfoFields, personalInfoFields] =
+        await Promise.all([
+          this.makeRequest(`/employment_roles_with_company/${request.userId}/`),
+          this.makeRequest("/profile/get_fields_data", {
+            method: "POST",
+            body: JSON.stringify({
+              roleId: request.userId,
+              sectionId: "additionalInformation",
+              requestedFields: [],
+              changedFields: {},
+            }),
+          }),
+          this.makeRequest("/profile/get_fields_data", {
+            method: "POST",
+            body: JSON.stringify({
+              roleId: request.userId,
+              sectionId: "personal information",
+              requestedFields: [],
+              changedFields: {},
+            }),
+          }),
+        ]);
+
+      // Helper function to extract only field values from field data
+      const extractFieldValues = (fieldsData: any): Record<string, any> => {
+        const fieldValues: Record<string, any> = {};
+        if (fieldsData?.fields) {
+          Object.keys(fieldsData.fields).forEach((fieldName) => {
+            const field = fieldsData.fields[fieldName];
+            if (field && field.hasOwnProperty("value")) {
+              fieldValues[fieldName] = field.value;
+            }
+          });
+        }
+        return fieldValues;
+      };
+
+      // Extract simplified field values
+      const additionalInfo = extractFieldValues(additionalInfoFields);
+      const personalInfo = extractFieldValues(personalInfoFields);
 
       // Transform the response to match the required format
       const simplifiedResponse = {
@@ -181,11 +223,16 @@ export class RipplingService {
             }
           : null,
         photo: data.user_cache?.photo,
+        // Add detailed field information
+        additionalInformation: additionalInfo,
+        personalInformation: personalInfo,
       };
 
       this.logger.info("Employment roles retrieved successfully", {
         userId: request.userId,
         fullName: simplifiedResponse.fullName,
+        additionalFieldsCount: Object.keys(additionalInfo).length,
+        personalFieldsCount: Object.keys(personalInfo).length,
       });
 
       return {
@@ -521,7 +568,7 @@ export class RipplingService {
       ];
 
       // Add requested fields as separate parameters
-      fields.forEach(field => {
+      fields.forEach((field) => {
         params.append("requested_fields", field);
       });
 
@@ -1140,6 +1187,135 @@ export class RipplingService {
       if (error instanceof Error) {
         if (error.message.includes("404")) {
           errorMessage = "Alerts not found";
+        } else if (error.message.includes("403")) {
+          errorMessage =
+            "Access denied. Please check your permissions and authentication";
+        } else if (error.message.includes("401")) {
+          errorMessage =
+            "Authentication failed. Please check your token and credentials";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      return {
+        success: false,
+        error: errorMessage,
+      };
+    }
+  }
+
+  async getTimeOffRequests(
+    request: TimeOffRequestsRequest = {}
+  ): Promise<RipplingServiceResponse> {
+    try {
+      const { pageSize = 30 } = request;
+
+      this.logger.debug("Retrieving your time off requests", {
+        userId: this.config.userId,
+        pageSize,
+      });
+
+      const requestBody = {
+        pageSize,
+        paginationParams: {
+          pageSize,
+          empFilterMetadata: {},
+          targetEmpFilterMetadata: {},
+          columnFilterMetadata: {
+            action_type: {
+              filter_type: "IN",
+              values: ["LEAVE_REQUEST_APPROVAL"],
+            },
+            target_roles: {
+              filter_type: "IN",
+              values: [this.config.userId],
+            },
+          },
+          sortingMetadata: {
+            columnIndex: 0,
+            order: "DESC",
+            columnId: "dateRequested",
+            column: {
+              sort: true,
+              id: "dateRequested",
+              type: "text",
+              data: "dateRequested",
+              sortKey: "dateRequested",
+            },
+          },
+        },
+        readPreference: "SECONDARY_PREFERRED",
+      };
+
+      this.logger.debug("Time off requests API call", {
+        endpoint: "/action_request/filters/find_paginated/",
+        requestBody: JSON.stringify(requestBody, null, 2),
+      });
+
+      const response = await this.makeRequest(
+        "/action_request/filters/find_paginated/?includeRoleDetails=true",
+        {
+          method: "POST",
+          body: JSON.stringify(requestBody),
+        }
+      );
+
+      // Simplify the response to only include essential time off request information
+      const simplifiedTimeOffRequests = (response.data || []).map(
+        (request: any) => ({
+          id: request.id,
+          dateRequested: request.dateRequested,
+          status: request.status,
+          decision: request.decision,
+          requestType: request.requestType,
+          requestSummary: {
+            leavePolicy: request.requestSummary?.leavePolicy,
+            roleName: request.requestSummary?.roleName,
+            dates: request.requestSummary?.dates,
+            startDate: request.requestSummary?.startDate,
+            endDate: request.requestSummary?.endDate,
+            duration: request.requestSummary?.duration,
+            balanceForRole: request.requestSummary?.balanceForRole,
+          },
+          roleMakingRequest: request.roleMakingRequest,
+          roleBeingAffected: {
+            id: request.roleBeingAffectedDetails?.id,
+            fullName: request.roleBeingAffectedDetails?.fullName,
+            title: request.roleBeingAffectedDetails?.title,
+            departmentName: request.roleBeingAffectedDetails?.departmentName,
+          },
+        })
+      );
+
+      this.logger.info("Time off requests retrieved successfully", {
+        userId: this.config.userId,
+        pageSize,
+        dataCount: response.data?.length || 0,
+        simplifiedCount: simplifiedTimeOffRequests.length,
+        visibleRowCount: response.visibleRowCount,
+      });
+
+      return {
+        success: true,
+        data: {
+          timeOffRequests: simplifiedTimeOffRequests,
+          totalCount:
+            response.visibleRowCount || simplifiedTimeOffRequests.length,
+          pageSize,
+        },
+        message: "Your time off requests retrieved successfully",
+      };
+    } catch (error) {
+      this.logger.error("Failed to retrieve time off requests", {
+        pageSize: request.pageSize,
+        error,
+      });
+
+      let errorMessage = "Unknown error occurred";
+      if (error instanceof Error) {
+        if (error.message.includes("404")) {
+          errorMessage = "Time off requests not found";
         } else if (error.message.includes("403")) {
           errorMessage =
             "Access denied. Please check your permissions and authentication";
