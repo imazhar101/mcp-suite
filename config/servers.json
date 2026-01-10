@@ -1,6 +1,28 @@
 {
   "servers": [
     {
+      "name": "airtable",
+      "displayName": "Airtable Server",
+      "description": "Airtable database operations and record management",
+      "version": "1.0.0",
+      "category": "database",
+      "capabilities": ["tools"],
+      "requiredEnvVars": ["AIRTABLE_API_KEY"],
+      "optionalEnvVars": ["LOG_LEVEL"],
+      "tools": [
+        "list_bases",
+        "list_tables",
+        "get_table_schema",
+        "list_records",
+        "get_record",
+        "create_record",
+        "update_record",
+        "delete_record"
+      ],
+      "resources": [],
+      "prompts": []
+    },
+    {
       "name": "jira",
       "displayName": "Jira Server",
       "description": "Jira issue management and project tracking",

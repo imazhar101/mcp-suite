@@ -100,13 +100,21 @@ export class JiraService {
     try {
       this.logger.info("Searching issues", { jql: request.jql });
 
-      const response = await this.client.get("/search", {
-        params: {
-          jql: request.jql,
-          maxResults: request.maxResults || 50,
-          fields:
-            "summary,status,assignee,reporter,priority,issuetype,project,created,updated,description",
-        },
+      const response = await this.client.post("/search/jql", {
+        jql: request.jql,
+        maxResults: request.maxResults || 50,
+        fields: [
+          "summary",
+          "status",
+          "assignee",
+          "reporter",
+          "priority",
+          "issuetype",
+          "project",
+          "created",
+          "updated",
+          "description",
+        ],
       });
 
       const issues: JiraIssue[] = response.data.issues.map((issue: any) => ({

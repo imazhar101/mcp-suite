@@ -1,0 +1,39 @@
+{
+  "name": "@imazhar101/mcp-airtable-server",
+  "version": "1.0.0",
+  "description": "Airtable MCP server for database operations and record management",
+  "type": "module",
+  "main": "dist/servers/airtable/src/index.js",
+  "bin": {
+    "mcp-airtable": "dist/servers/airtable/src/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "axios": "^1.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "mcp",
+    "airtable",
+    "model-context-protocol",
+    "database",
+    "api"
+  ],
+  "author": "imazhar101",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imazhar101/mcp-suite.git",
+    "directory": "servers/airtable"
+  }
+}
