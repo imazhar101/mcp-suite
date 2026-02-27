@@ -79,6 +79,7 @@ export interface CreateIssueRequest {
   issueType?: string;
   priority?: string;
   assignee?: string;
+  parentKey?: string;
 }
 
 export interface UpdateIssueRequest {

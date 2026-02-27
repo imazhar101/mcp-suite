@@ -70,6 +70,11 @@ export const jiraTools: McpTool[] = [
           type: 'string',
           description: 'Assignee email address (optional)',
         },
+        parentKey: {
+          type: 'string',
+          description:
+            'Parent issue key to create this as a subtask (e.g., "PROJ-123"). When provided, this issue will be created as a subtask of the specified parent issue.',
+        },
       },
       required: ['projectKey', 'summary'],
     },

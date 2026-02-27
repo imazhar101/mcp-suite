@@ -206,6 +206,11 @@ export class JiraService {
         },
       };
 
+      // Add parent field if creating a subtask
+      if (request.parentKey) {
+        issueData.fields.parent = { key: request.parentKey };
+      }
+
       const processedDescription = this.processDescription(request.description);
       if (processedDescription) {
         issueData.fields.description = processedDescription;
