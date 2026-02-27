@@ -38,7 +38,7 @@ export const jiraTools: McpTool[] = [
   },
   {
     name: "create_issue",
-    description: "Create a new Jira issue",
+    description: "Create a new Jira issue. Descriptions can use ADF (Atlassian Document Format) for rich formatting including headings, bold text, lists, and links.",
     inputSchema: {
       type: "object",
       properties: {
@@ -51,8 +51,8 @@ export const jiraTools: McpTool[] = [
           description: "Issue summary/title",
         },
         description: {
-          type: "string",
-          description: "Issue description",
+          type: ["string", "object"],
+          description: "Issue description. Can be plain text string or ADF (Atlassian Document Format) object. For ADF format, use: {\"type\": \"doc\", \"version\": 1, \"content\": [{\"type\": \"paragraph\", \"content\": [{\"type\": \"text\", \"text\": \"Your content here\"}]}]}",
         },
         issueType: {
           type: "string",
@@ -87,8 +87,8 @@ export const jiraTools: McpTool[] = [
           description: "New summary/title",
         },
         description: {
-          type: "string",
-          description: "New description",
+          type: ["string", "object"],
+          description: "New description. Can be plain text string or ADF (Atlassian Document Format) object. For ADF format, use: {\"type\": \"doc\", \"version\": 1, \"content\": [{\"type\": \"paragraph\", \"content\": [{\"type\": \"text\", \"text\": \"Your content here\"}]}]}",
         },
         assignee: {
           type: "string",
@@ -128,13 +128,13 @@ export const jiraTools: McpTool[] = [
           description: "Issue key to comment on",
         },
         comment: {
-          type: "string",
-          description: "Comment text",
+          type: ["string", "object"],
+          description: "Comment text. Can be plain text string or ADF (Atlassian Document Format) object. For ADF format, use: {\"type\": \"doc\", \"version\": 1, \"content\": [{\"type\": \"paragraph\", \"content\": [{\"type\": \"text\", \"text\": \"Your comment here\"}]}]}",
         },
         format: {
           type: "string",
           enum: ["plain", "rich"],
-          description: "Format to use (default: plain)",
+          description: "Format to use for text conversion. 'plain' converts text to simple ADF paragraphs. 'rich' creates formatted ADF with headings and styling (only used when comment is a string, ignored for ADF objects)",
           default: "plain",
         },
       },
