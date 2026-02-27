@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ErrorCode,
   ListToolsRequestSchema,
   McpError,
-} from "@modelcontextprotocol/sdk/types.js";
+} from '@modelcontextprotocol/sdk/types.js';
 
-import { Logger } from "../../../shared/utils/logger.js";
-import { getEnvVar, getLogLevel } from "../../../shared/utils/config.js";
-import { SalesforceService } from "./services/salesforce-service.js";
-import { salesforceTools } from "./tools/index.js";
-import { SalesforceConfig } from "./types/salesforce.js";
+import { Logger } from '../../../shared/utils/logger.js';
+import { getEnvVar, getLogLevel } from '../../../shared/utils/config.js';
+import { SalesforceService } from './services/salesforce-service.js';
+import { salesforceTools } from './tools/index.js';
+import { SalesforceConfig } from './types/salesforce.js';
 
 class SalesforceServer {
   private server: Server;
@@ -21,12 +21,12 @@ class SalesforceServer {
   private logger: Logger;
 
   constructor() {
-    this.logger = new Logger(getLogLevel(), { server: "salesforce" });
+    this.logger = new Logger(getLogLevel(), { server: 'salesforce' });
 
     // Load tokens from environment variables if available
     const instanceUrl = process.env.SALESFORCE_INSTANCE_URL;
     const accessToken = process.env.SALESFORCE_ACCESS_TOKEN;
-    const apiVersion = process.env.SALESFORCE_API_VERSION || "v59.0";
+    const apiVersion = process.env.SALESFORCE_API_VERSION || 'v59.0';
 
     const config: SalesforceConfig = {
       instanceUrl,
@@ -36,7 +36,7 @@ class SalesforceServer {
 
     this.logger.info(
       `Salesforce server starting with${
-        accessToken ? "" : "out"
+        accessToken ? '' : 'out'
       } stored access token`
     );
 
@@ -44,8 +44,8 @@ class SalesforceServer {
 
     this.server = new Server(
       {
-        name: "salesforce-server",
-        version: "1.0.0",
+        name: 'salesforce-server',
+        version: '1.0.0',
       },
       {
         capabilities: {
@@ -69,7 +69,7 @@ class SalesforceServer {
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await this.handleToolCall(name, args),
                 null,
@@ -82,12 +82,12 @@ class SalesforceServer {
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 {
                   success: false,
                   error:
-                    error instanceof Error ? error.message : "Unknown error",
+                    error instanceof Error ? error.message : 'Unknown error',
                 },
                 null,
                 2
@@ -102,46 +102,46 @@ class SalesforceServer {
   private async handleToolCall(toolName: string, args: any): Promise<any> {
     try {
       switch (toolName) {
-        case "salesforce_query":
+        case 'salesforce_query':
           return await this.salesforceService.query(args.soql);
 
-        case "salesforce_create":
+        case 'salesforce_create':
           return await this.salesforceService.create(
             args.sobject_type,
             args.record
           );
 
-        case "salesforce_read":
+        case 'salesforce_read':
           return await this.salesforceService.read(
             args.sobject_type,
             args.id,
             args.fields
           );
 
-        case "salesforce_update":
+        case 'salesforce_update':
           return await this.salesforceService.update(
             args.sobject_type,
             args.id,
             args.record
           );
 
-        case "salesforce_delete":
+        case 'salesforce_delete':
           return await this.salesforceService.delete(
             args.sobject_type,
             args.id
           );
 
-        case "salesforce_bulk_delete":
+        case 'salesforce_bulk_delete':
           return await this.salesforceService.bulkDelete(
             args.sobject_type,
             args.ids,
             args.all_or_none
           );
 
-        case "salesforce_describe":
+        case 'salesforce_describe':
           return await this.salesforceService.describe(args.sobject_type);
 
-        case "salesforce_list_objects":
+        case 'salesforce_list_objects':
           return await this.salesforceService.listSObjects();
 
         default:
@@ -153,12 +153,12 @@ class SalesforceServer {
     } catch (error) {
       // Enhanced error handling for authentication issues
       const errorMessage =
-        error instanceof Error ? error.message : "Unknown error occurred";
+        error instanceof Error ? error.message : 'Unknown error occurred';
 
       if (
-        errorMessage.includes("OAuth credentials not available") ||
-        errorMessage.includes("Auto-authentication failed") ||
-        errorMessage.includes("Not authenticated")
+        errorMessage.includes('OAuth credentials not available') ||
+        errorMessage.includes('Auto-authentication failed') ||
+        errorMessage.includes('Not authenticated')
       ) {
         return {
           success: false,
@@ -187,12 +187,12 @@ Original error: ${errorMessage}`,
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
 
-    this.logger.info("Salesforce MCP server started");
+    this.logger.info('Salesforce MCP server started');
   }
 }
 
 const server = new SalesforceServer();
 server.run().catch((error) => {
-  console.error("Server failed:", error);
+  console.error('Server failed:', error);
   process.exit(1);
 });

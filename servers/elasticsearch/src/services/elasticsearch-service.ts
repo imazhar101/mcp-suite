@@ -1,4 +1,4 @@
-import { Client } from "@elastic/elasticsearch";
+import { Client } from '@elastic/elasticsearch';
 import {
   ElasticsearchConfig,
   SearchOptions,
@@ -9,7 +9,7 @@ import {
   BulkOperation,
   AggregationOptions,
   CreateIndexOptions,
-} from "../types/index.js";
+} from '../types/index.js';
 
 export class ElasticsearchService {
   private client: Client;
@@ -51,20 +51,20 @@ export class ElasticsearchService {
 
   async listIndices(): Promise<IndexInfo[]> {
     const response = await this.client.cat.indices({
-      format: "json",
-      h: "health,status,index,uuid,pri,rep,docs.count,docs.deleted,store.size,pri.store.size",
+      format: 'json',
+      h: 'health,status,index,uuid,pri,rep,docs.count,docs.deleted,store.size,pri.store.size',
     });
     return response.map((item: any) => ({
-      health: item.health || "unknown",
-      status: item.status || "unknown",
-      index: item.index || "",
-      uuid: item.uuid || "",
-      pri: parseInt(item.pri || "0"),
-      rep: parseInt(item.rep || "0"),
-      "docs.count": parseInt(item["docs.count"] || "0"),
-      "docs.deleted": parseInt(item["docs.deleted"] || "0"),
-      "store.size": item["store.size"] || "0b",
-      "pri.store.size": item["pri.store.size"] || "0b",
+      health: item.health || 'unknown',
+      status: item.status || 'unknown',
+      index: item.index || '',
+      uuid: item.uuid || '',
+      pri: parseInt(item.pri || '0'),
+      rep: parseInt(item.rep || '0'),
+      'docs.count': parseInt(item['docs.count'] || '0'),
+      'docs.deleted': parseInt(item['docs.deleted'] || '0'),
+      'store.size': item['store.size'] || '0b',
+      'pri.store.size': item['pri.store.size'] || '0b',
     }));
   }
 
@@ -171,13 +171,13 @@ export class ElasticsearchService {
       hits: {
         total: {
           value:
-            typeof response.hits.total === "number"
+            typeof response.hits.total === 'number'
               ? response.hits.total
               : response.hits.total?.value || 0,
           relation:
-            typeof response.hits.total === "object"
-              ? response.hits.total?.relation || "eq"
-              : "eq",
+            typeof response.hits.total === 'object'
+              ? response.hits.total?.relation || 'eq'
+              : 'eq',
         },
         max_score: response.hits.max_score || 0,
         hits: response.hits.hits.map((hit: any) => ({
@@ -263,7 +263,7 @@ export class ElasticsearchService {
     const response = await this.client.update(params);
     return {
       _index: response._index,
-      _id: response._id || "",
+      _id: response._id || '',
       _version: response._version,
       result: response.result,
     };
@@ -301,7 +301,7 @@ export class ElasticsearchService {
 
       body.push(action);
 
-      if (op.action !== "delete" && op.document) {
+      if (op.action !== 'delete' && op.document) {
         body.push(op.document);
       }
     });
@@ -426,7 +426,7 @@ export class ElasticsearchService {
 
   async getNodeStats(): Promise<any> {
     const response = await this.client.nodes.stats({
-      metric: ["indices", "jvm", "process", "fs"],
+      metric: ['indices', 'jvm', 'process', 'fs'],
     });
 
     // Simplify the response to avoid huge data dumps

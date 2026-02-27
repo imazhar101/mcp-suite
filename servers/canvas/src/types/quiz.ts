@@ -1,4 +1,4 @@
-import { CanvasEntity } from "./index.js";
+import { CanvasEntity } from './index.js';
 
 // Quiz Types
 export interface Quiz extends CanvasEntity {
@@ -7,17 +7,17 @@ export interface Quiz extends CanvasEntity {
   mobile_url: string;
   preview_url?: string;
   description: string;
-  quiz_type: "practice_quiz" | "assignment" | "graded_survey" | "survey";
+  quiz_type: 'practice_quiz' | 'assignment' | 'graded_survey' | 'survey';
   assignment_group_id?: number;
   time_limit?: number;
   shuffle_answers: boolean;
-  hide_results?: "always" | "until_after_last_attempt" | null;
+  hide_results?: 'always' | 'until_after_last_attempt' | null;
   show_correct_answers: boolean;
   show_correct_answers_last_attempt: boolean;
   show_correct_answers_at?: string;
   hide_correct_answers_at?: string;
   one_time_results: boolean;
-  scoring_policy: "keep_highest" | "keep_latest";
+  scoring_policy: 'keep_highest' | 'keep_latest';
   allowed_attempts: number;
   one_question_at_a_time: boolean;
   question_count: number;
@@ -68,18 +68,18 @@ export interface QuizQuestion extends CanvasEntity {
 }
 
 export type QuestionType =
-  | "calculated_question"
-  | "essay_question"
-  | "file_upload_question"
-  | "fill_in_multiple_blanks_question"
-  | "matching_question"
-  | "multiple_answers_question"
-  | "multiple_choice_question"
-  | "multiple_dropdowns_question"
-  | "numerical_question"
-  | "short_answer_question"
-  | "text_only_question"
-  | "true_false_question";
+  | 'calculated_question'
+  | 'essay_question'
+  | 'file_upload_question'
+  | 'fill_in_multiple_blanks_question'
+  | 'matching_question'
+  | 'multiple_answers_question'
+  | 'multiple_choice_question'
+  | 'multiple_dropdowns_question'
+  | 'numerical_question'
+  | 'short_answer_question'
+  | 'text_only_question'
+  | 'true_false_question';
 
 export interface Answer {
   id?: number;
@@ -90,7 +90,7 @@ export interface Answer {
   answer_match_left?: string;
   answer_match_right?: string;
   matching_answer_incorrect_matches?: string;
-  numerical_answer_type?: "exact_answer" | "range_answer" | "precision_answer";
+  numerical_answer_type?: 'exact_answer' | 'range_answer' | 'precision_answer';
   exact?: number;
   margin?: number;
   approximate?: number;
@@ -108,17 +108,17 @@ export interface QuizListParams {
 export interface QuizCreateParams {
   title: string;
   description?: string;
-  quiz_type?: "practice_quiz" | "assignment" | "graded_survey" | "survey";
+  quiz_type?: 'practice_quiz' | 'assignment' | 'graded_survey' | 'survey';
   assignment_group_id?: number;
   time_limit?: number;
   shuffle_answers?: boolean;
-  hide_results?: "always" | "until_after_last_attempt";
+  hide_results?: 'always' | 'until_after_last_attempt';
   show_correct_answers?: boolean;
   show_correct_answers_last_attempt?: boolean;
   show_correct_answers_at?: string;
   hide_correct_answers_at?: string;
   allowed_attempts?: number;
-  scoring_policy?: "keep_highest" | "keep_latest";
+  scoring_policy?: 'keep_highest' | 'keep_latest';
   one_question_at_a_time?: boolean;
   cant_go_back?: boolean;
   access_code?: string;

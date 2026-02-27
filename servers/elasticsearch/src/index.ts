@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
-import { ElasticsearchService } from "./services/elasticsearch-service.js";
-import { tools } from "./tools/index.js";
-import { ElasticsearchConfig } from "./types/index.js";
+} from '@modelcontextprotocol/sdk/types.js';
+import { ElasticsearchService } from './services/elasticsearch-service.js';
+import { tools } from './tools/index.js';
+import { ElasticsearchConfig } from './types/index.js';
 
 class ElasticsearchServer {
   private server: Server;
@@ -17,8 +17,8 @@ class ElasticsearchServer {
   constructor() {
     this.server = new Server(
       {
-        name: "elasticsearch-server",
-        version: "1.0.0",
+        name: 'elasticsearch-server',
+        version: '1.0.0',
       },
       {
         capabilities: {
@@ -32,8 +32,8 @@ class ElasticsearchServer {
   }
 
   private setupErrorHandling(): void {
-    this.server.onerror = (error) => console.error("[MCP Error]", error);
-    process.on("SIGINT", async () => {
+    this.server.onerror = (error) => console.error('[MCP Error]', error);
+    process.on('SIGINT', async () => {
       await this.server.close();
       process.exit(0);
     });
@@ -49,7 +49,7 @@ class ElasticsearchServer {
 
       if (!this.elasticsearchService) {
         throw new Error(
-          "Elasticsearch service not initialized. Please check your Elasticsearch configuration."
+          'Elasticsearch service not initialized. Please check your Elasticsearch configuration.'
         );
       }
 
@@ -65,59 +65,59 @@ class ElasticsearchServer {
 
   private async handleToolCall(name: string, args: any) {
     if (!this.elasticsearchService) {
-      throw new Error("Elasticsearch service not initialized");
+      throw new Error('Elasticsearch service not initialized');
     }
 
     const service = this.elasticsearchService;
 
     switch (name) {
       // Connection and Health Tools
-      case "elasticsearch_test_connection":
+      case 'elasticsearch_test_connection':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(await service.testConnection(), null, 2),
             },
           ],
         };
 
-      case "elasticsearch_cluster_health":
+      case 'elasticsearch_cluster_health':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(await service.getClusterHealth(), null, 2),
             },
           ],
         };
 
-      case "elasticsearch_node_stats":
+      case 'elasticsearch_node_stats':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(await service.getNodeStats(), null, 2),
             },
           ],
         };
 
       // Index Management Tools
-      case "elasticsearch_list_indices":
+      case 'elasticsearch_list_indices':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(await service.listIndices(), null, 2),
             },
           ],
         };
 
-      case "elasticsearch_get_index_info":
+      case 'elasticsearch_get_index_info':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.getIndexInfo(args.index),
                 null,
@@ -127,11 +127,11 @@ class ElasticsearchServer {
           ],
         };
 
-      case "elasticsearch_create_index":
+      case 'elasticsearch_create_index':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.createIndex({
                   index: args.index,
@@ -145,11 +145,11 @@ class ElasticsearchServer {
           ],
         };
 
-      case "elasticsearch_delete_index":
+      case 'elasticsearch_delete_index':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.deleteIndex(args.index),
                 null,
@@ -159,11 +159,11 @@ class ElasticsearchServer {
           ],
         };
 
-      case "elasticsearch_index_exists":
+      case 'elasticsearch_index_exists':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 { exists: await service.indexExists(args.index) },
                 null,
@@ -174,11 +174,11 @@ class ElasticsearchServer {
         };
 
       // Search Tools
-      case "elasticsearch_search":
+      case 'elasticsearch_search':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.search({
                   index: args.index,
@@ -198,11 +198,11 @@ class ElasticsearchServer {
           ],
         };
 
-      case "elasticsearch_count":
+      case 'elasticsearch_count':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.count(args.index, args.query),
                 null,
@@ -212,11 +212,11 @@ class ElasticsearchServer {
           ],
         };
 
-      case "elasticsearch_aggregation":
+      case 'elasticsearch_aggregation':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.performAggregation({
                   index: args.index,
@@ -232,11 +232,11 @@ class ElasticsearchServer {
         };
 
       // Document Management Tools
-      case "elasticsearch_get_document":
+      case 'elasticsearch_get_document':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.getDocument(args.index, args.id),
                 null,
@@ -246,11 +246,11 @@ class ElasticsearchServer {
           ],
         };
 
-      case "elasticsearch_index_document":
+      case 'elasticsearch_index_document':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.indexDocument({
                   index: args.index,
@@ -265,11 +265,11 @@ class ElasticsearchServer {
           ],
         };
 
-      case "elasticsearch_update_document":
+      case 'elasticsearch_update_document':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.updateDocument(
                   args.index,
@@ -284,11 +284,11 @@ class ElasticsearchServer {
           ],
         };
 
-      case "elasticsearch_delete_document":
+      case 'elasticsearch_delete_document':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.deleteDocument(args.index, args.id, args.refresh),
                 null,
@@ -299,17 +299,17 @@ class ElasticsearchServer {
         };
 
       // Bulk Operations
-      case "elasticsearch_bulk_operation":
+      case 'elasticsearch_bulk_operation':
         // Limit bulk operations to prevent overwhelming the system
         if (args.operations && args.operations.length > 100) {
           throw new Error(
-            "Bulk operations are limited to 100 operations per request"
+            'Bulk operations are limited to 100 operations per request'
           );
         }
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.bulkOperation({
                   index: args.index,
@@ -323,11 +323,11 @@ class ElasticsearchServer {
           ],
         };
 
-      case "elasticsearch_delete_by_query":
+      case 'elasticsearch_delete_by_query':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.deleteByQuery(
                   args.index,
@@ -342,11 +342,11 @@ class ElasticsearchServer {
         };
 
       // Advanced Operations
-      case "elasticsearch_reindex":
+      case 'elasticsearch_reindex':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.reindex(
                   args.source_index,
@@ -368,7 +368,7 @@ class ElasticsearchServer {
   async run(): Promise<void> {
     // Get Elasticsearch configuration from environment variables
     const elasticsearchNode =
-      process.env.ELASTICSEARCH_NODE || "http://localhost:9200";
+      process.env.ELASTICSEARCH_NODE || 'http://localhost:9200';
 
     const config: ElasticsearchConfig = {
       node: elasticsearchNode,
@@ -404,7 +404,7 @@ class ElasticsearchServer {
 
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error("Elasticsearch MCP server running on stdio");
+    console.error('Elasticsearch MCP server running on stdio');
   }
 }
 

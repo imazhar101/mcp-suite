@@ -1,5 +1,5 @@
-import { CanvasEntity, EnrollmentIncludeOptions } from "./index.js";
-import { User } from "./user.js";
+import { CanvasEntity, EnrollmentIncludeOptions } from './index.js';
+import { User } from './user.js';
 
 export interface Grade {
   html_url?: string;
@@ -25,22 +25,22 @@ export interface Enrollment extends CanvasEntity {
   sis_section_id?: string;
   sis_user_id?: string;
   enrollment_state:
-    | "active"
-    | "invited"
-    | "creation_pending"
-    | "deleted"
-    | "rejected"
-    | "completed"
-    | "inactive";
+    | 'active'
+    | 'invited'
+    | 'creation_pending'
+    | 'deleted'
+    | 'rejected'
+    | 'completed'
+    | 'inactive';
   limit_privileges_to_course_section?: boolean;
   sis_import_id?: number;
   root_account_id: number;
   type:
-    | "StudentEnrollment"
-    | "TeacherEnrollment"
-    | "TaEnrollment"
-    | "DesignerEnrollment"
-    | "ObserverEnrollment";
+    | 'StudentEnrollment'
+    | 'TeacherEnrollment'
+    | 'TaEnrollment'
+    | 'DesignerEnrollment'
+    | 'ObserverEnrollment';
   user_id: number;
   associated_user_id?: number;
   role: string;
@@ -73,25 +73,25 @@ export interface Enrollment extends CanvasEntity {
 
 export interface EnrollmentListParams {
   type?: Array<
-    | "StudentEnrollment"
-    | "TeacherEnrollment"
-    | "TaEnrollment"
-    | "DesignerEnrollment"
-    | "ObserverEnrollment"
+    | 'StudentEnrollment'
+    | 'TeacherEnrollment'
+    | 'TaEnrollment'
+    | 'DesignerEnrollment'
+    | 'ObserverEnrollment'
   >;
   role?: string[];
   state?: Array<
-    | "active"
-    | "invited"
-    | "creation_pending"
-    | "deleted"
-    | "rejected"
-    | "completed"
-    | "inactive"
-    | "current_and_invited"
-    | "current_and_future"
-    | "current_future_and_restricted"
-    | "current_and_concluded"
+    | 'active'
+    | 'invited'
+    | 'creation_pending'
+    | 'deleted'
+    | 'rejected'
+    | 'completed'
+    | 'inactive'
+    | 'current_and_invited'
+    | 'current_and_future'
+    | 'current_future_and_restricted'
+    | 'current_and_concluded'
   >;
   include?: EnrollmentIncludeOptions[];
   user_id?: string;
@@ -107,13 +107,13 @@ export interface EnrollmentListParams {
 export interface EnrollmentCreateParams {
   user_id: string;
   type:
-    | "StudentEnrollment"
-    | "TeacherEnrollment"
-    | "TaEnrollment"
-    | "ObserverEnrollment"
-    | "DesignerEnrollment";
+    | 'StudentEnrollment'
+    | 'TeacherEnrollment'
+    | 'TaEnrollment'
+    | 'ObserverEnrollment'
+    | 'DesignerEnrollment';
   role_id?: number;
-  enrollment_state?: "active" | "invited" | "inactive";
+  enrollment_state?: 'active' | 'invited' | 'inactive';
   course_section_id?: number;
   limit_privileges_to_course_section?: boolean;
   notify?: boolean;
@@ -129,7 +129,7 @@ export interface EnrollmentCreateParams {
 
 export interface EnrollmentUpdateParams {
   enrollment_id: string;
-  task?: "conclude" | "delete" | "inactivate" | "deactivate";
+  task?: 'conclude' | 'delete' | 'inactivate' | 'deactivate';
 }
 
 export interface EnrollmentAcceptRejectParams {
@@ -160,7 +160,7 @@ export interface TemporaryEnrollmentStatus {
 }
 
 // Enrollment context types for different endpoints
-export type EnrollmentContext = "course" | "section" | "user";
+export type EnrollmentContext = 'course' | 'section' | 'user';
 
 export interface EnrollmentContextParams {
   context: EnrollmentContext;

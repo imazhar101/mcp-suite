@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 import {
   GradeChangeEvent,
   GradeChangeByAssignmentParams,
@@ -6,7 +6,7 @@ import {
   GradeChangeByStudentParams,
   GradeChangeByGraderParams,
   GradeChangeAdvancedQueryParams,
-} from "../types/grade-change-log.js";
+} from '../types/grade-change-log.js';
 
 export class GradeChangeLogService {
   constructor(private canvasClient: AxiosInstance) {}

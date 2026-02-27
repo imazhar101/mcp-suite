@@ -1,8 +1,8 @@
-import axios, { AxiosInstance } from "axios";
-import { Logger } from "../../../../shared/utils/logger.js";
-import { ErrorHandler } from "../../../../shared/middleware/error-handler.js";
-import { AuthMiddleware } from "../../../../shared/middleware/auth.js";
-import { ServerResponse } from "../../../../shared/types/common.js";
+import axios, { AxiosInstance } from 'axios';
+import { Logger } from '../../../../shared/utils/logger.js';
+import { ErrorHandler } from '../../../../shared/middleware/error-handler.js';
+import { AuthMiddleware } from '../../../../shared/middleware/auth.js';
+import { ServerResponse } from '../../../../shared/types/common.js';
 import {
   JiraConfig,
   ADFDocument,
@@ -13,7 +13,7 @@ import {
   CreateIssueRequest,
   UpdateIssueRequest,
   SearchIssuesRequest,
-} from "../types.js";
+} from '../types.js';
 
 export class JiraService {
   private client: AxiosInstance;
@@ -23,7 +23,7 @@ export class JiraService {
 
   constructor(config: JiraConfig, logger: Logger) {
     this.config = config;
-    this.logger = logger.withContext({ server: "jira" });
+    this.logger = logger.withContext({ server: 'jira' });
     this.errorHandler = new ErrorHandler(this.logger);
 
     const auth = new AuthMiddleware({
@@ -35,24 +35,24 @@ export class JiraService {
     this.client = axios.create({
       baseURL: `${config.baseUrl}/rest/api/3`,
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
         ...auth.getAuthHeaders(),
       },
     });
   }
 
-  textToADF(text: string, format: "plain" | "rich" = "plain"): ADFDocument {
-    if (format === "plain") {
+  textToADF(text: string, format: 'plain' | 'rich' = 'plain'): ADFDocument {
+    if (format === 'plain') {
       return {
-        type: "doc",
+        type: 'doc',
         version: 1,
         content: [
           {
-            type: "paragraph",
+            type: 'paragraph',
             content: [
               {
-                type: "text",
+                type: 'text',
                 text: text,
               },
             ],
@@ -62,22 +62,22 @@ export class JiraService {
     }
 
     return {
-      type: "doc",
+      type: 'doc',
       version: 1,
       content: [
         {
-          type: "heading",
+          type: 'heading',
           attrs: { level: 1 },
-          content: [{ type: "text", text: "Rich Text Example" }],
+          content: [{ type: 'text', text: 'Rich Text Example' }],
         },
         {
-          type: "paragraph",
+          type: 'paragraph',
           content: [
-            { type: "text", text: "This is " },
-            { type: "text", text: "bold", marks: [{ type: "strong" }] },
-            { type: "text", text: " and this is " },
-            { type: "text", text: "italic", marks: [{ type: "em" }] },
-            { type: "text", text: " text." },
+            { type: 'text', text: 'This is ' },
+            { type: 'text', text: 'bold', marks: [{ type: 'strong' }] },
+            { type: 'text', text: ' and this is ' },
+            { type: 'text', text: 'italic', marks: [{ type: 'em' }] },
+            { type: 'text', text: ' text.' },
           ],
         },
       ],
@@ -88,7 +88,7 @@ export class JiraService {
     description: string | ADFDocument | undefined
   ): ADFDocument | undefined {
     if (!description) return undefined;
-    if (typeof description === "string") {
+    if (typeof description === 'string') {
       return this.textToADF(description);
     }
     return description;
@@ -98,22 +98,30 @@ export class JiraService {
     request: SearchIssuesRequest
   ): Promise<ServerResponse<JiraIssue[]>> {
     try {
-      this.logger.info("Searching issues", { jql: request.jql });
+      this.logger.info('Searching issues', { jql: request.jql });
 
-      const response = await this.client.get("/search", {
-        params: {
-          jql: request.jql,
-          maxResults: request.maxResults || 50,
-          fields:
-            "summary,status,assignee,reporter,priority,issuetype,project,created,updated,description",
-        },
+      const response = await this.client.post('/search/jql', {
+        jql: request.jql,
+        maxResults: request.maxResults || 50,
+        fields: [
+          'summary',
+          'status',
+          'assignee',
+          'reporter',
+          'priority',
+          'issuetype',
+          'project',
+          'created',
+          'updated',
+          'description',
+        ],
       });
 
       const issues: JiraIssue[] = response.data.issues.map((issue: any) => ({
         key: issue.key,
         summary: issue.fields.summary,
         status: issue.fields.status.name,
-        assignee: issue.fields.assignee?.displayName || "Unassigned",
+        assignee: issue.fields.assignee?.displayName || 'Unassigned',
         reporter: issue.fields.reporter.displayName,
         priority: issue.fields.priority.name,
         issueType: issue.fields.issuetype.name,
@@ -131,18 +139,18 @@ export class JiraService {
         message: `Found ${response.data.total} issues (showing ${issues.length})`,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Jira");
+      return this.errorHandler.handleApiError(error, 'Jira');
     }
   }
 
   async getIssue(issueKey: string): Promise<ServerResponse<JiraIssue>> {
     try {
-      this.logger.info("Getting issue", { issueKey });
+      this.logger.info('Getting issue', { issueKey });
 
       const response = await this.client.get(`/issue/${issueKey}`, {
         params: {
           fields:
-            "summary,status,assignee,reporter,priority,issuetype,project,created,updated,description,comment",
+            'summary,status,assignee,reporter,priority,issuetype,project,created,updated,description,comment',
         },
       });
 
@@ -150,9 +158,9 @@ export class JiraService {
       const issueData: JiraIssue = {
         key: issue.key,
         summary: issue.fields.summary,
-        description: issue.fields.description || "No description",
+        description: issue.fields.description || 'No description',
         status: issue.fields.status.name,
-        assignee: issue.fields.assignee?.displayName || "Unassigned",
+        assignee: issue.fields.assignee?.displayName || 'Unassigned',
         reporter: issue.fields.reporter.displayName,
         priority: issue.fields.priority.name,
         issueType: issue.fields.issuetype.name,
@@ -176,7 +184,7 @@ export class JiraService {
         data: issueData,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Jira");
+      return this.errorHandler.handleApiError(error, 'Jira');
     }
   }
 
@@ -184,7 +192,7 @@ export class JiraService {
     request: CreateIssueRequest
   ): Promise<ServerResponse<{ key: string; url: string }>> {
     try {
-      this.logger.info("Creating issue", {
+      this.logger.info('Creating issue', {
         projectKey: request.projectKey,
         summary: request.summary,
       });
@@ -193,8 +201,8 @@ export class JiraService {
         fields: {
           project: { key: request.projectKey },
           summary: request.summary,
-          issuetype: { name: request.issueType || "Task" },
-          priority: { name: request.priority || "Medium" },
+          issuetype: { name: request.issueType || 'Task' },
+          priority: { name: request.priority || 'Medium' },
         },
       };
 
@@ -207,7 +215,7 @@ export class JiraService {
         issueData.fields.assignee = { emailAddress: request.assignee };
       }
 
-      const response = await this.client.post("/issue", issueData);
+      const response = await this.client.post('/issue', issueData);
 
       return {
         success: true,
@@ -215,10 +223,10 @@ export class JiraService {
           key: response.data.key,
           url: `${this.config.baseUrl}/browse/${response.data.key}`,
         },
-        message: "Issue created successfully",
+        message: 'Issue created successfully',
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Jira");
+      return this.errorHandler.handleApiError(error, 'Jira');
     }
   }
 
@@ -226,7 +234,7 @@ export class JiraService {
     request: UpdateIssueRequest
   ): Promise<ServerResponse<void>> {
     try {
-      this.logger.info("Updating issue", { issueKey: request.issueKey });
+      this.logger.info('Updating issue', { issueKey: request.issueKey });
 
       const updateData: any = { fields: {} };
 
@@ -254,7 +262,7 @@ export class JiraService {
         message: `Issue ${request.issueKey} updated successfully`,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Jira");
+      return this.errorHandler.handleApiError(error, 'Jira');
     }
   }
 
@@ -263,7 +271,7 @@ export class JiraService {
     transitionName: string
   ): Promise<ServerResponse<void>> {
     try {
-      this.logger.info("Transitioning issue", { issueKey, transitionName });
+      this.logger.info('Transitioning issue', { issueKey, transitionName });
 
       const transitionsResponse = await this.client.get(
         `/issue/${issueKey}/transitions`
@@ -278,7 +286,7 @@ export class JiraService {
       if (!transition) {
         const availableTransitions = transitions
           .map((t: JiraTransition) => t.name)
-          .join(", ");
+          .join(', ');
         return {
           success: false,
           error: `Transition "${transitionName}" not found. Available transitions: ${availableTransitions}`,
@@ -294,20 +302,20 @@ export class JiraService {
         message: `Issue ${issueKey} transitioned to "${transition.to.name}" successfully`,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Jira");
+      return this.errorHandler.handleApiError(error, 'Jira');
     }
   }
 
   async addComment(
     issueKey: string,
     comment: string | ADFDocument,
-    format: "plain" | "rich" = "plain"
+    format: 'plain' | 'rich' = 'plain'
   ): Promise<ServerResponse<{ id: string }>> {
     try {
-      this.logger.info("Adding comment", { issueKey });
+      this.logger.info('Adding comment', { issueKey });
 
       const processedComment =
-        typeof comment === "string" ? this.textToADF(comment, format) : comment;
+        typeof comment === 'string' ? this.textToADF(comment, format) : comment;
 
       const response = await this.client.post(`/issue/${issueKey}/comment`, {
         body: processedComment,
@@ -319,20 +327,20 @@ export class JiraService {
         message: `Comment added to issue ${issueKey} successfully`,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Jira");
+      return this.errorHandler.handleApiError(error, 'Jira');
     }
   }
 
   async listProjects(): Promise<ServerResponse<JiraProject[]>> {
     try {
-      this.logger.info("Listing projects");
+      this.logger.info('Listing projects');
 
-      const response = await this.client.get("/project");
+      const response = await this.client.get('/project');
       const projects: JiraProject[] = response.data.map((project: any) => ({
         key: project.key,
         name: project.name,
         projectType: project.projectTypeKey,
-        lead: project.lead?.displayName || "No lead assigned",
+        lead: project.lead?.displayName || 'No lead assigned',
       }));
 
       return {
@@ -340,13 +348,13 @@ export class JiraService {
         data: projects,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Jira");
+      return this.errorHandler.handleApiError(error, 'Jira');
     }
   }
 
   async getProject(projectKey: string): Promise<ServerResponse<JiraProject>> {
     try {
-      this.logger.info("Getting project", { projectKey });
+      this.logger.info('Getting project', { projectKey });
 
       const response = await this.client.get(`/project/${projectKey}`);
       const project = response.data;
@@ -354,9 +362,9 @@ export class JiraService {
       const projectData: JiraProject = {
         key: project.key,
         name: project.name,
-        description: project.description || "No description",
+        description: project.description || 'No description',
         projectType: project.projectTypeKey,
-        lead: project.lead?.displayName || "No lead assigned",
+        lead: project.lead?.displayName || 'No lead assigned',
         url: project.self,
         issueTypes:
           project.issueTypes?.map((type: any) => ({
@@ -370,7 +378,7 @@ export class JiraService {
         data: projectData,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Jira");
+      return this.errorHandler.handleApiError(error, 'Jira');
     }
   }
 
@@ -378,7 +386,7 @@ export class JiraService {
     issueKey: string
   ): Promise<ServerResponse<JiraTransition[]>> {
     try {
-      this.logger.info("Getting issue transitions", { issueKey });
+      this.logger.info('Getting issue transitions', { issueKey });
 
       const response = await this.client.get(`/issue/${issueKey}/transitions`);
       const transitions: JiraTransition[] = response.data.transitions.map(
@@ -394,7 +402,7 @@ export class JiraService {
         data: transitions,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Jira");
+      return this.errorHandler.handleApiError(error, 'Jira');
     }
   }
 
@@ -403,7 +411,7 @@ export class JiraService {
     assignee: string
   ): Promise<ServerResponse<void>> {
     try {
-      this.logger.info("Assigning issue", { issueKey, assignee });
+      this.logger.info('Assigning issue', { issueKey, assignee });
 
       await this.client.put(`/issue/${issueKey}/assignee`, {
         emailAddress: assignee,
@@ -414,13 +422,13 @@ export class JiraService {
         message: `Issue ${issueKey} assigned to ${assignee} successfully`,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Jira");
+      return this.errorHandler.handleApiError(error, 'Jira');
     }
   }
 
   async deleteIssue(issueKey: string): Promise<ServerResponse<void>> {
     try {
-      this.logger.info("Deleting issue", { issueKey });
+      this.logger.info('Deleting issue', { issueKey });
 
       await this.client.delete(`/issue/${issueKey}`);
 
@@ -429,7 +437,7 @@ export class JiraService {
         message: `Issue ${issueKey} deleted successfully`,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Jira");
+      return this.errorHandler.handleApiError(error, 'Jira');
     }
   }
 }

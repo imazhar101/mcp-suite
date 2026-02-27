@@ -5,34 +5,41 @@ A Model Context Protocol (MCP) server that provides comprehensive integration wi
 ## Features
 
 ### Payment Processing
+
 - **Payment Intents**: Create, confirm, cancel, and manage payment intents
 - **Payment Methods**: Create and manage payment methods for customers
 - **Refunds**: Process full or partial refunds for payments
 - **Charges**: Retrieve and list charge information
 
 ### Customer Management
+
 - **Customers**: Create, update, retrieve, and list customers
 - **Payment Methods**: Attach and manage customer payment methods
 
 ### Products & Pricing
+
 - **Products**: Create and manage products in your catalog
 - **Prices**: Set up pricing for products including one-time and recurring prices
 - **Subscriptions**: Create and manage customer subscriptions
 
 ### Billing & Invoicing
+
 - **Invoices**: Create and manage invoices for customers
 - **Subscriptions**: Handle recurring billing and subscription management
 
 ### Webhooks & Integration
+
 - **Webhook Endpoints**: Set up webhook endpoints for real-time event notifications
 - **Connection Testing**: Verify API connectivity and account information
 
 ## Available Tools
 
 ### Connection & Testing
+
 - `stripe_test_connection` - Test Stripe API connection and retrieve account info
 
 ### Payment Intents (5 tools)
+
 - `stripe_create_payment_intent` - Create a new payment intent
 - `stripe_get_payment_intent` - Retrieve payment intent details
 - `stripe_confirm_payment_intent` - Confirm and process a payment
@@ -40,41 +47,49 @@ A Model Context Protocol (MCP) server that provides comprehensive integration wi
 - `stripe_list_payment_intents` - List payment intents with filters
 
 ### Customer Management (4 tools)
+
 - `stripe_create_customer` - Create a new customer
 - `stripe_get_customer` - Retrieve customer information
 - `stripe_update_customer` - Update customer details
 - `stripe_list_customers` - List customers with filters
 
 ### Payment Methods (3 tools)
+
 - `stripe_create_payment_method` - Create a new payment method
 - `stripe_attach_payment_method` - Attach payment method to customer
 - `stripe_list_payment_methods` - List customer's payment methods
 
 ### Refunds (2 tools)
+
 - `stripe_create_refund` - Create refund for payment or charge
 - `stripe_get_refund` - Retrieve refund information
 
 ### Products & Catalog (4 tools)
+
 - `stripe_create_product` - Create a new product
 - `stripe_list_products` - List products in catalog
 - `stripe_create_price` - Create pricing for products
 - `stripe_list_prices` - List prices with filters
 
 ### Subscriptions (4 tools)
+
 - `stripe_create_subscription` - Create customer subscription
 - `stripe_get_subscription` - Retrieve subscription details
 - `stripe_cancel_subscription` - Cancel a subscription
 - `stripe_list_subscriptions` - List subscriptions with filters
 
 ### Invoices (2 tools)
+
 - `stripe_create_invoice` - Create customer invoice
 - `stripe_list_invoices` - List invoices with filters
 
 ### Webhooks (2 tools)
+
 - `stripe_create_webhook_endpoint` - Set up webhook endpoint
 - `stripe_list_webhook_endpoints` - List webhook endpoints
 
 ### Charges (2 tools)
+
 - `stripe_list_charges` - List charges with filters
 - `stripe_get_charge` - Retrieve charge details
 
@@ -83,11 +98,13 @@ A Model Context Protocol (MCP) server that provides comprehensive integration wi
 ## Setup
 
 ### Prerequisites
+
 - Node.js 18+ and npm
 - A Stripe account with API access
 - Stripe API keys (test or live mode)
 
 ### Environment Variables
+
 Set these environment variables:
 
 ```bash
@@ -114,6 +131,7 @@ STRIPE_WEBHOOK_SECRET=whsec_... # For webhook signature verification
 ## Usage
 
 ### Running the Server
+
 ```bash
 # Development mode with auto-rebuild
 npm run dev
@@ -126,6 +144,7 @@ node dist/index.js
 ```
 
 ### Integration with MCP Clients
+
 Add this server to your MCP client configuration:
 
 ```json
@@ -145,49 +164,51 @@ Add this server to your MCP client configuration:
 ## Example Usage
 
 ### Basic Payment Flow
+
 ```typescript
 // 1. Create a customer
 const customer = await stripe_create_customer({
-  email: "customer@example.com",
-  name: "John Doe"
+  email: 'customer@example.com',
+  name: 'John Doe',
 });
 
 // 2. Create a payment intent
 const paymentIntent = await stripe_create_payment_intent({
   amount: 2000, // $20.00 in cents
-  currency: "usd",
+  currency: 'usd',
   customer: customer.id,
-  automatic_payment_methods: { enabled: true }
+  automatic_payment_methods: { enabled: true },
 });
 
 // 3. Confirm the payment (typically done on frontend)
 const confirmedPayment = await stripe_confirm_payment_intent({
-  payment_intent_id: paymentIntent.id
+  payment_intent_id: paymentIntent.id,
 });
 ```
 
 ### Subscription Setup
+
 ```typescript
 // 1. Create a product
 const product = await stripe_create_product({
-  name: "Monthly Subscription",
-  type: "service"
+  name: 'Monthly Subscription',
+  type: 'service',
 });
 
 // 2. Create a price
 const price = await stripe_create_price({
-  currency: "usd",
+  currency: 'usd',
   product: product.id,
   unit_amount: 999, // $9.99
   recurring: {
-    interval: "month"
-  }
+    interval: 'month',
+  },
 });
 
 // 3. Create subscription for customer
 const subscription = await stripe_create_subscription({
   customer: customer.id,
-  items: [{ price: price.id }]
+  items: [{ price: price.id }],
 });
 ```
 
@@ -201,25 +222,28 @@ const subscription = await stripe_create_subscription({
 ## Testing
 
 ### Using Stripe Test Mode
+
 - Use test API keys (starting with `sk_test_`)
 - Use test card numbers provided by Stripe
 - No real money is processed in test mode
 
 ### Test Cards
+
 ```javascript
 // Successful payment
-card_number: "4242424242424242"
+card_number: '4242424242424242';
 
 // Declined payment
-card_number: "4000000000000002"
+card_number: '4000000000000002';
 
 // Requires authentication
-card_number: "4000002500003155"
+card_number: '4000002500003155';
 ```
 
 ## Error Handling
 
 The server provides detailed error messages for common scenarios:
+
 - Invalid API keys
 - Insufficient permissions
 - Rate limiting
@@ -227,6 +251,7 @@ The server provides detailed error messages for common scenarios:
 - Network connectivity issues
 
 All responses follow a consistent format:
+
 ```json
 {
   "success": true|false,

@@ -37,7 +37,9 @@ export class AuthMiddleware {
     }
 
     if (this.credentials.username && this.credentials.password) {
-      const auth = Buffer.from(`${this.credentials.username}:${this.credentials.password}`).toString('base64');
+      const auth = Buffer.from(
+        `${this.credentials.username}:${this.credentials.password}`
+      ).toString('base64');
       headers['Authorization'] = `Basic ${auth}`;
     }
 
@@ -45,7 +47,10 @@ export class AuthMiddleware {
   }
 
   isAuthenticated(): boolean {
-    return !!(this.credentials.apiKey || this.credentials.token || 
-              (this.credentials.username && this.credentials.password));
+    return !!(
+      this.credentials.apiKey ||
+      this.credentials.token ||
+      (this.credentials.username && this.credentials.password)
+    );
   }
 }

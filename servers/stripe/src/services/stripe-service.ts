@@ -27,7 +27,9 @@ export class StripeService {
   async testConnection(): Promise<StripeServiceResponse> {
     try {
       const account = await this.stripe.accounts.retrieve();
-      this.logger.info('Stripe connection successful', { accountId: account.id });
+      this.logger.info('Stripe connection successful', {
+        accountId: account.id,
+      });
       return {
         success: true,
         data: { accountId: account.id, country: account.country },
@@ -37,13 +39,16 @@ export class StripeService {
       this.logger.error('Stripe connection failed', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error:
+          error instanceof Error ? error.message : 'Unknown error occurred',
       };
     }
   }
 
   // Payment Intents
-  async createPaymentIntent(request: PaymentIntentCreateRequest): Promise<StripeServiceResponse> {
+  async createPaymentIntent(
+    request: PaymentIntentCreateRequest
+  ): Promise<StripeServiceResponse> {
     try {
       const paymentIntent = await this.stripe.paymentIntents.create(request);
       this.logger.info('Payment intent created', { id: paymentIntent.id });
@@ -56,14 +61,20 @@ export class StripeService {
       this.logger.error('Failed to create payment intent', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to create payment intent',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to create payment intent',
       };
     }
   }
 
-  async getPaymentIntent(paymentIntentId: string): Promise<StripeServiceResponse> {
+  async getPaymentIntent(
+    paymentIntentId: string
+  ): Promise<StripeServiceResponse> {
     try {
-      const paymentIntent = await this.stripe.paymentIntents.retrieve(paymentIntentId);
+      const paymentIntent =
+        await this.stripe.paymentIntents.retrieve(paymentIntentId);
       return {
         success: true,
         data: paymentIntent,
@@ -72,19 +83,28 @@ export class StripeService {
       this.logger.error('Failed to retrieve payment intent', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to retrieve payment intent',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to retrieve payment intent',
       };
     }
   }
 
-  async confirmPaymentIntent(paymentIntentId: string, paymentMethod?: string): Promise<StripeServiceResponse> {
+  async confirmPaymentIntent(
+    paymentIntentId: string,
+    paymentMethod?: string
+  ): Promise<StripeServiceResponse> {
     try {
       const updateData: any = {};
       if (paymentMethod) {
         updateData.payment_method = paymentMethod;
       }
-      
-      const paymentIntent = await this.stripe.paymentIntents.confirm(paymentIntentId, updateData);
+
+      const paymentIntent = await this.stripe.paymentIntents.confirm(
+        paymentIntentId,
+        updateData
+      );
       this.logger.info('Payment intent confirmed', { id: paymentIntent.id });
       return {
         success: true,
@@ -95,14 +115,20 @@ export class StripeService {
       this.logger.error('Failed to confirm payment intent', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to confirm payment intent',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to confirm payment intent',
       };
     }
   }
 
-  async cancelPaymentIntent(paymentIntentId: string): Promise<StripeServiceResponse> {
+  async cancelPaymentIntent(
+    paymentIntentId: string
+  ): Promise<StripeServiceResponse> {
     try {
-      const paymentIntent = await this.stripe.paymentIntents.cancel(paymentIntentId);
+      const paymentIntent =
+        await this.stripe.paymentIntents.cancel(paymentIntentId);
       this.logger.info('Payment intent cancelled', { id: paymentIntent.id });
       return {
         success: true,
@@ -113,12 +139,18 @@ export class StripeService {
       this.logger.error('Failed to cancel payment intent', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to cancel payment intent',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to cancel payment intent',
       };
     }
   }
 
-  async listPaymentIntents(params: { limit?: number; customer?: string }): Promise<StripeServiceResponse> {
+  async listPaymentIntents(params: {
+    limit?: number;
+    customer?: string;
+  }): Promise<StripeServiceResponse> {
     try {
       const paymentIntents = await this.stripe.paymentIntents.list(params);
       return {
@@ -129,13 +161,18 @@ export class StripeService {
       this.logger.error('Failed to list payment intents', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to list payment intents',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to list payment intents',
       };
     }
   }
 
   // Customers
-  async createCustomer(request: CustomerCreateRequest): Promise<StripeServiceResponse> {
+  async createCustomer(
+    request: CustomerCreateRequest
+  ): Promise<StripeServiceResponse> {
     try {
       const customer = await this.stripe.customers.create(request);
       this.logger.info('Customer created', { id: customer.id });
@@ -148,7 +185,8 @@ export class StripeService {
       this.logger.error('Failed to create customer', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to create customer',
+        error:
+          error instanceof Error ? error.message : 'Failed to create customer',
       };
     }
   }
@@ -164,12 +202,18 @@ export class StripeService {
       this.logger.error('Failed to retrieve customer', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to retrieve customer',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to retrieve customer',
       };
     }
   }
 
-  async updateCustomer(customerId: string, updates: Partial<CustomerCreateRequest>): Promise<StripeServiceResponse> {
+  async updateCustomer(
+    customerId: string,
+    updates: Partial<CustomerCreateRequest>
+  ): Promise<StripeServiceResponse> {
     try {
       const customer = await this.stripe.customers.update(customerId, updates);
       this.logger.info('Customer updated', { id: customer.id });
@@ -182,12 +226,16 @@ export class StripeService {
       this.logger.error('Failed to update customer', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to update customer',
+        error:
+          error instanceof Error ? error.message : 'Failed to update customer',
       };
     }
   }
 
-  async listCustomers(params: { limit?: number; email?: string }): Promise<StripeServiceResponse> {
+  async listCustomers(params: {
+    limit?: number;
+    email?: string;
+  }): Promise<StripeServiceResponse> {
     try {
       const customers = await this.stripe.customers.list(params);
       return {
@@ -198,13 +246,17 @@ export class StripeService {
       this.logger.error('Failed to list customers', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to list customers',
+        error:
+          error instanceof Error ? error.message : 'Failed to list customers',
       };
     }
   }
 
   // Payment Methods
-  async createPaymentMethod(type: string, card?: any): Promise<StripeServiceResponse> {
+  async createPaymentMethod(
+    type: string,
+    card?: any
+  ): Promise<StripeServiceResponse> {
     try {
       const paymentMethod = await this.stripe.paymentMethods.create({
         type: type as any,
@@ -220,17 +272,29 @@ export class StripeService {
       this.logger.error('Failed to create payment method', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to create payment method',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to create payment method',
       };
     }
   }
 
-  async attachPaymentMethod(paymentMethodId: string, customerId: string): Promise<StripeServiceResponse> {
+  async attachPaymentMethod(
+    paymentMethodId: string,
+    customerId: string
+  ): Promise<StripeServiceResponse> {
     try {
-      const paymentMethod = await this.stripe.paymentMethods.attach(paymentMethodId, {
+      const paymentMethod = await this.stripe.paymentMethods.attach(
+        paymentMethodId,
+        {
+          customer: customerId,
+        }
+      );
+      this.logger.info('Payment method attached', {
+        id: paymentMethod.id,
         customer: customerId,
       });
-      this.logger.info('Payment method attached', { id: paymentMethod.id, customer: customerId });
       return {
         success: true,
         data: paymentMethod,
@@ -240,12 +304,18 @@ export class StripeService {
       this.logger.error('Failed to attach payment method', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to attach payment method',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to attach payment method',
       };
     }
   }
 
-  async listPaymentMethods(customerId: string, type?: string): Promise<StripeServiceResponse> {
+  async listPaymentMethods(
+    customerId: string,
+    type?: string
+  ): Promise<StripeServiceResponse> {
     try {
       const paymentMethods = await this.stripe.paymentMethods.list({
         customer: customerId,
@@ -259,13 +329,18 @@ export class StripeService {
       this.logger.error('Failed to list payment methods', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to list payment methods',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to list payment methods',
       };
     }
   }
 
   // Refunds
-  async createRefund(request: RefundCreateRequest): Promise<StripeServiceResponse> {
+  async createRefund(
+    request: RefundCreateRequest
+  ): Promise<StripeServiceResponse> {
     try {
       const refund = await this.stripe.refunds.create(request);
       this.logger.info('Refund created', { id: refund.id });
@@ -278,7 +353,8 @@ export class StripeService {
       this.logger.error('Failed to create refund', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to create refund',
+        error:
+          error instanceof Error ? error.message : 'Failed to create refund',
       };
     }
   }
@@ -294,13 +370,16 @@ export class StripeService {
       this.logger.error('Failed to retrieve refund', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to retrieve refund',
+        error:
+          error instanceof Error ? error.message : 'Failed to retrieve refund',
       };
     }
   }
 
   // Products
-  async createProduct(request: ProductCreateRequest): Promise<StripeServiceResponse> {
+  async createProduct(
+    request: ProductCreateRequest
+  ): Promise<StripeServiceResponse> {
     try {
       const product = await this.stripe.products.create(request);
       this.logger.info('Product created', { id: product.id });
@@ -313,12 +392,16 @@ export class StripeService {
       this.logger.error('Failed to create product', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to create product',
+        error:
+          error instanceof Error ? error.message : 'Failed to create product',
       };
     }
   }
 
-  async listProducts(params: { limit?: number; active?: boolean }): Promise<StripeServiceResponse> {
+  async listProducts(params: {
+    limit?: number;
+    active?: boolean;
+  }): Promise<StripeServiceResponse> {
     try {
       const products = await this.stripe.products.list(params);
       return {
@@ -329,13 +412,16 @@ export class StripeService {
       this.logger.error('Failed to list products', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to list products',
+        error:
+          error instanceof Error ? error.message : 'Failed to list products',
       };
     }
   }
 
   // Prices
-  async createPrice(request: PriceCreateRequest): Promise<StripeServiceResponse> {
+  async createPrice(
+    request: PriceCreateRequest
+  ): Promise<StripeServiceResponse> {
     try {
       const price = await this.stripe.prices.create(request);
       this.logger.info('Price created', { id: price.id });
@@ -348,12 +434,17 @@ export class StripeService {
       this.logger.error('Failed to create price', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to create price',
+        error:
+          error instanceof Error ? error.message : 'Failed to create price',
       };
     }
   }
 
-  async listPrices(params: { limit?: number; product?: string; active?: boolean }): Promise<StripeServiceResponse> {
+  async listPrices(params: {
+    limit?: number;
+    product?: string;
+    active?: boolean;
+  }): Promise<StripeServiceResponse> {
     try {
       const prices = await this.stripe.prices.list(params);
       return {
@@ -370,7 +461,9 @@ export class StripeService {
   }
 
   // Subscriptions
-  async createSubscription(request: SubscriptionCreateRequest): Promise<StripeServiceResponse> {
+  async createSubscription(
+    request: SubscriptionCreateRequest
+  ): Promise<StripeServiceResponse> {
     try {
       const subscription = await this.stripe.subscriptions.create(request);
       this.logger.info('Subscription created', { id: subscription.id });
@@ -383,14 +476,20 @@ export class StripeService {
       this.logger.error('Failed to create subscription', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to create subscription',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to create subscription',
       };
     }
   }
 
-  async getSubscription(subscriptionId: string): Promise<StripeServiceResponse> {
+  async getSubscription(
+    subscriptionId: string
+  ): Promise<StripeServiceResponse> {
     try {
-      const subscription = await this.stripe.subscriptions.retrieve(subscriptionId);
+      const subscription =
+        await this.stripe.subscriptions.retrieve(subscriptionId);
       return {
         success: true,
         data: subscription,
@@ -399,14 +498,20 @@ export class StripeService {
       this.logger.error('Failed to retrieve subscription', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to retrieve subscription',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to retrieve subscription',
       };
     }
   }
 
-  async cancelSubscription(subscriptionId: string): Promise<StripeServiceResponse> {
+  async cancelSubscription(
+    subscriptionId: string
+  ): Promise<StripeServiceResponse> {
     try {
-      const subscription = await this.stripe.subscriptions.cancel(subscriptionId);
+      const subscription =
+        await this.stripe.subscriptions.cancel(subscriptionId);
       this.logger.info('Subscription cancelled', { id: subscription.id });
       return {
         success: true,
@@ -417,12 +522,19 @@ export class StripeService {
       this.logger.error('Failed to cancel subscription', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to cancel subscription',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to cancel subscription',
       };
     }
   }
 
-  async listSubscriptions(params: { limit?: number; customer?: string; status?: string }): Promise<StripeServiceResponse> {
+  async listSubscriptions(params: {
+    limit?: number;
+    customer?: string;
+    status?: string;
+  }): Promise<StripeServiceResponse> {
     try {
       const listParams: any = {
         limit: params.limit,
@@ -440,13 +552,18 @@ export class StripeService {
       this.logger.error('Failed to list subscriptions', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to list subscriptions',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to list subscriptions',
       };
     }
   }
 
   // Invoices
-  async createInvoice(request: InvoiceCreateRequest): Promise<StripeServiceResponse> {
+  async createInvoice(
+    request: InvoiceCreateRequest
+  ): Promise<StripeServiceResponse> {
     try {
       const invoice = await this.stripe.invoices.create(request);
       this.logger.info('Invoice created', { id: invoice.id });
@@ -459,12 +576,16 @@ export class StripeService {
       this.logger.error('Failed to create invoice', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to create invoice',
+        error:
+          error instanceof Error ? error.message : 'Failed to create invoice',
       };
     }
   }
 
-  async listInvoices(params: { limit?: number; customer?: string }): Promise<StripeServiceResponse> {
+  async listInvoices(params: {
+    limit?: number;
+    customer?: string;
+  }): Promise<StripeServiceResponse> {
     try {
       const invoices = await this.stripe.invoices.list(params);
       return {
@@ -475,13 +596,16 @@ export class StripeService {
       this.logger.error('Failed to list invoices', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to list invoices',
+        error:
+          error instanceof Error ? error.message : 'Failed to list invoices',
       };
     }
   }
 
   // Webhook Endpoints
-  async createWebhookEndpoint(request: WebhookEndpointCreateRequest): Promise<StripeServiceResponse> {
+  async createWebhookEndpoint(
+    request: WebhookEndpointCreateRequest
+  ): Promise<StripeServiceResponse> {
     try {
       const endpoint = await this.stripe.webhookEndpoints.create({
         url: request.url,
@@ -499,7 +623,10 @@ export class StripeService {
       this.logger.error('Failed to create webhook endpoint', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to create webhook endpoint',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to create webhook endpoint',
       };
     }
   }
@@ -515,13 +642,19 @@ export class StripeService {
       this.logger.error('Failed to list webhook endpoints', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to list webhook endpoints',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to list webhook endpoints',
       };
     }
   }
 
   // Charges
-  async listCharges(params: { limit?: number; customer?: string }): Promise<StripeServiceResponse> {
+  async listCharges(params: {
+    limit?: number;
+    customer?: string;
+  }): Promise<StripeServiceResponse> {
     try {
       const charges = await this.stripe.charges.list(params);
       return {
@@ -532,7 +665,8 @@ export class StripeService {
       this.logger.error('Failed to list charges', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to list charges',
+        error:
+          error instanceof Error ? error.message : 'Failed to list charges',
       };
     }
   }
@@ -548,7 +682,8 @@ export class StripeService {
       this.logger.error('Failed to retrieve charge', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to retrieve charge',
+        error:
+          error instanceof Error ? error.message : 'Failed to retrieve charge',
       };
     }
   }

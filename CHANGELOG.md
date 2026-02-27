@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2025-06-19
 
 ### Added
+
 - **Salesforce MCP Server** - Complete Salesforce CRM integration with OAuth authentication
   - OAuth username-password flow authentication support
   - CRUD operations for Salesforce objects (create, read, update, delete, query)
@@ -39,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Comprehensive Figma API coverage
 
 ### Enhanced
+
 - **Build System Refactoring**
   - Centralized build system with all dist files at root level under `dist/servers/`
   - Removed individual server dist folders
@@ -53,6 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added environment variable configuration guides
 
 ### Technical Improvements
+
 - Enhanced OAuth authentication flows
 - Improved error handling and logging
 - Better environment variable management
@@ -60,6 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive TypeScript type definitions
 
 ### Infrastructure
+
 - Updated package.json configurations
 - Improved build and deployment scripts
 - Enhanced testing infrastructure
@@ -68,6 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
+
 - Additional MCP server integrations
 - Enhanced monitoring and observability
 - Performance optimizations

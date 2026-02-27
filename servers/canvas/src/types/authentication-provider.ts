@@ -124,8 +124,7 @@ export interface CreateAuthenticationProviderParams {
   sig_alg?: string;
 }
 
-export interface UpdateAuthenticationProviderParams
-  extends CreateAuthenticationProviderParams {
+export interface UpdateAuthenticationProviderParams extends CreateAuthenticationProviderParams {
   id: string;
 }
 

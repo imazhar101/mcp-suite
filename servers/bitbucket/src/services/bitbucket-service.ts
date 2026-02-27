@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance } from 'axios';
 import {
   BitbucketRepository,
   BitbucketPullRequest,
@@ -11,7 +11,7 @@ import {
   CreatePullRequestData,
   UpdatePullRequestData,
   MergePullRequestData,
-} from "../types/index.js";
+} from '../types/index.js';
 
 export class BitbucketService {
   private client: AxiosInstance;
@@ -20,14 +20,14 @@ export class BitbucketService {
   constructor(workspace: string, username: string, appPassword: string) {
     this.workspace = workspace;
     this.client = axios.create({
-      baseURL: "https://api.bitbucket.org/2.0",
+      baseURL: 'https://api.bitbucket.org/2.0',
       auth: {
         username,
         password: appPassword,
       },
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
     });
   }
@@ -140,7 +140,7 @@ export class BitbucketService {
       `/repositories/${this.workspace}/${repoSlug}/diff/${sourceCommit}..${destinationCommit}`,
       {
         headers: {
-          Accept: "text/plain",
+          Accept: 'text/plain',
         },
       }
     );
@@ -315,7 +315,7 @@ export class BitbucketService {
     repoSlug: string,
     pullRequestId: number,
     taskId: number,
-    data: { content?: string; state?: "UNRESOLVED" | "RESOLVED" }
+    data: { content?: string; state?: 'UNRESOLVED' | 'RESOLVED' }
   ) {
     const taskData: any = {};
     if (data.content) {

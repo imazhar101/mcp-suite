@@ -14,19 +14,25 @@ This template is used for creating consistent releases.
 ## Release Notes Format
 
 ### Version: vX.Y.Z
+
 ### Release Date: YYYY-MM-DD
 
 #### 🆕 New Features
+
 - List new features and servers
 
 #### 🔧 Improvements
+
 - List improvements and enhancements
 
 #### 🐛 Bug Fixes
+
 - List bug fixes
 
 #### 📖 Documentation
+
 - List documentation updates
 
 #### 🏗️ Infrastructure
+
 - List infrastructure and build changes

@@ -80,23 +80,27 @@ npx @imazhar101/mcp-paypal-server
 ## Available Tools (43 total)
 
 ### Payment Processing
+
 - **paypal_create_payment** - Create a new PayPal payment with specified intent (sale, authorize, order)
 - **paypal_execute_payment** - Execute a PayPal payment after user approval
 - **paypal_get_payment** - Get details of a specific PayPal payment
 - **paypal_list_payments** - List PayPal payments with optional filtering
 
 ### Transaction Management
+
 - **paypal_refund_sale** - Refund a completed PayPal sale
 - **paypal_capture_authorization** - Capture funds from a PayPal authorization
 - **paypal_void_authorization** - Void a PayPal authorization
 - **paypal_list_transactions** - List PayPal transactions with filtering and pagination
 
 ### Order Management (v2 API)
+
 - **paypal_create_order** - Create a new PayPal order
 - **paypal_get_order** - Get details of a specific PayPal order
 - **paypal_capture_order** - Capture payment for a PayPal order
 
 ### Invoice Management
+
 - **paypal_create_invoice** - Create a new PayPal invoice
 - **paypal_list_invoices** - List PayPal invoices with optional filtering and pagination
 - **paypal_get_invoice** - Get details of a specific PayPal invoice
@@ -106,12 +110,14 @@ npx @imazhar101/mcp-paypal-server
 - **paypal_generate_invoice_qr_code** - Generate a QR code for a PayPal invoice
 
 ### Product Catalog
+
 - **paypal_create_product** - Create a new product in PayPal catalog
 - **paypal_list_products** - List products in PayPal catalog with pagination
 - **paypal_get_product** - Get details of a specific product from PayPal catalog
 - **paypal_update_product** - Update an existing product in PayPal catalog
 
 ### Subscription Management
+
 - **paypal_create_subscription_plan** - Create a new subscription plan in PayPal
 - **paypal_list_subscription_plans** - List subscription plans with pagination
 - **paypal_get_subscription_plan** - Get details of a specific subscription plan
@@ -120,56 +126,71 @@ npx @imazhar101/mcp-paypal-server
 - **paypal_cancel_subscription** - Cancel an active subscription
 
 ### Dispute Management
+
 - **paypal_list_disputes** - List PayPal disputes with optional filtering
 - **paypal_get_dispute** - Get detailed information about a specific PayPal dispute
 - **paypal_accept_dispute_claim** - Accept a PayPal dispute claim
 
 ### Shipping & Tracking
+
 - **paypal_create_shipment_tracking** - Create a shipment tracking record for PayPal
 - **paypal_get_shipment_tracking** - Get shipment tracking information from PayPal
 
 ### Monitoring & Utilities
+
 - **paypal_get_webhook_events** - Get PayPal webhook events for monitoring transactions
 - **paypal_test_connection** - Test the PayPal API connection and authentication
 
 ### Key Features by Category
 
 #### Payment Processing
+
 Create and manage payments with support for:
+
 - Multiple payment intents (sale, authorize, order)
 - Detailed item breakdown and shipping information
 - Custom payer information and return/cancel URLs
 - Payment execution with payer approval
 
 #### Invoice System
+
 Complete invoicing capabilities including:
+
 - Rich invoice creation with merchant/billing info
 - Item management with taxes and discounts
 - Invoice sending and reminder notifications
 - QR code generation for easy payment
 
 #### Subscription Management
+
 Full subscription lifecycle management:
+
 - Product catalog management
 - Flexible billing cycles and pricing
 - Subscription creation and cancellation
 - Payment preferences and setup fees
 
 #### Order Management (v2 API)
+
 Modern PayPal Orders API support:
+
 - Enhanced order creation with detailed breakdown
 - Purchase unit management
 - Capture and authorization handling
 - Advanced payer and application context
 
 #### Dispute Resolution
+
 Comprehensive dispute management:
+
 - List and filter disputes by status
 - Detailed dispute information retrieval
 - Claim acceptance with refund/replace options
 
 #### Shipping Integration
+
 Shipment tracking capabilities:
+
 - Multiple carrier support (FedEx, UPS, USPS, DHL, etc.)
 - Real-time tracking status updates
 - Buyer notification options

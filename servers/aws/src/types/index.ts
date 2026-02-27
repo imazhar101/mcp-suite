@@ -2,11 +2,11 @@ export interface DynamoDBTableInfo {
   tableName: string;
   keySchema: {
     attributeName: string;
-    keyType: "HASH" | "RANGE";
+    keyType: 'HASH' | 'RANGE';
   }[];
   attributeDefinitions: {
     attributeName: string;
-    attributeType: "S" | "N" | "B";
+    attributeType: 'S' | 'N' | 'B';
   }[];
 }
 
@@ -44,7 +44,7 @@ export interface LambdaFunctionInfo {
 export interface LambdaInvokeParams {
   functionName: string;
   payload?: any;
-  invocationType?: "Event" | "RequestResponse" | "DryRun";
+  invocationType?: 'Event' | 'RequestResponse' | 'DryRun';
 }
 
 export interface APIGatewayRestAPI {

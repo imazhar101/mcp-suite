@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
-import { PuppeteerService } from "./services/puppeteer-service.js";
-import { puppeteerTools } from "./tools/index.js";
+} from '@modelcontextprotocol/sdk/types.js';
+import { PuppeteerService } from './services/puppeteer-service.js';
+import { puppeteerTools } from './tools/index.js';
 import {
   NavigateParams,
   ClickParams,
@@ -16,7 +16,7 @@ import {
   HoverParams,
   EvaluateParams,
   WaitForSelectorParams,
-} from "./types/index.js";
+} from './types/index.js';
 
 class PuppeteerServer {
   private server: Server;
@@ -25,8 +25,8 @@ class PuppeteerServer {
   constructor() {
     this.server = new Server(
       {
-        name: "puppeteer-server",
-        version: "2.0.0",
+        name: 'puppeteer-server',
+        version: '2.0.0',
       },
       {
         capabilities: {
@@ -39,8 +39,8 @@ class PuppeteerServer {
     this.setupToolHandlers();
 
     // Error handling
-    this.server.onerror = (error) => console.error("[MCP Error]", error);
-    process.on("SIGINT", async () => {
+    this.server.onerror = (error) => console.error('[MCP Error]', error);
+    process.on('SIGINT', async () => {
       await this.puppeteerService.close();
       await this.server.close();
       process.exit(0);
@@ -57,11 +57,11 @@ class PuppeteerServer {
 
       try {
         switch (name) {
-          case "puppeteer_launch":
+          case 'puppeteer_launch':
             return {
               content: [
                 {
-                  type: "text",
+                  type: 'text',
                   text: JSON.stringify(
                     await this.puppeteerService.launch(args),
                     null,
@@ -71,11 +71,11 @@ class PuppeteerServer {
               ],
             };
 
-          case "puppeteer_navigate":
+          case 'puppeteer_navigate':
             return {
               content: [
                 {
-                  type: "text",
+                  type: 'text',
                   text: JSON.stringify(
                     await this.puppeteerService.navigate(
                       args as unknown as NavigateParams
@@ -87,26 +87,25 @@ class PuppeteerServer {
               ],
             };
 
-          case "puppeteer_screenshot":
-            const screenshotResult = await this.puppeteerService.screenshot(
-              args
-            );
+          case 'puppeteer_screenshot':
+            const screenshotResult =
+              await this.puppeteerService.screenshot(args);
             if (screenshotResult.success && screenshotResult.data?.screenshot) {
               return {
                 content: [
                   {
-                    type: "text",
+                    type: 'text',
                     text: JSON.stringify(
                       {
                         success: true,
-                        message: "Screenshot captured successfully",
+                        message: 'Screenshot captured successfully',
                       },
                       null,
                       2
                     ),
                   },
                   {
-                    type: "image",
+                    type: 'image',
                     data: screenshotResult.data.screenshot,
                     mimeType: `image/${screenshotResult.data.type}`,
                   },
@@ -116,17 +115,17 @@ class PuppeteerServer {
             return {
               content: [
                 {
-                  type: "text",
+                  type: 'text',
                   text: JSON.stringify(screenshotResult, null, 2),
                 },
               ],
             };
 
-          case "puppeteer_click":
+          case 'puppeteer_click':
             return {
               content: [
                 {
-                  type: "text",
+                  type: 'text',
                   text: JSON.stringify(
                     await this.puppeteerService.click(
                       args as unknown as ClickParams
@@ -138,11 +137,11 @@ class PuppeteerServer {
               ],
             };
 
-          case "puppeteer_fill":
+          case 'puppeteer_fill':
             return {
               content: [
                 {
-                  type: "text",
+                  type: 'text',
                   text: JSON.stringify(
                     await this.puppeteerService.fill(
                       args as unknown as FillParams
@@ -154,11 +153,11 @@ class PuppeteerServer {
               ],
             };
 
-          case "puppeteer_select":
+          case 'puppeteer_select':
             return {
               content: [
                 {
-                  type: "text",
+                  type: 'text',
                   text: JSON.stringify(
                     await this.puppeteerService.select(
                       args as unknown as SelectParams
@@ -170,11 +169,11 @@ class PuppeteerServer {
               ],
             };
 
-          case "puppeteer_hover":
+          case 'puppeteer_hover':
             return {
               content: [
                 {
-                  type: "text",
+                  type: 'text',
                   text: JSON.stringify(
                     await this.puppeteerService.hover(
                       args as unknown as HoverParams
@@ -186,11 +185,11 @@ class PuppeteerServer {
               ],
             };
 
-          case "puppeteer_evaluate":
+          case 'puppeteer_evaluate':
             return {
               content: [
                 {
-                  type: "text",
+                  type: 'text',
                   text: JSON.stringify(
                     await this.puppeteerService.evaluate(
                       args as unknown as EvaluateParams
@@ -202,11 +201,11 @@ class PuppeteerServer {
               ],
             };
 
-          case "puppeteer_wait_for_selector":
+          case 'puppeteer_wait_for_selector':
             return {
               content: [
                 {
-                  type: "text",
+                  type: 'text',
                   text: JSON.stringify(
                     await this.puppeteerService.waitForSelector(
                       args as unknown as WaitForSelectorParams
@@ -218,11 +217,11 @@ class PuppeteerServer {
               ],
             };
 
-          case "puppeteer_get_console_logs":
+          case 'puppeteer_get_console_logs':
             return {
               content: [
                 {
-                  type: "text",
+                  type: 'text',
                   text: JSON.stringify(
                     await this.puppeteerService.getConsoleLogs(),
                     null,
@@ -232,11 +231,11 @@ class PuppeteerServer {
               ],
             };
 
-          case "puppeteer_get_page_info":
+          case 'puppeteer_get_page_info':
             return {
               content: [
                 {
-                  type: "text",
+                  type: 'text',
                   text: JSON.stringify(
                     await this.puppeteerService.getPageInfo(),
                     null,
@@ -246,11 +245,11 @@ class PuppeteerServer {
               ],
             };
 
-          case "puppeteer_close":
+          case 'puppeteer_close':
             return {
               content: [
                 {
-                  type: "text",
+                  type: 'text',
                   text: JSON.stringify(
                     await this.puppeteerService.close(),
                     null,
@@ -267,14 +266,14 @@ class PuppeteerServer {
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 {
                   success: false,
                   error:
                     error instanceof Error
                       ? error.message
-                      : "Unknown error occurred",
+                      : 'Unknown error occurred',
                 },
                 null,
                 2
@@ -290,7 +289,7 @@ class PuppeteerServer {
   async run() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error("Puppeteer MCP server running on stdio");
+    console.error('Puppeteer MCP server running on stdio');
   }
 }
 

@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { validateRequired, validateEmail, validateUrl, sanitizeString } from '../../shared/utils/validation.js';
+import {
+  validateRequired,
+  validateEmail,
+  validateUrl,
+  sanitizeString,
+} from '../../shared/utils/validation.js';
 
 describe('Validation Utils', () => {
   describe('validateRequired', () => {
@@ -10,8 +15,12 @@ describe('Validation Utils', () => {
     });
 
     it('should throw for invalid values', () => {
-      expect(() => validateRequired(null, 'field')).toThrow('field is required');
-      expect(() => validateRequired(undefined, 'field')).toThrow('field is required');
+      expect(() => validateRequired(null, 'field')).toThrow(
+        'field is required'
+      );
+      expect(() => validateRequired(undefined, 'field')).toThrow(
+        'field is required'
+      );
       expect(() => validateRequired('', 'field')).toThrow('field is required');
     });
   });
@@ -43,7 +52,9 @@ describe('Validation Utils', () => {
 
   describe('sanitizeString', () => {
     it('should remove dangerous characters', () => {
-      expect(sanitizeString('<script>alert("xss")</script>')).toBe('scriptalert("xss")/script');
+      expect(sanitizeString('<script>alert("xss")</script>')).toBe(
+        'scriptalert("xss")/script'
+      );
       expect(sanitizeString('  normal text  ')).toBe('normal text');
     });
   });

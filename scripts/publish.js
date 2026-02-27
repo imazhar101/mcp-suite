@@ -1,29 +1,30 @@
 #!/usr/bin/env node
 
-const { execSync } = require("child_process");
-const fs = require("fs");
-const path = require("path");
+const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
 
 const servers = [
-  "aws",
-  "bitbucket",
-  "canvas",
-  "clickup",
-  "elasticsearch",
-  "figma",
-  "jira",
-  "notion",
-  "paypal",
-  "postgresql",
-  "puppeteer",
-  "rippling",
-  "salesforce",
-  "stripe",
+  'airtable',
+  'aws',
+  'bitbucket',
+  'canvas',
+  'clickup',
+  'elasticsearch',
+  'figma',
+  'jira',
+  'notion',
+  'paypal',
+  'postgresql',
+  'puppeteer',
+  'rippling',
+  'salesforce',
+  'stripe',
 ];
 
 function publishPackage(serverName, versionBump) {
-  const serverPath = path.join(__dirname, "..", "servers", serverName);
-  const packageJsonPath = path.join(serverPath, "package.json");
+  const serverPath = path.join(__dirname, '..', 'servers', serverName);
+  const packageJsonPath = path.join(serverPath, 'package.json');
 
   if (!fs.existsSync(packageJsonPath)) {
     console.log(`❌ Package.json not found for ${serverName}`);
@@ -37,7 +38,7 @@ function publishPackage(serverName, versionBump) {
     process.chdir(serverPath);
 
     // Check if dist folder exists (built files should be here)
-    const serverDistPath = path.join(serverPath, "dist");
+    const serverDistPath = path.join(serverPath, 'dist');
     if (!fs.existsSync(serverDistPath)) {
       console.log(
         `❌ No dist folder found for ${serverName}. Run build first.`
@@ -49,12 +50,12 @@ function publishPackage(serverName, versionBump) {
     if (versionBump) {
       console.log(`🔢 Bumping version (${versionBump})...`);
       execSync(`npm version ${versionBump} --no-git-tag-version`, {
-        stdio: "inherit",
+        stdio: 'inherit',
       });
     }
 
     // Publish the package
-    execSync("npm publish --access public", { stdio: "inherit" });
+    execSync('npm publish --access public', { stdio: 'inherit' });
 
     console.log(
       `✅ Successfully published @imazhar101/mcp-${serverName}-server`
@@ -75,19 +76,19 @@ function main() {
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    if (arg.startsWith("--version=")) {
-      versionBump = arg.split("=")[1];
-    } else if (!arg.startsWith("--") && !serverName) {
+    if (arg.startsWith('--version=')) {
+      versionBump = arg.split('=')[1];
+    } else if (!arg.startsWith('--') && !serverName) {
       serverName = arg;
     }
   }
 
-  if (serverName && !serverName.startsWith("--")) {
+  if (serverName && !serverName.startsWith('--')) {
     // Publish single server
     if (!servers.includes(serverName)) {
       console.error(
         `❌ Server '${serverName}' not found. Available servers: ${servers.join(
-          ", "
+          ', '
         )}`
       );
       process.exit(1);
@@ -105,7 +106,7 @@ function main() {
     }
   } else {
     // Publish all servers
-    console.log("🚀 Publishing MCP Suite packages to npm...\n");
+    console.log('🚀 Publishing MCP Suite packages to npm...\n');
 
     let successful = 0;
     let failed = 0;
@@ -116,10 +117,10 @@ function main() {
       } else {
         failed++;
       }
-      console.log(""); // Add spacing between packages
+      console.log(''); // Add spacing between packages
     }
 
-    console.log("📊 Publishing Summary:");
+    console.log('📊 Publishing Summary:');
     console.log(`✅ Successful: ${successful}`);
     console.log(`❌ Failed: ${failed}`);
 

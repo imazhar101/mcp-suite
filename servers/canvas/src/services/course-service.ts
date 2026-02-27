@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 import {
   Course,
   CourseCreateParams,
@@ -6,12 +6,12 @@ import {
   CourseListParams,
   CourseSettings,
   CourseProgress,
-} from "../types/course.js";
+} from '../types/course.js';
 import {
   User,
   CourseUserListParams,
   UserProgressParams,
-} from "../types/user.js";
+} from '../types/user.js';
 
 export class CourseService {
   constructor(private canvasClient: AxiosInstance) {}
@@ -26,13 +26,13 @@ export class CourseService {
       queryParams.enrollment_state = params.enrollment_state;
     }
     if (params.state) {
-      queryParams["state[]"] = params.state;
+      queryParams['state[]'] = params.state;
     }
     if (params.include) {
-      queryParams["include[]"] = params.include;
+      queryParams['include[]'] = params.include;
     }
 
-    const response = await this.canvasClient.get("/courses", {
+    const response = await this.canvasClient.get('/courses', {
       params: queryParams,
     });
     return response.data;
@@ -41,7 +41,7 @@ export class CourseService {
   async getCourse(courseId: string, include?: string[]): Promise<Course> {
     const params: any = {};
     if (include) {
-      params["include[]"] = include;
+      params['include[]'] = include;
     }
 
     const response = await this.canvasClient.get(`/courses/${courseId}`, {
@@ -60,7 +60,7 @@ export class CourseService {
 
     // Map flat arguments to nested course object
     Object.keys(courseData).forEach((key) => {
-      if (key === "offer" || key === "enroll_me") {
+      if (key === 'offer' || key === 'enroll_me') {
         requestData[key] = courseData[key as keyof typeof courseData];
       } else {
         requestData.course[key] = courseData[key as keyof typeof courseData];
@@ -84,7 +84,7 @@ export class CourseService {
 
     // Map flat arguments to nested course object
     Object.keys(courseData).forEach((key) => {
-      if (key === "offer") {
+      if (key === 'offer') {
         requestData[key] = courseData[key as keyof typeof courseData];
       } else {
         requestData.course[key] = courseData[key as keyof typeof courseData];
@@ -100,7 +100,7 @@ export class CourseService {
 
   async deleteCourse(
     courseId: string,
-    event: "delete" | "conclude"
+    event: 'delete' | 'conclude'
   ): Promise<any> {
     const response = await this.canvasClient.delete(`/courses/${courseId}`, {
       params: { event },
@@ -113,15 +113,15 @@ export class CourseService {
 
     // Convert array parameters to Canvas API format
     if (queryParams.enrollment_type) {
-      (queryParams as any)["enrollment_type[]"] = queryParams.enrollment_type;
+      (queryParams as any)['enrollment_type[]'] = queryParams.enrollment_type;
       delete queryParams.enrollment_type;
     }
     if (queryParams.enrollment_state) {
-      (queryParams as any)["enrollment_state[]"] = queryParams.enrollment_state;
+      (queryParams as any)['enrollment_state[]'] = queryParams.enrollment_state;
       delete queryParams.enrollment_state;
     }
     if (queryParams.include) {
-      (queryParams as any)["include[]"] = queryParams.include;
+      (queryParams as any)['include[]'] = queryParams.include;
       delete queryParams.include;
     }
 
@@ -141,7 +141,7 @@ export class CourseService {
   ): Promise<User> {
     const params: any = {};
     if (include) {
-      params["include[]"] = include;
+      params['include[]'] = include;
     }
 
     const response = await this.canvasClient.get(

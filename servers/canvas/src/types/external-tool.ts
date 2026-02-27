@@ -7,7 +7,7 @@ export interface ExternalTool {
   description?: string;
   created_at: string;
   updated_at: string;
-  privacy_level: "anonymous" | "name_only" | "email_only" | "public";
+  privacy_level: 'anonymous' | 'name_only' | 'email_only' | 'public';
   custom_fields: Record<string, string>;
   is_rce_favorite?: boolean;
   is_top_nav_favorite?: boolean;
@@ -43,24 +43,24 @@ export interface NavigationPlacement {
 }
 
 export interface CourseNavigationPlacement extends NavigationPlacement {
-  default?: "disabled" | "enabled";
-  visibility?: "admins" | "members" | "public";
-  windowTarget?: "_blank" | "_self";
+  default?: 'disabled' | 'enabled';
+  visibility?: 'admins' | 'members' | 'public';
+  windowTarget?: '_blank' | '_self';
   display_type?:
-    | "full_width"
-    | "full_width_in_context"
-    | "full_width_with_nav"
-    | "in_nav_context"
-    | "borderless"
-    | "default";
+    | 'full_width'
+    | 'full_width_in_context'
+    | 'full_width_with_nav'
+    | 'in_nav_context'
+    | 'borderless'
+    | 'default';
 }
 
 export interface UserNavigationPlacement extends NavigationPlacement {
-  visibility?: "admins" | "members" | "public";
+  visibility?: 'admins' | 'members' | 'public';
 }
 
 export interface EditorButtonPlacement extends NavigationPlacement {
-  message_type?: "ContentItemSelectionRequest";
+  message_type?: 'ContentItemSelectionRequest';
 }
 
 export interface ResourceSelectionPlacement extends NavigationPlacement {
@@ -84,7 +84,7 @@ export interface ExternalToolListParams {
 export interface ExternalToolCreateParams {
   client_id?: string;
   name: string;
-  privacy_level: "anonymous" | "name_only" | "email_only" | "public";
+  privacy_level: 'anonymous' | 'name_only' | 'email_only' | 'public';
   consumer_key: string;
   shared_secret: string;
   description?: string;
@@ -110,7 +110,7 @@ export interface ExternalToolCreateParams {
   resource_selection?: Partial<ResourceSelectionPlacement>;
 
   // Configuration options
-  config_type?: "by_url" | "by_xml";
+  config_type?: 'by_url' | 'by_xml';
   config_xml?: string;
   config_url?: string;
   not_selectable?: boolean;
@@ -118,15 +118,14 @@ export interface ExternalToolCreateParams {
   unified_tool_id?: string;
 }
 
-export interface ExternalToolUpdateParams
-  extends Partial<ExternalToolCreateParams> {}
+export interface ExternalToolUpdateParams extends Partial<ExternalToolCreateParams> {}
 
 export interface SessionlessLaunchParams {
   id?: string;
   url?: string;
   assignment_id?: string;
   module_item_id?: string;
-  launch_type?: "assessment" | "module_item" | string;
+  launch_type?: 'assessment' | 'module_item' | string;
   resource_link_lookup_uuid?: string;
 }
 

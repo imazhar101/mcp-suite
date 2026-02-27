@@ -1,4 +1,4 @@
-import { Logger } from "../../../../shared/utils/logger.js";
+import { Logger } from '../../../../shared/utils/logger.js';
 import {
   RipplingConfig,
   RipplingServiceResponse,
@@ -13,12 +13,12 @@ import {
   RequestTimeOffRequest,
   LeaveRequestResponse,
   CancelActionRequestRequest,
-} from "../types/index.js";
+} from '../types/index.js';
 
 export class RipplingService {
   private config: RipplingConfig;
   private logger: Logger;
-  private baseUrl = "https://app.rippling.com";
+  private baseUrl = 'https://app.rippling.com';
 
   constructor(config: RipplingConfig, logger: Logger) {
     this.config = config;
@@ -28,7 +28,7 @@ export class RipplingService {
   private async makeRequest(
     endpoint: string,
     options: RequestInit = {},
-    apiPath: string = "/api/hub/api"
+    apiPath: string = '/api/hub/api'
   ): Promise<any> {
     const url = `${this.baseUrl}${apiPath}${endpoint}`;
 
@@ -36,14 +36,14 @@ export class RipplingService {
       Authorization: `Bearer ${this.config.token}`,
       Role: this.config.role,
       Company: this.config.company,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options.headers,
     };
 
     try {
-      this.logger.debug("Making request to Rippling API", {
+      this.logger.debug('Making request to Rippling API', {
         url,
-        method: options.method || "GET",
+        method: options.method || 'GET',
       });
 
       const response = await fetch(url, {
@@ -59,7 +59,7 @@ export class RipplingService {
       const data = await response.json();
       return data;
     } catch (error) {
-      this.logger.error("Rippling API request failed", { url, error });
+      this.logger.error('Rippling API request failed', { url, error });
       throw error;
     }
   }
@@ -67,46 +67,46 @@ export class RipplingService {
   async testConnection(): Promise<RipplingServiceResponse> {
     try {
       // Test with a simple employee list request
-      const data = await this.makeRequest("/employee_list/find_paginated", {
-        method: "POST",
+      const data = await this.makeRequest('/employee_list/find_paginated', {
+        method: 'POST',
         body: JSON.stringify({
           paginationParams: {
             page: 1,
             sortingMetadata: {
               columnIndex: 0,
-              order: "ASC",
-              columnId: "0",
+              order: 'ASC',
+              columnId: '0',
               column: {
                 search: [
-                  "fullName",
-                  "user_cache.name.first",
-                  "user_cache.name.last",
+                  'fullName',
+                  'user_cache.name.first',
+                  'user_cache.name.last',
                 ],
                 sort: true,
-                type: "role",
-                sortKey: ["user_cache.name.last", "user_cache.name.first"],
-                id: "0",
+                type: 'role',
+                sortKey: ['user_cache.name.last', 'user_cache.name.first'],
+                id: '0',
               },
             },
           },
-          searchQuery: "",
+          searchQuery: '',
           empFilterMetadata: {},
-          readPreference: "PRIMARY",
+          readPreference: 'PRIMARY',
         }),
       });
 
-      this.logger.info("Rippling connection successful");
+      this.logger.info('Rippling connection successful');
       return {
         success: true,
         data: { employeeCount: data.data?.length || 0 },
-        message: "Successfully connected to Rippling",
+        message: 'Successfully connected to Rippling',
       };
     } catch (error) {
-      this.logger.error("Rippling connection failed", error);
+      this.logger.error('Rippling connection failed', error);
       return {
         success: false,
         error:
-          error instanceof Error ? error.message : "Unknown error occurred",
+          error instanceof Error ? error.message : 'Unknown error occurred',
       };
     }
   }
@@ -116,12 +116,12 @@ export class RipplingService {
   ): Promise<RipplingServiceResponse> {
     try {
       // Validate userId parameter
-      if (!request.userId || request.userId.trim() === "") {
-        throw new Error("User ID is required and cannot be empty");
+      if (!request.userId || request.userId.trim() === '') {
+        throw new Error('User ID is required and cannot be empty');
       }
 
       this.logger.debug(
-        "Retrieving employment roles with detailed field data",
+        'Retrieving employment roles with detailed field data',
         {
           userId: request.userId,
         }
@@ -131,20 +131,20 @@ export class RipplingService {
       const [data, additionalInfoFields, personalInfoFields] =
         await Promise.all([
           this.makeRequest(`/employment_roles_with_company/${request.userId}/`),
-          this.makeRequest("/profile/get_fields_data", {
-            method: "POST",
+          this.makeRequest('/profile/get_fields_data', {
+            method: 'POST',
             body: JSON.stringify({
               roleId: request.userId,
-              sectionId: "additionalInformation",
+              sectionId: 'additionalInformation',
               requestedFields: [],
               changedFields: {},
             }),
           }),
-          this.makeRequest("/profile/get_fields_data", {
-            method: "POST",
+          this.makeRequest('/profile/get_fields_data', {
+            method: 'POST',
             body: JSON.stringify({
               roleId: request.userId,
-              sectionId: "personal information",
+              sectionId: 'personal information',
               requestedFields: [],
               changedFields: {},
             }),
@@ -157,7 +157,7 @@ export class RipplingService {
         if (fieldsData?.fields) {
           Object.keys(fieldsData.fields).forEach((fieldName) => {
             const field = fieldsData.fields[fieldName];
-            if (field && field.hasOwnProperty("value")) {
+            if (field && field.hasOwnProperty('value')) {
               fieldValues[fieldName] = field.value;
             }
           });
@@ -232,7 +232,7 @@ export class RipplingService {
         personalInformation: personalInfo,
       };
 
-      this.logger.info("Employment roles retrieved successfully", {
+      this.logger.info('Employment roles retrieved successfully', {
         userId: request.userId,
         fullName: simplifiedResponse.fullName,
         additionalFieldsCount: Object.keys(additionalInfo).length,
@@ -242,25 +242,25 @@ export class RipplingService {
       return {
         success: true,
         data: simplifiedResponse,
-        message: "Employment roles retrieved successfully",
+        message: 'Employment roles retrieved successfully',
       };
     } catch (error) {
-      this.logger.error("Failed to retrieve employment roles", {
+      this.logger.error('Failed to retrieve employment roles', {
         userId: request.userId,
         error,
       });
 
       // Provide more specific error messages based on common failure scenarios
-      let errorMessage = "Unknown error occurred";
+      let errorMessage = 'Unknown error occurred';
       if (error instanceof Error) {
-        if (error.message.includes("404")) {
+        if (error.message.includes('404')) {
           errorMessage = `User with ID '${request.userId}' not found`;
-        } else if (error.message.includes("403")) {
+        } else if (error.message.includes('403')) {
           errorMessage =
-            "Access denied. Please check your permissions and authentication";
-        } else if (error.message.includes("401")) {
+            'Access denied. Please check your permissions and authentication';
+        } else if (error.message.includes('401')) {
           errorMessage =
-            "Authentication failed. Please check your token and credentials";
+            'Authentication failed. Please check your token and credentials';
         } else {
           errorMessage = error.message;
         }
@@ -275,7 +275,7 @@ export class RipplingService {
 
   async getEligibleLeavePolicies(): Promise<RipplingServiceResponse> {
     try {
-      this.logger.debug("Retrieving eligible leave policies");
+      this.logger.debug('Retrieving eligible leave policies');
 
       const requestBody = {
         role: this.config.userId,
@@ -284,18 +284,18 @@ export class RipplingService {
       };
 
       const data = await this.makeRequest(
-        "/leave_policies/get_eligible_policies/",
+        '/leave_policies/get_eligible_policies/',
         {
-          method: "POST",
+          method: 'POST',
           body: JSON.stringify(requestBody),
         },
-        "/api/pto/api"
+        '/api/pto/api'
       );
 
       // Helper function to strip HTML tags from description
       const stripHtml = (html: string | null | undefined): string => {
-        if (!html) return "";
-        return html.replace(/<[^>]*>/g, "").trim();
+        if (!html) return '';
+        return html.replace(/<[^>]*>/g, '').trim();
       };
 
       // Simplify the response to only include specified fields
@@ -312,7 +312,7 @@ export class RipplingService {
           }))
         : [];
 
-      this.logger.info("Eligible leave policies retrieved successfully", {
+      this.logger.info('Eligible leave policies retrieved successfully', {
         totalCount: simplifiedPolicies.length,
         role: this.config.userId,
       });
@@ -320,23 +320,23 @@ export class RipplingService {
       return {
         success: true,
         data: simplifiedPolicies,
-        message: "Eligible leave policies retrieved successfully",
+        message: 'Eligible leave policies retrieved successfully',
       };
     } catch (error) {
-      this.logger.error("Failed to retrieve eligible leave policies", {
+      this.logger.error('Failed to retrieve eligible leave policies', {
         error,
       });
 
-      let errorMessage = "Unknown error occurred";
+      let errorMessage = 'Unknown error occurred';
       if (error instanceof Error) {
-        if (error.message.includes("404")) {
-          errorMessage = "Leave policies not found";
-        } else if (error.message.includes("403")) {
+        if (error.message.includes('404')) {
+          errorMessage = 'Leave policies not found';
+        } else if (error.message.includes('403')) {
           errorMessage =
-            "Access denied. Please check your permissions and authentication";
-        } else if (error.message.includes("401")) {
+            'Access denied. Please check your permissions and authentication';
+        } else if (error.message.includes('401')) {
           errorMessage =
-            "Authentication failed. Please check your token and credentials";
+            'Authentication failed. Please check your token and credentials';
         } else {
           errorMessage = error.message;
         }
@@ -353,9 +353,9 @@ export class RipplingService {
     request: ListEmployeesRequest = {}
   ): Promise<RipplingServiceResponse> {
     try {
-      const { page = 1, searchQuery = "" } = request;
+      const { page = 1, searchQuery = '' } = request;
 
-      this.logger.debug("Starting paginated employee list retrieval", {
+      this.logger.debug('Starting paginated employee list retrieval', {
         page,
         searchQuery,
       });
@@ -374,7 +374,7 @@ export class RipplingService {
             empFilterMetadata: {},
             ...(currentCursor && { cursor: currentCursor }),
           },
-          readPreference: "PRIMARY",
+          readPreference: 'PRIMARY',
         };
 
         this.logger.debug(`Making API call ${totalCalls + 1}`, {
@@ -383,9 +383,9 @@ export class RipplingService {
         });
 
         const response = await this.makeRequest(
-          "/employee_list/find_paginated",
+          '/employee_list/find_paginated',
           {
-            method: "POST",
+            method: 'POST',
             body: JSON.stringify(paginationRequestBody),
           }
         );
@@ -407,7 +407,7 @@ export class RipplingService {
         // Safety break to prevent infinite loops
         if (totalCalls > 5) {
           this.logger.warn(
-            "Breaking pagination loop after 5 calls to prevent infinite loop"
+            'Breaking pagination loop after 5 calls to prevent infinite loop'
           );
           break;
         }
@@ -429,7 +429,7 @@ export class RipplingService {
         fullName: employee.fullName,
       }));
 
-      this.logger.info("Employee list retrieved using cursor pagination", {
+      this.logger.info('Employee list retrieved using cursor pagination', {
         page,
         searchQuery,
         totalCalls,
@@ -446,19 +446,19 @@ export class RipplingService {
           employees: simplifiedEmployees,
           page,
           searchQuery,
-          source: "cursor_pagination",
+          source: 'cursor_pagination',
         },
-        message: "Employee list retrieved successfully",
+        message: 'Employee list retrieved successfully',
       };
     } catch (error) {
-      this.logger.error("Failed to retrieve employee list", {
+      this.logger.error('Failed to retrieve employee list', {
         page: request.page,
         error,
       });
       return {
         success: false,
         error:
-          error instanceof Error ? error.message : "Unknown error occurred",
+          error instanceof Error ? error.message : 'Unknown error occurred',
       };
     }
   }
@@ -467,7 +467,7 @@ export class RipplingService {
     request: ListEmployeesRequest = {}
   ): Promise<RipplingServiceResponse> {
     try {
-      const { page = 1, searchQuery = "" } = request;
+      const { page = 1, searchQuery = '' } = request;
 
       const requestBody = {
         paginationParams: {
@@ -475,18 +475,18 @@ export class RipplingService {
           searchQuery,
           empFilterMetadata: {},
         },
-        readPreference: "PRIMARY",
+        readPreference: 'PRIMARY',
       };
 
-      this.logger.debug("Retrieving terminated employees", {
+      this.logger.debug('Retrieving terminated employees', {
         page,
         searchQuery,
       });
 
       const response = await this.makeRequest(
-        "/employee_list/terminated_roles/find_paginated",
+        '/employee_list/terminated_roles/find_paginated',
         {
-          method: "POST",
+          method: 'POST',
           body: JSON.stringify(requestBody),
         }
       );
@@ -509,7 +509,7 @@ export class RipplingService {
           terminationReason: employee.terminationReason,
         })) || [];
 
-      this.logger.info("Terminated employee list retrieved", {
+      this.logger.info('Terminated employee list retrieved', {
         page,
         searchQuery,
         count: simplifiedEmployees.length,
@@ -521,26 +521,26 @@ export class RipplingService {
           employees: simplifiedEmployees,
           page,
           searchQuery,
-          type: "terminated",
+          type: 'terminated',
         },
-        message: "Terminated employee list retrieved successfully",
+        message: 'Terminated employee list retrieved successfully',
       };
     } catch (error) {
-      this.logger.error("Failed to retrieve terminated employee list", {
+      this.logger.error('Failed to retrieve terminated employee list', {
         page: request.page,
         error,
       });
 
-      let errorMessage = "Unknown error occurred";
+      let errorMessage = 'Unknown error occurred';
       if (error instanceof Error) {
-        if (error.message.includes("404")) {
-          errorMessage = "Terminated employees not found";
-        } else if (error.message.includes("403")) {
+        if (error.message.includes('404')) {
+          errorMessage = 'Terminated employees not found';
+        } else if (error.message.includes('403')) {
           errorMessage =
-            "Access denied. Please check your permissions and authentication";
-        } else if (error.message.includes("401")) {
+            'Access denied. Please check your permissions and authentication';
+        } else if (error.message.includes('401')) {
           errorMessage =
-            "Authentication failed. Please check your token and credentials";
+            'Authentication failed. Please check your token and credentials';
         } else {
           errorMessage = error.message;
         }
@@ -557,49 +557,49 @@ export class RipplingService {
     try {
       const role = this.config.role;
 
-      this.logger.debug("Retrieving signed documents", {
+      this.logger.debug('Retrieving signed documents', {
         role,
       });
 
       // Build query parameters
       const params = new URLSearchParams();
-      params.append("role", role);
+      params.append('role', role);
 
       // Add all requested fields from the API example
       const fields = [
-        "archived",
-        "companyDocument",
-        "createdAt",
-        "displayName",
-        "finalPdfUrl",
-        "id",
-        "isAmended",
-        "isConfidential",
-        "isDeleted",
-        "isUploadedDoc",
-        "name",
-        "signableCompanyDocument",
-        "signableDocument",
-        "signatureDate",
-        "type",
-        "updatedAt",
-        "uploadedBy",
-        "userDisplayName",
+        'archived',
+        'companyDocument',
+        'createdAt',
+        'displayName',
+        'finalPdfUrl',
+        'id',
+        'isAmended',
+        'isConfidential',
+        'isDeleted',
+        'isUploadedDoc',
+        'name',
+        'signableCompanyDocument',
+        'signableDocument',
+        'signatureDate',
+        'type',
+        'updatedAt',
+        'uploadedBy',
+        'userDisplayName',
       ];
 
       // Add requested fields as separate parameters
       fields.forEach((field) => {
-        params.append("requested_fields", field);
+        params.append('requested_fields', field);
       });
 
       // Make request to the signed documents API
       const response = await this.makeRequest(
         `/signed_documents/getAllIdsAndPageSize/?${params.toString()}`,
         {},
-        "/api/hub/api"
+        '/api/hub/api'
       );
 
-      this.logger.info("Signed documents retrieved successfully", {
+      this.logger.info('Signed documents retrieved successfully', {
         role,
         documentCount: response.ids ? response.ids.length : 0,
         itemsAvailable: response.itemsAvailable,
@@ -608,24 +608,24 @@ export class RipplingService {
       return {
         success: true,
         data: response,
-        message: "Signed documents retrieved successfully",
+        message: 'Signed documents retrieved successfully',
       };
     } catch (error) {
-      this.logger.error("Failed to retrieve signed documents", {
+      this.logger.error('Failed to retrieve signed documents', {
         role: this.config.role,
         error,
       });
 
-      let errorMessage = "Unknown error occurred";
+      let errorMessage = 'Unknown error occurred';
       if (error instanceof Error) {
-        if (error.message.includes("404")) {
-          errorMessage = "Signed documents not found or role invalid";
-        } else if (error.message.includes("403")) {
+        if (error.message.includes('404')) {
+          errorMessage = 'Signed documents not found or role invalid';
+        } else if (error.message.includes('403')) {
           errorMessage =
-            "Access denied. Please check your permissions and authentication";
-        } else if (error.message.includes("401")) {
+            'Access denied. Please check your permissions and authentication';
+        } else if (error.message.includes('401')) {
           errorMessage =
-            "Authentication failed. Please check your token and credentials";
+            'Authentication failed. Please check your token and credentials';
         } else {
           errorMessage = error.message;
         }
@@ -640,37 +640,37 @@ export class RipplingService {
 
   async getAnniversaryInformation(): Promise<RipplingServiceResponse> {
     try {
-      this.logger.debug("Retrieving anniversary information");
+      this.logger.debug('Retrieving anniversary information');
 
       // Make request to the anniversary app API
       const response = await this.makeRequest(
-        "/role_anniversary_email_settings/get_anniversary_information",
+        '/role_anniversary_email_settings/get_anniversary_information',
         {},
-        "/api/anniversary_app/api"
+        '/api/anniversary_app/api'
       );
 
-      this.logger.info("Anniversary information retrieved successfully");
+      this.logger.info('Anniversary information retrieved successfully');
 
       return {
         success: true,
         data: response,
-        message: "Anniversary information retrieved successfully",
+        message: 'Anniversary information retrieved successfully',
       };
     } catch (error) {
-      this.logger.error("Failed to retrieve anniversary information", {
+      this.logger.error('Failed to retrieve anniversary information', {
         error,
       });
 
-      let errorMessage = "Unknown error occurred";
+      let errorMessage = 'Unknown error occurred';
       if (error instanceof Error) {
-        if (error.message.includes("404")) {
-          errorMessage = "Anniversary information not found";
-        } else if (error.message.includes("403")) {
+        if (error.message.includes('404')) {
+          errorMessage = 'Anniversary information not found';
+        } else if (error.message.includes('403')) {
           errorMessage =
-            "Access denied. Please check your permissions and authentication";
-        } else if (error.message.includes("401")) {
+            'Access denied. Please check your permissions and authentication';
+        } else if (error.message.includes('401')) {
           errorMessage =
-            "Authentication failed. Please check your token and credentials";
+            'Authentication failed. Please check your token and credentials';
         } else {
           errorMessage = error.message;
         }
@@ -692,12 +692,12 @@ export class RipplingService {
         actionTypes = [],
         pendingReviewerRoles = [],
         requestedByRoles = [],
-        sortColumn = "dateRequested",
-        sortOrder = "DESC",
+        sortColumn = 'dateRequested',
+        sortOrder = 'DESC',
         includeRoleDetails = true,
       } = request;
 
-      this.logger.debug("Retrieving action request filters", {
+      this.logger.debug('Retrieving action request filters', {
         pageSize,
         actionTypes,
         pendingReviewerRoles,
@@ -712,16 +712,16 @@ export class RipplingService {
 
       if (actionTypes.length > 0) {
         columnFilterMetadata.action_type = {
-          filter_type: "IN",
+          filter_type: 'IN',
           values: actionTypes,
         };
       }
 
       // Check if requestedByRoles parameter was explicitly provided (even if empty)
       const requestedByRolesProvided =
-        request.hasOwnProperty("requestedByRoles");
+        request.hasOwnProperty('requestedByRoles');
 
-      this.logger.debug("Filter logic debug", {
+      this.logger.debug('Filter logic debug', {
         requestedByRolesProvided,
         requestedByRolesLength: requestedByRoles.length,
         pendingReviewerRolesLength: pendingReviewerRoles.length,
@@ -733,28 +733,28 @@ export class RipplingService {
         const rolesToUse =
           requestedByRoles.length > 0 ? requestedByRoles : [this.config.userId];
         columnFilterMetadata.requested_by_roles = {
-          filter_type: "IN",
+          filter_type: 'IN',
           values: rolesToUse,
         };
-        this.logger.debug("Using requested_by_roles filter", {
+        this.logger.debug('Using requested_by_roles filter', {
           values: rolesToUse,
         });
       } else if (pendingReviewerRoles.length > 0) {
         // Handle explicit pending reviewer roles (actions to review)
         columnFilterMetadata.pending_reviewer_roles = {
-          filter_type: "IN",
+          filter_type: 'IN',
           values: pendingReviewerRoles,
         };
-        this.logger.debug("Using pending_reviewer_roles filter (explicit)", {
+        this.logger.debug('Using pending_reviewer_roles filter (explicit)', {
           values: pendingReviewerRoles,
         });
       } else {
         // Default to current user's pending reviews if no specific filter is provided
         columnFilterMetadata.pending_reviewer_roles = {
-          filter_type: "IN",
+          filter_type: 'IN',
           values: [this.config.userId],
         };
-        this.logger.debug("Using pending_reviewer_roles filter (default)", {
+        this.logger.debug('Using pending_reviewer_roles filter (default)', {
           values: [this.config.userId],
         });
       }
@@ -773,36 +773,36 @@ export class RipplingService {
             column: {
               sort: true,
               id: sortColumn,
-              type: "text",
+              type: 'text',
               data: sortColumn,
               sortKey: sortColumn,
             },
           },
         },
-        readPreference: "SECONDARY_PREFERRED",
+        readPreference: 'SECONDARY_PREFERRED',
       };
 
       // Build query parameters
       const queryParams = new URLSearchParams();
       if (includeRoleDetails) {
-        queryParams.append("includeRoleDetails", "true");
+        queryParams.append('includeRoleDetails', 'true');
       }
 
       const endpoint = `/action_request/filters/find_paginated/${
-        queryParams.toString() ? `?${queryParams.toString()}` : ""
+        queryParams.toString() ? `?${queryParams.toString()}` : ''
       }`;
 
-      this.logger.debug("Final request body", {
+      this.logger.debug('Final request body', {
         endpoint,
         requestBody: JSON.stringify(requestBody, null, 2),
       });
 
       const response = await this.makeRequest(endpoint, {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify(requestBody),
       });
 
-      this.logger.info("Action request filters retrieved successfully", {
+      this.logger.info('Action request filters retrieved successfully', {
         pageSize,
         dataCount: response.data?.length || 0,
         visibleRowCount: response.visibleRowCount,
@@ -812,10 +812,10 @@ export class RipplingService {
       return {
         success: true,
         data: response,
-        message: "Action request filters retrieved successfully",
+        message: 'Action request filters retrieved successfully',
       };
     } catch (error) {
-      this.logger.error("Failed to retrieve action request filters", {
+      this.logger.error('Failed to retrieve action request filters', {
         pageSize: request.pageSize,
         actionTypes: request.actionTypes,
         pendingReviewerRoles: request.pendingReviewerRoles,
@@ -823,16 +823,16 @@ export class RipplingService {
         error,
       });
 
-      let errorMessage = "Unknown error occurred";
+      let errorMessage = 'Unknown error occurred';
       if (error instanceof Error) {
-        if (error.message.includes("404")) {
-          errorMessage = "Action requests not found";
-        } else if (error.message.includes("403")) {
+        if (error.message.includes('404')) {
+          errorMessage = 'Action requests not found';
+        } else if (error.message.includes('403')) {
           errorMessage =
-            "Access denied. Please check your permissions and authentication";
-        } else if (error.message.includes("401")) {
+            'Access denied. Please check your permissions and authentication';
+        } else if (error.message.includes('401')) {
           errorMessage =
-            "Authentication failed. Please check your token and credentials";
+            'Authentication failed. Please check your token and credentials';
         } else {
           errorMessage = error.message;
         }
@@ -849,17 +849,17 @@ export class RipplingService {
     request: OpenInterviewsAndFeedbacksRequest = {}
   ): Promise<RipplingServiceResponse> {
     try {
-      const { searchQuery = "", timezone = "America/Phoenix" } = request;
+      const { searchQuery = '', timezone = 'America/Phoenix' } = request;
 
-      this.logger.debug("Retrieving open interviews and feedbacks", {
+      this.logger.debug('Retrieving open interviews and feedbacks', {
         searchQuery,
         timezone,
       });
 
       // Build query parameters for interviews endpoint
       const queryParams = new URLSearchParams();
-      queryParams.append("searchQuery", searchQuery);
-      queryParams.append("timezone", timezone);
+      queryParams.append('searchQuery', searchQuery);
+      queryParams.append('timezone', timezone);
 
       const endpoint = `/feedback_form_response/get_open_interviews_and_feedbacks_for_employee?${queryParams.toString()}`;
 
@@ -867,7 +867,7 @@ export class RipplingService {
       const response = await this.makeRequest(
         endpoint,
         {},
-        "/api/ats2_provisioning/api"
+        '/api/ats2_provisioning/api'
       );
 
       // Extract unique applicant IDs from all interview sections
@@ -888,7 +888,7 @@ export class RipplingService {
       const applicantInfoMap = new Map<string, any>();
 
       if (applicantIds.size > 0) {
-        this.logger.debug("Fetching applicant info for applicants", {
+        this.logger.debug('Fetching applicant info for applicants', {
           applicantCount: applicantIds.size,
           applicantIds: Array.from(applicantIds),
         });
@@ -896,15 +896,15 @@ export class RipplingService {
         const applicantInfoPromises = Array.from(applicantIds).map(
           async (applicantId) => {
             const applicantQueryParams = new URLSearchParams();
-            applicantQueryParams.append("applicant", applicantId);
-            applicantQueryParams.append("owner", this.config.company); // Use company as fallback for owner
-            applicantQueryParams.append("populate", "all");
+            applicantQueryParams.append('applicant', applicantId);
+            applicantQueryParams.append('owner', this.config.company); // Use company as fallback for owner
+            applicantQueryParams.append('populate', 'all');
 
             const applicantEndpoint = `/applicant/get_applicant_info?${applicantQueryParams.toString()}`;
             const applicantInfo = await this.makeRequest(
               applicantEndpoint,
               {},
-              "/api/ats2_provisioning/api"
+              '/api/ats2_provisioning/api'
             );
 
             return { applicantId, applicantInfo };
@@ -951,7 +951,7 @@ export class RipplingService {
         ),
       };
 
-      this.logger.info("Open interviews and feedbacks retrieved successfully", {
+      this.logger.info('Open interviews and feedbacks retrieved successfully', {
         searchQuery,
         timezone,
         todayInterviewsCount: enhancedResponse.todayInterviews.length,
@@ -964,25 +964,25 @@ export class RipplingService {
       return {
         success: true,
         data: enhancedResponse,
-        message: "Open interviews and feedbacks retrieved successfully",
+        message: 'Open interviews and feedbacks retrieved successfully',
       };
     } catch (error) {
-      this.logger.error("Failed to retrieve open interviews and feedbacks", {
+      this.logger.error('Failed to retrieve open interviews and feedbacks', {
         searchQuery: request.searchQuery,
         timezone: request.timezone,
         error,
       });
 
-      let errorMessage = "Unknown error occurred";
+      let errorMessage = 'Unknown error occurred';
       if (error instanceof Error) {
-        if (error.message.includes("404")) {
-          errorMessage = "Interviews and feedbacks not found";
-        } else if (error.message.includes("403")) {
+        if (error.message.includes('404')) {
+          errorMessage = 'Interviews and feedbacks not found';
+        } else if (error.message.includes('403')) {
           errorMessage =
-            "Access denied. Please check your permissions and authentication";
-        } else if (error.message.includes("401")) {
+            'Access denied. Please check your permissions and authentication';
+        } else if (error.message.includes('401')) {
           errorMessage =
-            "Authentication failed. Please check your token and credentials";
+            'Authentication failed. Please check your token and credentials';
         } else {
           errorMessage = error.message;
         }
@@ -1003,14 +1003,14 @@ export class RipplingService {
 
       // Validate that required metadata fields are provided
       const requiredFields = [
-        "id",
-        "role",
-        "owner",
-        "applicant",
-        "milestone",
-        "interview",
-        "overallRating",
-        "formResponse",
+        'id',
+        'role',
+        'owner',
+        'applicant',
+        'milestone',
+        'interview',
+        'overallRating',
+        'formResponse',
       ];
 
       for (const field of requiredFields) {
@@ -1033,16 +1033,16 @@ export class RipplingService {
         external_on_changes: feedbackFormResponse.external_on_changes ?? [],
         startedAt: feedbackFormResponse.startedAt ?? null,
         reminderSentAt: feedbackFormResponse.reminderSentAt ?? null,
-        type: feedbackFormResponse.type || "INTERVIEW",
-        feedbackFormName: feedbackFormResponse.feedbackFormName || "Default",
+        type: feedbackFormResponse.type || 'INTERVIEW',
+        feedbackFormName: feedbackFormResponse.feedbackFormName || 'Default',
         feedbackFormDescription:
           feedbackFormResponse.feedbackFormDescription ?? null,
         reminderEtas: feedbackFormResponse.reminderEtas ?? [],
-        _cls: feedbackFormResponse._cls || "FeedbackFormResponse",
+        _cls: feedbackFormResponse._cls || 'FeedbackFormResponse',
         lock: feedbackFormResponse.lock ?? null,
         applicant_document: feedbackFormResponse.applicant_document ?? null,
         // Force status to SUBMITTED when updating feedback
-        status: "SUBMITTED",
+        status: 'SUBMITTED',
         // Force submittedBy to current user
         submittedBy: this.config.userId,
         // Set completedAt to current timestamp when submitting
@@ -1050,7 +1050,7 @@ export class RipplingService {
           feedbackFormResponse.completedAt || new Date().toISOString(),
       };
 
-      this.logger.debug("Updating feedback form response", {
+      this.logger.debug('Updating feedback form response', {
         feedbackId: enhancedFeedbackFormResponse.id,
         interviewId: enhancedFeedbackFormResponse.interview,
         overallRating: enhancedFeedbackFormResponse.overallRating,
@@ -1060,14 +1060,14 @@ export class RipplingService {
       });
 
       const response = await this.makeRequest(
-        "/feedback_form_response/update_feedback_form_response",
+        '/feedback_form_response/update_feedback_form_response',
         {
-          method: "POST",
+          method: 'POST',
           body: JSON.stringify({
             feedbackFormResponse: enhancedFeedbackFormResponse,
           }),
         },
-        "/api/ats2_provisioning/api"
+        '/api/ats2_provisioning/api'
       );
 
       // Simplify the response as requested
@@ -1090,7 +1090,7 @@ export class RipplingService {
         },
       };
 
-      this.logger.info("Feedback form response updated successfully", {
+      this.logger.info('Feedback form response updated successfully', {
         feedbackId: response.id,
         status: response.status,
         completedAt: response.completedAt,
@@ -1099,24 +1099,24 @@ export class RipplingService {
       return {
         success: true,
         data: simplifiedResponse,
-        message: "Feedback form response updated successfully",
+        message: 'Feedback form response updated successfully',
       };
     } catch (error) {
-      this.logger.error("Failed to update feedback form response", {
+      this.logger.error('Failed to update feedback form response', {
         feedbackId: request.feedbackFormResponse?.id,
         error,
       });
 
-      let errorMessage = "Unknown error occurred";
+      let errorMessage = 'Unknown error occurred';
       if (error instanceof Error) {
-        if (error.message.includes("404")) {
-          errorMessage = "Feedback form response not found";
-        } else if (error.message.includes("403")) {
+        if (error.message.includes('404')) {
+          errorMessage = 'Feedback form response not found';
+        } else if (error.message.includes('403')) {
           errorMessage =
-            "Access denied. Please check your permissions and authentication";
-        } else if (error.message.includes("401")) {
+            'Access denied. Please check your permissions and authentication';
+        } else if (error.message.includes('401')) {
           errorMessage =
-            "Authentication failed. Please check your token and credentials";
+            'Authentication failed. Please check your token and credentials';
         } else {
           errorMessage = error.message;
         }
@@ -1134,12 +1134,12 @@ export class RipplingService {
   ): Promise<RipplingServiceResponse> {
     try {
       const {
-        readStatus = "READ_STATUS_ALL",
+        readStatus = 'READ_STATUS_ALL',
         pageSize = 30,
-        pageToken = "",
+        pageToken = '',
       } = request;
 
-      this.logger.debug("Retrieving alerts from automation system", {
+      this.logger.debug('Retrieving alerts from automation system', {
         readStatus,
         pageSize,
         pageToken,
@@ -1156,15 +1156,15 @@ export class RipplingService {
       };
 
       const response = await this.makeRequest(
-        "/automation.alerts.v1.AlertService/GetAlerts",
+        '/automation.alerts.v1.AlertService/GetAlerts',
         {
-          method: "POST",
+          method: 'POST',
           body: JSON.stringify(requestBody),
         }
       );
 
       // Debug: Log the raw response structure
-      this.logger.debug("Raw alerts API response", {
+      this.logger.debug('Raw alerts API response', {
         responseKeys: Object.keys(response || {}),
         alertsLength: response?.alert?.length || 0,
         sampleAlert: response?.alert?.[0] || null,
@@ -1173,11 +1173,11 @@ export class RipplingService {
 
       // Simplify alerts to only include html_content renamed as alert
       const simplifiedAlerts = (response.alert || []).map((alert: any) => ({
-        alert: alert.html_content || "",
-        created_at: alert.created_at || "",
+        alert: alert.html_content || '',
+        created_at: alert.created_at || '',
       }));
 
-      this.logger.info("Alerts retrieved successfully", {
+      this.logger.info('Alerts retrieved successfully', {
         readStatus,
         pageSize,
         alertCount: simplifiedAlerts.length,
@@ -1193,26 +1193,26 @@ export class RipplingService {
           readStatus,
           pageSize,
         },
-        message: "Alerts retrieved successfully",
+        message: 'Alerts retrieved successfully',
       };
     } catch (error) {
-      this.logger.error("Failed to retrieve alerts", {
+      this.logger.error('Failed to retrieve alerts', {
         readStatus: request.readStatus,
         pageSize: request.pageSize,
         pageToken: request.pageToken,
         error,
       });
 
-      let errorMessage = "Unknown error occurred";
+      let errorMessage = 'Unknown error occurred';
       if (error instanceof Error) {
-        if (error.message.includes("404")) {
-          errorMessage = "Alerts not found";
-        } else if (error.message.includes("403")) {
+        if (error.message.includes('404')) {
+          errorMessage = 'Alerts not found';
+        } else if (error.message.includes('403')) {
           errorMessage =
-            "Access denied. Please check your permissions and authentication";
-        } else if (error.message.includes("401")) {
+            'Access denied. Please check your permissions and authentication';
+        } else if (error.message.includes('401')) {
           errorMessage =
-            "Authentication failed. Please check your token and credentials";
+            'Authentication failed. Please check your token and credentials';
         } else {
           errorMessage = error.message;
         }
@@ -1231,7 +1231,7 @@ export class RipplingService {
     try {
       const { pageSize = 30 } = request;
 
-      this.logger.debug("Retrieving your time off requests", {
+      this.logger.debug('Retrieving your time off requests', {
         userId: this.config.userId,
         pageSize,
       });
@@ -1244,39 +1244,39 @@ export class RipplingService {
           targetEmpFilterMetadata: {},
           columnFilterMetadata: {
             action_type: {
-              filter_type: "IN",
-              values: ["LEAVE_REQUEST_APPROVAL"],
+              filter_type: 'IN',
+              values: ['LEAVE_REQUEST_APPROVAL'],
             },
             target_roles: {
-              filter_type: "IN",
+              filter_type: 'IN',
               values: [this.config.userId],
             },
           },
           sortingMetadata: {
             columnIndex: 0,
-            order: "DESC",
-            columnId: "dateRequested",
+            order: 'DESC',
+            columnId: 'dateRequested',
             column: {
               sort: true,
-              id: "dateRequested",
-              type: "text",
-              data: "dateRequested",
-              sortKey: "dateRequested",
+              id: 'dateRequested',
+              type: 'text',
+              data: 'dateRequested',
+              sortKey: 'dateRequested',
             },
           },
         },
-        readPreference: "SECONDARY_PREFERRED",
+        readPreference: 'SECONDARY_PREFERRED',
       };
 
-      this.logger.debug("Time off requests API call", {
-        endpoint: "/action_request/filters/find_paginated/",
+      this.logger.debug('Time off requests API call', {
+        endpoint: '/action_request/filters/find_paginated/',
         requestBody: JSON.stringify(requestBody, null, 2),
       });
 
       const response = await this.makeRequest(
-        "/action_request/filters/find_paginated/?includeRoleDetails=true",
+        '/action_request/filters/find_paginated/?includeRoleDetails=true',
         {
-          method: "POST",
+          method: 'POST',
           body: JSON.stringify(requestBody),
         }
       );
@@ -1308,7 +1308,7 @@ export class RipplingService {
         })
       );
 
-      this.logger.info("Time off requests retrieved successfully", {
+      this.logger.info('Time off requests retrieved successfully', {
         userId: this.config.userId,
         pageSize,
         dataCount: response.data?.length || 0,
@@ -1324,24 +1324,24 @@ export class RipplingService {
             response.visibleRowCount || simplifiedTimeOffRequests.length,
           pageSize,
         },
-        message: "Your time off requests retrieved successfully",
+        message: 'Your time off requests retrieved successfully',
       };
     } catch (error) {
-      this.logger.error("Failed to retrieve time off requests", {
+      this.logger.error('Failed to retrieve time off requests', {
         pageSize: request.pageSize,
         error,
       });
 
-      let errorMessage = "Unknown error occurred";
+      let errorMessage = 'Unknown error occurred';
       if (error instanceof Error) {
-        if (error.message.includes("404")) {
-          errorMessage = "Time off requests not found";
-        } else if (error.message.includes("403")) {
+        if (error.message.includes('404')) {
+          errorMessage = 'Time off requests not found';
+        } else if (error.message.includes('403')) {
           errorMessage =
-            "Access denied. Please check your permissions and authentication";
-        } else if (error.message.includes("401")) {
+            'Access denied. Please check your permissions and authentication';
+        } else if (error.message.includes('401')) {
           errorMessage =
-            "Authentication failed. Please check your token and credentials";
+            'Authentication failed. Please check your token and credentials';
         } else {
           errorMessage = error.message;
         }
@@ -1363,7 +1363,7 @@ export class RipplingService {
       // Use the provided roleId or default to the current user's role
       const targetRoleId = roleId || this.config.userId;
 
-      this.logger.debug("Retrieving holiday calendar", {
+      this.logger.debug('Retrieving holiday calendar', {
         targetRoleId,
         allowTimeAdmin,
         onlyPayable,
@@ -1376,12 +1376,12 @@ export class RipplingService {
       };
 
       const response = await this.makeRequest(
-        "/get_holiday_calendar/",
+        '/get_holiday_calendar/',
         {
-          method: "POST",
+          method: 'POST',
           body: JSON.stringify(requestBody),
         },
-        "/api/pto/api"
+        '/api/pto/api'
       );
 
       // Filter to only include current year
@@ -1390,7 +1390,7 @@ export class RipplingService {
         (yearData: any) => yearData.year === currentYear
       );
 
-      this.logger.info("Holiday calendar retrieved successfully", {
+      this.logger.info('Holiday calendar retrieved successfully', {
         targetRoleId,
         allowTimeAdmin,
         onlyPayable,
@@ -1414,23 +1414,23 @@ export class RipplingService {
         message: `Holiday calendar for ${currentYear} retrieved successfully`,
       };
     } catch (error) {
-      this.logger.error("Failed to retrieve holiday calendar", {
+      this.logger.error('Failed to retrieve holiday calendar', {
         roleId: request.roleId,
         allowTimeAdmin: request.allowTimeAdmin,
         onlyPayable: request.onlyPayable,
         error,
       });
 
-      let errorMessage = "Unknown error occurred";
+      let errorMessage = 'Unknown error occurred';
       if (error instanceof Error) {
-        if (error.message.includes("404")) {
-          errorMessage = "Holiday calendar not found";
-        } else if (error.message.includes("403")) {
+        if (error.message.includes('404')) {
+          errorMessage = 'Holiday calendar not found';
+        } else if (error.message.includes('403')) {
           errorMessage =
-            "Access denied. Please check your permissions and authentication";
-        } else if (error.message.includes("401")) {
+            'Access denied. Please check your permissions and authentication';
+        } else if (error.message.includes('401')) {
           errorMessage =
-            "Authentication failed. Please check your token and credentials";
+            'Authentication failed. Please check your token and credentials';
         } else {
           errorMessage = error.message;
         }
@@ -1468,11 +1468,11 @@ export class RipplingService {
         isOpenEnded === undefined
       ) {
         throw new Error(
-          "All parameters are required: leavePolicy, startDate, endDate, reasonForLeave, and isOpenEnded must be provided"
+          'All parameters are required: leavePolicy, startDate, endDate, reasonForLeave, and isOpenEnded must be provided'
         );
       }
 
-      this.logger.debug("Submitting time off request", {
+      this.logger.debug('Submitting time off request', {
         targetRoleId,
         leavePolicy,
         startDate,
@@ -1494,15 +1494,15 @@ export class RipplingService {
       };
 
       const response = await this.makeRequest(
-        "/leave_requests/",
+        '/leave_requests/',
         {
-          method: "POST",
+          method: 'POST',
           body: JSON.stringify(requestBody),
         },
-        "/api/pto/api"
+        '/api/pto/api'
       );
 
-      this.logger.info("Time off request submitted successfully", {
+      this.logger.info('Time off request submitted successfully', {
         targetRoleId,
         leavePolicy,
         startDate,
@@ -1543,7 +1543,7 @@ export class RipplingService {
         message: `Time off request submitted successfully. Status: ${leaveRequest.status}`,
       };
     } catch (error) {
-      this.logger.error("Failed to submit time off request", {
+      this.logger.error('Failed to submit time off request', {
         roleId: request.roleId,
         leavePolicy: request.leavePolicy,
         startDate: request.startDate,
@@ -1551,19 +1551,19 @@ export class RipplingService {
         error,
       });
 
-      let errorMessage = "Unknown error occurred";
+      let errorMessage = 'Unknown error occurred';
       if (error instanceof Error) {
-        if (error.message.includes("404")) {
-          errorMessage = "Leave policy not found or invalid";
-        } else if (error.message.includes("403")) {
+        if (error.message.includes('404')) {
+          errorMessage = 'Leave policy not found or invalid';
+        } else if (error.message.includes('403')) {
           errorMessage =
-            "Access denied. Please check your permissions and authentication";
-        } else if (error.message.includes("401")) {
+            'Access denied. Please check your permissions and authentication';
+        } else if (error.message.includes('401')) {
           errorMessage =
-            "Authentication failed. Please check your token and credentials";
-        } else if (error.message.includes("400")) {
+            'Authentication failed. Please check your token and credentials';
+        } else if (error.message.includes('400')) {
           errorMessage =
-            "Bad request. Please check the date format (YYYY-MM-DD) and leave policy ID";
+            'Bad request. Please check the date format (YYYY-MM-DD) and leave policy ID';
         } else {
           errorMessage = error.message;
         }
@@ -1580,14 +1580,14 @@ export class RipplingService {
     request: CancelActionRequestRequest
   ): Promise<RipplingServiceResponse> {
     try {
-      const { actionRequestId, channel = "DASHBOARD" } = request;
+      const { actionRequestId, channel = 'DASHBOARD' } = request;
 
       // Validate required fields
       if (!actionRequestId) {
-        throw new Error("actionRequestId is required");
+        throw new Error('actionRequestId is required');
       }
 
-      this.logger.debug("Canceling action request", {
+      this.logger.debug('Canceling action request', {
         actionRequestId,
         channel,
       });
@@ -1597,12 +1597,12 @@ export class RipplingService {
         channel: channel,
       };
 
-      const response = await this.makeRequest("/action_request/cancel", {
-        method: "POST",
+      const response = await this.makeRequest('/action_request/cancel', {
+        method: 'POST',
         body: JSON.stringify(requestBody),
       });
 
-      this.logger.info("Action request canceled successfully", {
+      this.logger.info('Action request canceled successfully', {
         actionRequestId,
         channel,
         response,
@@ -1616,28 +1616,28 @@ export class RipplingService {
           canceled: true,
           response: response,
         },
-        message: "Action request canceled successfully",
+        message: 'Action request canceled successfully',
       };
     } catch (error) {
-      this.logger.error("Failed to cancel action request", {
+      this.logger.error('Failed to cancel action request', {
         actionRequestId: request.actionRequestId,
         channel: request.channel,
         error,
       });
 
-      let errorMessage = "Unknown error occurred";
+      let errorMessage = 'Unknown error occurred';
       if (error instanceof Error) {
-        if (error.message.includes("404")) {
-          errorMessage = "Action request not found or already processed";
-        } else if (error.message.includes("403")) {
+        if (error.message.includes('404')) {
+          errorMessage = 'Action request not found or already processed';
+        } else if (error.message.includes('403')) {
           errorMessage =
-            "Access denied. You may not have permission to cancel this request";
-        } else if (error.message.includes("401")) {
+            'Access denied. You may not have permission to cancel this request';
+        } else if (error.message.includes('401')) {
           errorMessage =
-            "Authentication failed. Please check your token and credentials";
-        } else if (error.message.includes("400")) {
+            'Authentication failed. Please check your token and credentials';
+        } else if (error.message.includes('400')) {
           errorMessage =
-            "Bad request. The action request may no longer be cancellable";
+            'Bad request. The action request may no longer be cancellable';
         } else {
           errorMessage = error.message;
         }

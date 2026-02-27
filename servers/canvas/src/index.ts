@@ -1,54 +1,54 @@
 #!/usr/bin/env node
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ErrorCode,
   ListToolsRequestSchema,
   McpError,
-} from "@modelcontextprotocol/sdk/types.js";
-import axios, { AxiosInstance } from "axios";
+} from '@modelcontextprotocol/sdk/types.js';
+import axios, { AxiosInstance } from 'axios';
 
 // Import services
-import { CourseService } from "./services/course-service.js";
-import { EnrollmentService } from "./services/enrollment-service.js";
-import { UserService } from "./services/user-service.js";
-import { AssignmentService } from "./services/assignment-service.js";
-import { SubmissionService } from "./services/submission-service.js";
-import { ModuleService } from "./services/module-service.js";
-import { ExternalToolService } from "./services/external-tool-service.js";
-import { QuizService } from "./services/quiz-service.js";
-import { AdminService } from "./services/admin-service.js";
-import { GradeChangeLogService } from "./services/grade-change-log-service.js";
-import { LoginService } from "./services/login-service.js";
-import { AuthenticationProviderService } from "./services/authentication-provider-service.js";
-import { LtiLaunchDefinitionService } from "./services/lti-launch-definition-service.js";
-import { PageService } from "./services/page-service.js";
-import { GradingStandardService } from "./services/grading-standard-service.js";
+import { CourseService } from './services/course-service.js';
+import { EnrollmentService } from './services/enrollment-service.js';
+import { UserService } from './services/user-service.js';
+import { AssignmentService } from './services/assignment-service.js';
+import { SubmissionService } from './services/submission-service.js';
+import { ModuleService } from './services/module-service.js';
+import { ExternalToolService } from './services/external-tool-service.js';
+import { QuizService } from './services/quiz-service.js';
+import { AdminService } from './services/admin-service.js';
+import { GradeChangeLogService } from './services/grade-change-log-service.js';
+import { LoginService } from './services/login-service.js';
+import { AuthenticationProviderService } from './services/authentication-provider-service.js';
+import { LtiLaunchDefinitionService } from './services/lti-launch-definition-service.js';
+import { PageService } from './services/page-service.js';
+import { GradingStandardService } from './services/grading-standard-service.js';
 
 // Import tools
-import { CourseTools } from "./tools/course-tools.js";
-import { EnrollmentTools } from "./tools/enrollment-tools.js";
-import { UserTools } from "./tools/user-tools.js";
-import { AssignmentTools } from "./tools/assignment-tools.js";
-import { SubmissionTools } from "./tools/submission-tools.js";
-import { ModuleTools } from "./tools/module-tools.js";
-import { ExternalToolTools } from "./tools/external-tool-tools.js";
-import { QuizTools } from "./tools/quiz-tools.js";
-import { AdminTools } from "./tools/admin-tools.js";
-import { GradeChangeLogTools } from "./tools/grade-change-log-tools.js";
-import { LoginTools } from "./tools/login-tools.js";
-import { AuthenticationProviderTools } from "./tools/authentication-provider-tools.js";
-import { LtiLaunchDefinitionTools } from "./tools/lti-launch-definition-tools.js";
-import { PageTools } from "./tools/page-tools.js";
-import { GradingStandardTools } from "./tools/grading-standard-tools.js";
+import { CourseTools } from './tools/course-tools.js';
+import { EnrollmentTools } from './tools/enrollment-tools.js';
+import { UserTools } from './tools/user-tools.js';
+import { AssignmentTools } from './tools/assignment-tools.js';
+import { SubmissionTools } from './tools/submission-tools.js';
+import { ModuleTools } from './tools/module-tools.js';
+import { ExternalToolTools } from './tools/external-tool-tools.js';
+import { QuizTools } from './tools/quiz-tools.js';
+import { AdminTools } from './tools/admin-tools.js';
+import { GradeChangeLogTools } from './tools/grade-change-log-tools.js';
+import { LoginTools } from './tools/login-tools.js';
+import { AuthenticationProviderTools } from './tools/authentication-provider-tools.js';
+import { LtiLaunchDefinitionTools } from './tools/lti-launch-definition-tools.js';
+import { PageTools } from './tools/page-tools.js';
+import { GradingStandardTools } from './tools/grading-standard-tools.js';
 
 const CANVAS_BASE_URL = process.env.CANVAS_BASE_URL;
 const CANVAS_API_TOKEN = process.env.CANVAS_API_TOKEN;
 
 if (!CANVAS_BASE_URL || !CANVAS_API_TOKEN) {
   throw new Error(
-    "CANVAS_BASE_URL and CANVAS_API_TOKEN environment variables are required"
+    'CANVAS_BASE_URL and CANVAS_API_TOKEN environment variables are required'
   );
 }
 
@@ -89,8 +89,8 @@ class CanvasServer {
   constructor() {
     this.server = new Server(
       {
-        name: "canvas-server",
-        version: "0.1.0",
+        name: 'canvas-server',
+        version: '0.1.0',
       },
       {
         capabilities: {
@@ -104,8 +104,8 @@ class CanvasServer {
       baseURL: `${CANVAS_BASE_URL}/api/v1`,
       headers: {
         Authorization: `Bearer ${CANVAS_API_TOKEN}`,
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
     });
 
@@ -158,8 +158,8 @@ class CanvasServer {
     this.setupToolHandlers();
 
     // Error handling
-    this.server.onerror = (error) => console.error("[MCP Error]", error);
-    process.on("SIGINT", async () => {
+    this.server.onerror = (error) => console.error('[MCP Error]', error);
+    process.on('SIGINT', async () => {
       await this.server.close();
       process.exit(0);
     });
@@ -307,7 +307,7 @@ class CanvasServer {
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(result, null, 2),
             },
           ],
@@ -317,7 +317,7 @@ class CanvasServer {
           return {
             content: [
               {
-                type: "text",
+                type: 'text',
                 text: `Canvas API error: ${
                   error.response?.data?.errors?.[0]?.message ||
                   error.response?.data?.message ||
@@ -336,7 +336,7 @@ class CanvasServer {
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: `Error: ${
                 error instanceof Error ? error.message : String(error)
               }`,
@@ -351,7 +351,7 @@ class CanvasServer {
   async run() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error("Canvas MCP server running on stdio");
+    console.error('Canvas MCP server running on stdio');
   }
 }
 

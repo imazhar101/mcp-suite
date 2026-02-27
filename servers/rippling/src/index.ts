@@ -1,18 +1,18 @@
 #!/usr/bin/env node
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ErrorCode,
   ListToolsRequestSchema,
   McpError,
-} from "@modelcontextprotocol/sdk/types.js";
+} from '@modelcontextprotocol/sdk/types.js';
 
-import { Logger } from "../../../shared/utils/logger.js";
-import { getEnvVar, getLogLevel } from "../../../shared/utils/config.js";
-import { RipplingService } from "./services/rippling-service.js";
-import { ripplingTools } from "./tools/index.js";
-import { RipplingConfig } from "./types/index.js";
+import { Logger } from '../../../shared/utils/logger.js';
+import { getEnvVar, getLogLevel } from '../../../shared/utils/config.js';
+import { RipplingService } from './services/rippling-service.js';
+import { ripplingTools } from './tools/index.js';
+import { RipplingConfig } from './types/index.js';
 
 class RipplingServer {
   private server: Server;
@@ -20,21 +20,21 @@ class RipplingServer {
   private logger: Logger;
 
   constructor() {
-    this.logger = new Logger(getLogLevel(), { server: "rippling" });
+    this.logger = new Logger(getLogLevel(), { server: 'rippling' });
 
     const config: RipplingConfig = {
-      token: getEnvVar("RIPPLING_TOKEN"),
-      role: getEnvVar("RIPPLING_ROLE"),
-      company: getEnvVar("RIPPLING_COMPANY"),
-      userId: getEnvVar("RIPPLING_USER_ID"),
+      token: getEnvVar('RIPPLING_TOKEN'),
+      role: getEnvVar('RIPPLING_ROLE'),
+      company: getEnvVar('RIPPLING_COMPANY'),
+      userId: getEnvVar('RIPPLING_USER_ID'),
     };
 
     this.ripplingService = new RipplingService(config, this.logger);
 
     this.server = new Server(
       {
-        name: "rippling-server",
-        version: "1.0.0",
+        name: 'rippling-server',
+        version: '1.0.0',
       },
       {
         capabilities: {
@@ -60,7 +60,7 @@ class RipplingServer {
         );
         return this.formatResponse(result);
       } catch (error) {
-        this.logger.error("Tool call failed", error);
+        this.logger.error('Tool call failed', error);
         if (error instanceof McpError) {
           throw error;
         }
@@ -75,63 +75,63 @@ class RipplingServer {
   private async handleToolCall(toolName: string, args: any): Promise<any> {
     switch (toolName) {
       // Connection test
-      case "rippling_test_connection":
+      case 'rippling_test_connection':
         return await this.ripplingService.testConnection();
 
       // Employment Roles
-      case "rippling_get_employment_roles":
+      case 'rippling_get_employment_roles':
         return await this.ripplingService.getEmploymentRoles(args);
 
       // Employees
-      case "rippling_list_employees":
+      case 'rippling_list_employees':
         return await this.ripplingService.listEmployees(args);
 
       // Leave Policies
-      case "rippling_get_eligible_leave_policies":
+      case 'rippling_get_eligible_leave_policies':
         return await this.ripplingService.getEligibleLeavePolicies();
 
       // Terminated Employees
-      case "rippling_list_terminated_employees":
+      case 'rippling_list_terminated_employees':
         return await this.ripplingService.listTerminatedEmployees(args);
 
       // Signed Documents
-      case "rippling_get_signed_documents":
+      case 'rippling_get_signed_documents':
         return await this.ripplingService.getSignedDocuments();
 
       // Anniversary Information
-      case "rippling_get_anniversary_information":
+      case 'rippling_get_anniversary_information':
         return await this.ripplingService.getAnniversaryInformation();
 
       // Action Request Filters
-      case "rippling_get_action_request_filters":
+      case 'rippling_get_action_request_filters':
         return await this.ripplingService.getActionRequestFilters(args);
 
       // Open Interviews and Feedbacks
-      case "rippling_get_open_interviews_and_feedbacks":
+      case 'rippling_get_open_interviews_and_feedbacks':
         return await this.ripplingService.getOpenInterviewsAndFeedbacks(args);
 
       // Update Feedback Form Response
-      case "rippling_update_feedback_form_response":
+      case 'rippling_update_feedback_form_response':
         return await this.ripplingService.updateFeedbackFormResponse(args);
 
       // Get Alerts
-      case "rippling_get_alerts":
+      case 'rippling_get_alerts':
         return await this.ripplingService.getAlerts(args);
 
       // Time Off Requests
-      case "rippling_time_off_requests":
+      case 'rippling_time_off_requests':
         return await this.ripplingService.getTimeOffRequests(args);
 
       // Holiday Calendar
-      case "rippling_get_holiday_calendar":
+      case 'rippling_get_holiday_calendar':
         return await this.ripplingService.getHolidayCalendar(args);
 
       // Request Time Off
-      case "rippling_request_time_off":
+      case 'rippling_request_time_off':
         return await this.ripplingService.requestTimeOff(args);
 
       // Cancel Time Off
-      case "rippling_cancel_time_off":
+      case 'rippling_cancel_time_off':
         return await this.ripplingService.cancelActionRequest(args);
 
       default:
@@ -146,11 +146,11 @@ class RipplingServer {
     if (result.success) {
       const text = result.data
         ? JSON.stringify(result.data, null, 2)
-        : result.message || "Operation completed successfully";
+        : result.message || 'Operation completed successfully';
       return {
         content: [
           {
-            type: "text" as const,
+            type: 'text' as const,
             text: text,
           },
         ],
@@ -159,8 +159,8 @@ class RipplingServer {
       return {
         content: [
           {
-            type: "text" as const,
-            text: result.error || result.message || "Operation failed",
+            type: 'text' as const,
+            text: result.error || result.message || 'Operation failed',
           },
         ],
         isError: true,
@@ -170,17 +170,17 @@ class RipplingServer {
 
   private setupErrorHandling(): void {
     this.server.onerror = (error) => {
-      this.logger.error("MCP Server error", error);
+      this.logger.error('MCP Server error', error);
     };
 
-    process.on("SIGINT", async () => {
-      this.logger.info("Shutting down Rippling MCP server");
+    process.on('SIGINT', async () => {
+      this.logger.info('Shutting down Rippling MCP server');
       await this.server.close();
       process.exit(0);
     });
 
-    process.on("SIGTERM", async () => {
-      this.logger.info("Shutting down Rippling MCP server");
+    process.on('SIGTERM', async () => {
+      this.logger.info('Shutting down Rippling MCP server');
       await this.server.close();
       process.exit(0);
     });
@@ -189,12 +189,12 @@ class RipplingServer {
   async run(): Promise<void> {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    this.logger.info("Rippling MCP server running on stdio");
+    this.logger.info('Rippling MCP server running on stdio');
   }
 }
 
 const server = new RipplingServer();
 server.run().catch((error) => {
-  console.error("Failed to start Rippling MCP server:", error);
+  console.error('Failed to start Rippling MCP server:', error);
   process.exit(1);
 });

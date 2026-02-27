@@ -1,7 +1,7 @@
 export interface PayPalConfig {
   clientId: string;
   clientSecret: string;
-  environment?: "sandbox" | "production";
+  environment?: 'sandbox' | 'production';
 }
 
 export interface PayPalAuthResponse {
@@ -168,9 +168,9 @@ export interface PayPalWebhookEvent {
 }
 
 export interface PayPalCreatePaymentRequest {
-  intent: "sale" | "authorize" | "order";
+  intent: 'sale' | 'authorize' | 'order';
   payer: {
-    payment_method: "paypal" | "credit_card";
+    payment_method: 'paypal' | 'credit_card';
     payer_info?: PayPalPayerInfo;
   };
   transactions: {

@@ -69,7 +69,7 @@ describe('Stripe Server Integration Tests', () => {
     expect(Array.isArray(result.content)).toBe(true);
     expect(result.content.length).toBeGreaterThan(0);
     expect(result.content[0].type).toBe('text');
-    
+
     const responseData = JSON.parse(result.content[0].text);
     expect(responseData.success).toBe(true);
     expect(responseData.data).toBeDefined();
@@ -120,7 +120,7 @@ describe('Stripe Server Integration Tests', () => {
     expect(Array.isArray(result.content)).toBe(true);
     expect(result.content.length).toBeGreaterThan(0);
     expect(result.content[0].type).toBe('text');
-    
+
     const responseData = JSON.parse(result.content[0].text);
     expect(responseData.success).toBe(true);
     expect(responseData.data).toBeDefined();
@@ -152,7 +152,7 @@ describe('Stripe Server Integration Tests', () => {
     expect(Array.isArray(result.content)).toBe(true);
     expect(result.content.length).toBeGreaterThan(0);
     expect(result.content[0].type).toBe('text');
-    
+
     const responseData = JSON.parse(result.content[0].text);
     expect(responseData.success).toBe(true);
     expect(responseData.data).toBeDefined();
@@ -180,7 +180,7 @@ describe('Stripe Server Integration Tests', () => {
     expect(Array.isArray(result.content)).toBe(true);
     expect(result.content.length).toBeGreaterThan(0);
     expect(result.content[0].type).toBe('text');
-    
+
     const responseData = JSON.parse(result.content[0].text);
     expect(responseData.success).toBe(true);
     expect(responseData.data).toBeDefined();
@@ -210,7 +210,7 @@ describe('Stripe Server Integration Tests', () => {
     expect(Array.isArray(result.content)).toBe(true);
     expect(result.content.length).toBeGreaterThan(0);
     expect(result.content[0].type).toBe('text');
-    
+
     const responseData = JSON.parse(result.content[0].text);
     expect(responseData.success).toBe(true);
     expect(responseData.data).toBeDefined();
@@ -239,7 +239,7 @@ describe('Stripe Server Integration Tests', () => {
     expect(Array.isArray(result.content)).toBe(true);
     expect(result.content.length).toBeGreaterThan(0);
     expect(result.content[0].type).toBe('text');
-    
+
     const responseData = JSON.parse(result.content[0].text);
     expect(responseData.success).toBe(false);
     expect(responseData.error).toBeDefined();

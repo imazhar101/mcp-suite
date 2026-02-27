@@ -1,7 +1,7 @@
-import { PostgreSQLService } from "../services/postgresql-service";
-import { Logger } from "../../../../shared/utils/logger";
+import { PostgreSQLService } from '../services/postgresql-service';
+import { Logger } from '../../../../shared/utils/logger';
 
-const logger = new Logger("info", { server: "DatabaseTools" });
+const logger = new Logger('info', { server: 'DatabaseTools' });
 
 export class DatabaseTools {
   private service: PostgreSQLService;
@@ -18,17 +18,17 @@ export class DatabaseTools {
 
   async executeQuery(query: string, params?: any[]) {
     try {
-      logger.info("Executing database query");
+      logger.info('Executing database query');
       const result = await this.service.executeQuery(query, params);
       return {
         success: true,
         data: result,
       };
     } catch (error) {
-      logger.error("Error executing query", error);
+      logger.error('Error executing query', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }

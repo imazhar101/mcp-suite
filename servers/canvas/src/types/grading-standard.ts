@@ -1,4 +1,4 @@
-import { CanvasEntity } from "./index.js";
+import { CanvasEntity } from './index.js';
 
 export interface GradingSchemeEntry {
   // The name for an entry value within a GradingStandard that describes the range
@@ -21,7 +21,7 @@ export interface GradingStandard extends CanvasEntity {
   // the title of the grading standard
   title: string;
   // the context this standard is associated with, either 'Account' or 'Course'
-  context_type: "Account" | "Course";
+  context_type: 'Account' | 'Course';
   // the id for the context either the Account or Course id
   context_id: number;
   // whether this is a points-based standard
@@ -55,14 +55,14 @@ export interface GradingStandardCreateParams {
 
 export interface GradingStandardListParams {
   // Context type (course or account)
-  context_type: "course" | "account";
+  context_type: 'course' | 'account';
   // Context ID
   context_id: string;
 }
 
 export interface GradingStandardGetParams {
   // Context type (course or account)
-  context_type: "course" | "account";
+  context_type: 'course' | 'account';
   // Context ID
   context_id: string;
   // Grading standard ID

@@ -1,16 +1,16 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 import {
   GradingStandard,
   GradingStandardCreateParams,
   GradingStandardListParams,
   GradingStandardGetParams,
-} from "../types/grading-standard.js";
+} from '../types/grading-standard.js';
 
 export class GradingStandardService {
   constructor(private canvasClient: AxiosInstance) {}
 
   async createGradingStandard(
-    contextType: "course" | "account",
+    contextType: 'course' | 'account',
     contextId: string,
     params: GradingStandardCreateParams
   ): Promise<GradingStandard> {
@@ -35,7 +35,7 @@ export class GradingStandardService {
     }
 
     const endpoint =
-      contextType === "course"
+      contextType === 'course'
         ? `/courses/${contextId}/grading_standards`
         : `/accounts/${contextId}/grading_standards`;
 
@@ -44,11 +44,11 @@ export class GradingStandardService {
   }
 
   async listGradingStandards(
-    contextType: "course" | "account",
+    contextType: 'course' | 'account',
     contextId: string
   ): Promise<GradingStandard[]> {
     const endpoint =
-      contextType === "course"
+      contextType === 'course'
         ? `/courses/${contextId}/grading_standards`
         : `/accounts/${contextId}/grading_standards`;
 
@@ -57,12 +57,12 @@ export class GradingStandardService {
   }
 
   async getGradingStandard(
-    contextType: "course" | "account",
+    contextType: 'course' | 'account',
     contextId: string,
     gradingStandardId: string
   ): Promise<GradingStandard> {
     const endpoint =
-      contextType === "course"
+      contextType === 'course'
         ? `/courses/${contextId}/grading_standards/${gradingStandardId}`
         : `/accounts/${contextId}/grading_standards/${gradingStandardId}`;
 

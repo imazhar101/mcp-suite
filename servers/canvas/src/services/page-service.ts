@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 import {
   Page,
   PageRevision,
@@ -7,7 +7,7 @@ import {
   PageUpdateParams,
   PageRevisionParams,
   PageRevertParams,
-} from "../types/page.js";
+} from '../types/page.js';
 
 export class PageService {
   constructor(private canvasClient: AxiosInstance) {}
@@ -32,7 +32,7 @@ export class PageService {
       queryParams.published = params.published;
     }
     if (params.include) {
-      queryParams["include[]"] = params.include;
+      queryParams['include[]'] = params.include;
     }
 
     const response = await this.canvasClient.get(`/courses/${courseId}/pages`, {
@@ -174,7 +174,7 @@ export class PageService {
       queryParams.published = params.published;
     }
     if (params.include) {
-      queryParams["include[]"] = params.include;
+      queryParams['include[]'] = params.include;
     }
 
     const response = await this.canvasClient.get(`/groups/${groupId}/pages`, {

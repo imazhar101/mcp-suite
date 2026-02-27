@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 import {
   User,
   Profile,
@@ -16,7 +16,7 @@ import {
   ActivityStreamParams,
   TodoItemsParams,
   CustomDataParams,
-} from "../types/user.js";
+} from '../types/user.js';
 
 export class UserService {
   constructor(private canvasClient: AxiosInstance) {}
@@ -41,11 +41,11 @@ export class UserService {
    */
   async getUser(
     userId: string,
-    include?: Array<"uuid" | "last_login">
+    include?: Array<'uuid' | 'last_login'>
   ): Promise<User> {
     const params: any = {};
     if (include) {
-      params["include[]"] = include;
+      params['include[]'] = include;
     }
 
     const response = await this.canvasClient.get(`/users/${userId}`, {
@@ -113,7 +113,7 @@ export class UserService {
    */
   async getActivityStream(params: ActivityStreamParams = {}): Promise<any[]> {
     const response = await this.canvasClient.get(
-      "/users/self/activity_stream",
+      '/users/self/activity_stream',
       {
         params,
       }
@@ -128,7 +128,7 @@ export class UserService {
     params: ActivityStreamParams = {}
   ): Promise<any[]> {
     const response = await this.canvasClient.get(
-      "/users/self/activity_stream/summary",
+      '/users/self/activity_stream/summary',
       {
         params,
       }
@@ -142,10 +142,10 @@ export class UserService {
   async getTodoItems(params: TodoItemsParams = {}): Promise<any[]> {
     const queryParams: any = {};
     if (params.include) {
-      queryParams["include[]"] = params.include;
+      queryParams['include[]'] = params.include;
     }
 
-    const response = await this.canvasClient.get("/users/self/todo", {
+    const response = await this.canvasClient.get('/users/self/todo', {
       params: queryParams,
     });
     return response.data;
@@ -157,11 +157,11 @@ export class UserService {
   async getTodoItemCount(params: TodoItemsParams = {}): Promise<any> {
     const queryParams: any = {};
     if (params.include) {
-      queryParams["include[]"] = params.include;
+      queryParams['include[]'] = params.include;
     }
 
     const response = await this.canvasClient.get(
-      "/users/self/todo_item_count",
+      '/users/self/todo_item_count',
       {
         params: queryParams,
       }
@@ -173,7 +173,7 @@ export class UserService {
    * List upcoming assignments, calendar events
    */
   async getUpcomingEvents(): Promise<any[]> {
-    const response = await this.canvasClient.get("/users/self/upcoming_events");
+    const response = await this.canvasClient.get('/users/self/upcoming_events');
     return response.data;
   }
 
@@ -187,15 +187,15 @@ export class UserService {
 
     // Convert array parameters to Canvas API format
     if (queryParams.include) {
-      (queryParams as any)["include[]"] = queryParams.include;
+      (queryParams as any)['include[]'] = queryParams.include;
       delete queryParams.include;
     }
     if (queryParams.filter) {
-      (queryParams as any)["filter[]"] = queryParams.filter;
+      (queryParams as any)['filter[]'] = queryParams.filter;
       delete queryParams.filter;
     }
     if (queryParams.course_ids) {
-      (queryParams as any)["course_ids[]"] = queryParams.course_ids;
+      (queryParams as any)['course_ids[]'] = queryParams.course_ids;
       delete queryParams.course_ids;
     }
 
@@ -223,7 +223,7 @@ export class UserService {
    */
   async hideAllStreamItems(): Promise<{ hidden: boolean }> {
     const response = await this.canvasClient.delete(
-      "/users/self/activity_stream"
+      '/users/self/activity_stream'
     );
     return response.data;
   }
@@ -293,7 +293,7 @@ export class UserService {
    */
   async updateTextEditorPreference(
     userId: string,
-    preference: "block_editor" | "rce" | ""
+    preference: 'block_editor' | 'rce' | ''
   ): Promise<{ text_editor_preference: string }> {
     const response = await this.canvasClient.put(
       `/users/${userId}/text_editor_preference`,
@@ -309,7 +309,7 @@ export class UserService {
    */
   async updateFilesUIVersionPreference(
     userId: string,
-    version: "v1" | "v2"
+    version: 'v1' | 'v2'
   ): Promise<{ files_ui_version: string }> {
     const response = await this.canvasClient.put(
       `/users/${userId}/files_ui_version_preference`,
@@ -363,7 +363,7 @@ export class UserService {
     if (userId) {
       await this.canvasClient.delete(`/users/${userId}/mobile_sessions`);
     } else {
-      await this.canvasClient.delete("/users/mobile_sessions");
+      await this.canvasClient.delete('/users/mobile_sessions');
     }
   }
 
@@ -406,8 +406,8 @@ export class UserService {
    * Store custom data
    */
   async storeCustomData(params: CustomDataParams): Promise<{ data: any }> {
-    const { user_id, scope = "", ns, data } = params;
-    const endpoint = `/users/${user_id}/custom_data${scope ? `/${scope}` : ""}`;
+    const { user_id, scope = '', ns, data } = params;
+    const endpoint = `/users/${user_id}/custom_data${scope ? `/${scope}` : ''}`;
 
     const response = await this.canvasClient.put(endpoint, { ns, data });
     return response.data;
@@ -417,10 +417,10 @@ export class UserService {
    * Load custom data
    */
   async loadCustomData(
-    params: Omit<CustomDataParams, "data">
+    params: Omit<CustomDataParams, 'data'>
   ): Promise<{ data: any }> {
-    const { user_id, scope = "", ns } = params;
-    const endpoint = `/users/${user_id}/custom_data${scope ? `/${scope}` : ""}`;
+    const { user_id, scope = '', ns } = params;
+    const endpoint = `/users/${user_id}/custom_data${scope ? `/${scope}` : ''}`;
 
     const response = await this.canvasClient.get(endpoint, { params: { ns } });
     return response.data;
@@ -430,10 +430,10 @@ export class UserService {
    * Delete custom data
    */
   async deleteCustomData(
-    params: Omit<CustomDataParams, "data">
+    params: Omit<CustomDataParams, 'data'>
   ): Promise<{ data: any }> {
-    const { user_id, scope = "", ns } = params;
-    const endpoint = `/users/${user_id}/custom_data${scope ? `/${scope}` : ""}`;
+    const { user_id, scope = '', ns } = params;
+    const endpoint = `/users/${user_id}/custom_data${scope ? `/${scope}` : ''}`;
 
     const response = await this.canvasClient.delete(endpoint, {
       params: { ns },
@@ -446,7 +446,7 @@ export class UserService {
    */
   async listCourseNicknames(): Promise<CourseNickname[]> {
     const response = await this.canvasClient.get(
-      "/users/self/course_nicknames"
+      '/users/self/course_nicknames'
     );
     return response.data;
   }
@@ -491,7 +491,7 @@ export class UserService {
    * Clear course nicknames
    */
   async clearCourseNicknames(): Promise<void> {
-    await this.canvasClient.delete("/users/self/course_nicknames");
+    await this.canvasClient.delete('/users/self/course_nicknames');
   }
 
   /**
@@ -515,7 +515,7 @@ export class UserService {
     expires_at: number;
   }> {
     const response = await this.canvasClient.post(
-      "/users/self/pandata_events_token",
+      '/users/self/pandata_events_token',
       {
         app_key: appKey,
       }

@@ -1,6 +1,6 @@
-import { Pool } from "pg";
-import { Logger } from "../../../../shared/utils/logger.js";
-import { DatabaseStats } from "../types/database.js";
+import { Pool } from 'pg';
+import { Logger } from '../../../../shared/utils/logger.js';
+import { DatabaseStats } from '../types/database.js';
 
 export class PostgreSQLService {
   private pool: Pool;
@@ -24,8 +24,8 @@ export class PostgreSQLService {
       },
     });
 
-    this.pool.on("error", (err: Error) => {
-      this.logger.error("Unexpected PostgreSQL client error", err);
+    this.pool.on('error', (err: Error) => {
+      this.logger.error('Unexpected PostgreSQL client error', err);
     });
   }
 
@@ -47,26 +47,26 @@ export class PostgreSQLService {
         return {
           success: false,
           error:
-            "Only read-only queries are allowed. Permitted operations: SELECT, SHOW, DESCRIBE, EXPLAIN. Set allowDangerousOperations to true to enable write operations.",
+            'Only read-only queries are allowed. Permitted operations: SELECT, SHOW, DESCRIBE, EXPLAIN. Set allowDangerousOperations to true to enable write operations.',
         };
       }
 
       // Additional safety: Check for dangerous functions and procedures (unless dangerous operations are allowed)
       if (!this.allowDangerousOperations) {
         const dangerousFunctions = [
-          "pg_sleep",
-          "pg_terminate_backend",
-          "pg_cancel_backend",
-          "current_setting",
-          "set_config",
-          "pg_reload_conf",
-          "pg_rotate_logfile",
-          "pg_stat_file",
-          "pg_read_file",
-          "copy",
-          "lo_",
-          "dblink",
-          "file_fdw",
+          'pg_sleep',
+          'pg_terminate_backend',
+          'pg_cancel_backend',
+          'current_setting',
+          'set_config',
+          'pg_reload_conf',
+          'pg_rotate_logfile',
+          'pg_stat_file',
+          'pg_read_file',
+          'copy',
+          'lo_',
+          'dblink',
+          'file_fdw',
         ];
 
         const hasDangerousFunction = dangerousFunctions.some((func) =>
@@ -77,16 +77,16 @@ export class PostgreSQLService {
           return {
             success: false,
             error:
-              "Query contains potentially dangerous functions. Only safe read operations are allowed.",
+              'Query contains potentially dangerous functions. Only safe read operations are allowed.',
           };
         }
       }
 
       // Start a transaction (read-only for safety unless dangerous operations are allowed)
       if (this.allowDangerousOperations && !this.isReadOnlyQuery(lowerQuery)) {
-        await client.query("BEGIN");
+        await client.query('BEGIN');
       } else {
-        await client.query("BEGIN READ ONLY");
+        await client.query('BEGIN READ ONLY');
       }
 
       // Add LIMIT 100 to SELECT queries for safety (unless dangerous operations are allowed)
@@ -94,21 +94,21 @@ export class PostgreSQLService {
 
       if (
         !this.allowDangerousOperations &&
-        lowerQuery.startsWith("select") &&
-        !lowerQuery.includes("limit")
+        lowerQuery.startsWith('select') &&
+        !lowerQuery.includes('limit')
       ) {
         // Remove trailing semicolon if present, add LIMIT, then add semicolon back
-        if (modifiedQuery.endsWith(";")) {
-          modifiedQuery = modifiedQuery.slice(0, -1) + " LIMIT 100;";
+        if (modifiedQuery.endsWith(';')) {
+          modifiedQuery = modifiedQuery.slice(0, -1) + ' LIMIT 100;';
         } else {
-          modifiedQuery += " LIMIT 100";
+          modifiedQuery += ' LIMIT 100';
         }
       }
 
       const result = await client.query(modifiedQuery, params);
 
       // Commit the read-only transaction
-      await client.query("COMMIT");
+      await client.query('COMMIT');
 
       return {
         success: true,
@@ -124,18 +124,18 @@ export class PostgreSQLService {
         },
       };
     } catch (error) {
-      this.logger.error("Error executing query", error);
+      this.logger.error('Error executing query', error);
 
       // Rollback transaction on error
       try {
-        await client.query("ROLLBACK");
+        await client.query('ROLLBACK');
       } catch (rollbackError) {
-        this.logger.error("Error rolling back transaction", rollbackError);
+        this.logger.error('Error rolling back transaction', rollbackError);
       }
 
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     } finally {
       client.release();
@@ -144,17 +144,17 @@ export class PostgreSQLService {
 
   private isReadOnlyQuery(query: string): boolean {
     const allowedOperations = [
-      "select",
-      "show",
-      "describe",
-      "desc",
-      "explain",
-      "with", // Common Table Expressions for complex SELECT queries
+      'select',
+      'show',
+      'describe',
+      'desc',
+      'explain',
+      'with', // Common Table Expressions for complex SELECT queries
     ];
 
     // Check if query starts with allowed operations
     const startsWithAllowed = allowedOperations.some(
-      (op) => query.startsWith(op + " ") || query === op
+      (op) => query.startsWith(op + ' ') || query === op
     );
 
     if (!startsWithAllowed) {
@@ -163,27 +163,27 @@ export class PostgreSQLService {
 
     // Block dangerous keywords even in SELECT contexts
     const dangerousKeywords = [
-      "drop",
-      "delete",
-      "insert",
-      "update",
-      "create",
-      "alter",
-      "truncate",
-      "grant",
-      "revoke",
-      "commit",
-      "rollback",
-      "savepoint",
-      "release",
-      "lock",
-      "unlock",
-      "call",
-      "exec",
+      'drop',
+      'delete',
+      'insert',
+      'update',
+      'create',
+      'alter',
+      'truncate',
+      'grant',
+      'revoke',
+      'commit',
+      'rollback',
+      'savepoint',
+      'release',
+      'lock',
+      'unlock',
+      'call',
+      'exec',
     ];
 
     const hasDangerousKeyword = dangerousKeywords.some((keyword) => {
-      const regex = new RegExp(`\\b${keyword}\\b`, "i");
+      const regex = new RegExp(`\\b${keyword}\\b`, 'i');
       return regex.test(query);
     });
 
@@ -198,9 +198,9 @@ export class PostgreSQLService {
     try {
       await this.pool.end();
 
-      this.logger.info("Disconnected from PostgreSQL database");
+      this.logger.info('Disconnected from PostgreSQL database');
     } catch (err) {
-      this.logger.error("Error disconnecting from PostgreSQL database", err);
+      this.logger.error('Error disconnecting from PostgreSQL database', err);
     }
   }
 }
