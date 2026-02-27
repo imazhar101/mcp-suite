@@ -6,6 +6,7 @@ import { ServerResponse } from "../../../../shared/types/common.js";
 import {
   JiraConfig,
   ADFDocument,
+  ADFNode,
   JiraIssue,
   JiraProject,
   JiraTransition,
