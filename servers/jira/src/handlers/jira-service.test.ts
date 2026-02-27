@@ -16,7 +16,7 @@ describe('JiraService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     mockLogger = {
       withContext: vi.fn().mockReturnThis(),
       info: vi.fn(),
@@ -24,7 +24,7 @@ describe('JiraService', () => {
       warn: vi.fn(),
       debug: vi.fn(),
     };
-    
+
     mockAxios = {
       create: vi.fn().mockReturnValue({
         post: vi.fn(),
@@ -33,7 +33,7 @@ describe('JiraService', () => {
         delete: vi.fn(),
       }),
     };
-    
+
     (axios.create as any) = mockAxios.create;
     (Logger as any).mockImplementation(() => mockLogger);
 
@@ -72,10 +72,12 @@ describe('JiraService', () => {
           description: {
             type: 'doc',
             version: 1,
-            content: [{
-              type: 'paragraph',
-              content: [{ type: 'text', text: 'Test description' }],
-            }],
+            content: [
+              {
+                type: 'paragraph',
+                content: [{ type: 'text', text: 'Test description' }],
+              },
+            ],
           },
         },
       });

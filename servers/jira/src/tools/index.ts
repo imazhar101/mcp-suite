@@ -72,7 +72,8 @@ export const jiraTools: McpTool[] = [
         },
         parentKey: {
           type: 'string',
-          description: 'Parent issue key to create this as a subtask (e.g., "PROJ-123"). When provided, this issue will be created as a subtask of the specified parent issue.',
+          description:
+            'Parent issue key to create this as a subtask (e.g., "PROJ-123"). When provided, this issue will be created as a subtask of the specified parent issue.',
         },
       },
       required: ['projectKey', 'summary'],

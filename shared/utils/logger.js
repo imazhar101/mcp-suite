@@ -1,45 +1,45 @@
 export class Logger {
-    constructor(level = 'info', context = {}) {
-        this.level = level;
-        this.context = context;
+  constructor(level = 'info', context = {}) {
+    this.level = level;
+    this.context = context;
+  }
+  shouldLog(level) {
+    const levels = {
+      debug: 0,
+      info: 1,
+      warn: 2,
+      error: 3,
+    };
+    return levels[level] >= levels[this.level];
+  }
+  formatMessage(level, message, data) {
+    const timestamp = new Date().toISOString();
+    const contextStr = this.context.server ? `[${this.context.server}]` : '';
+    const dataStr = data ? ` ${JSON.stringify(data)}` : '';
+    return `${timestamp} ${level.toUpperCase()} ${contextStr} ${message}${dataStr}`;
+  }
+  debug(message, data) {
+    if (this.shouldLog('debug')) {
+      console.debug(this.formatMessage('debug', message, data));
     }
-    shouldLog(level) {
-        const levels = {
-            debug: 0,
-            info: 1,
-            warn: 2,
-            error: 3,
-        };
-        return levels[level] >= levels[this.level];
+  }
+  info(message, data) {
+    if (this.shouldLog('info')) {
+      console.info(this.formatMessage('info', message, data));
     }
-    formatMessage(level, message, data) {
-        const timestamp = new Date().toISOString();
-        const contextStr = this.context.server ? `[${this.context.server}]` : '';
-        const dataStr = data ? ` ${JSON.stringify(data)}` : '';
-        return `${timestamp} ${level.toUpperCase()} ${contextStr} ${message}${dataStr}`;
+  }
+  warn(message, data) {
+    if (this.shouldLog('warn')) {
+      console.warn(this.formatMessage('warn', message, data));
     }
-    debug(message, data) {
-        if (this.shouldLog('debug')) {
-            console.debug(this.formatMessage('debug', message, data));
-        }
+  }
+  error(message, error) {
+    if (this.shouldLog('error')) {
+      console.error(this.formatMessage('error', message, error));
     }
-    info(message, data) {
-        if (this.shouldLog('info')) {
-            console.info(this.formatMessage('info', message, data));
-        }
-    }
-    warn(message, data) {
-        if (this.shouldLog('warn')) {
-            console.warn(this.formatMessage('warn', message, data));
-        }
-    }
-    error(message, error) {
-        if (this.shouldLog('error')) {
-            console.error(this.formatMessage('error', message, error));
-        }
-    }
-    withContext(context) {
-        return new Logger(this.level, { ...this.context, ...context });
-    }
+  }
+  withContext(context) {
+    return new Logger(this.level, { ...this.context, ...context });
+  }
 }
 //# sourceMappingURL=logger.js.map
