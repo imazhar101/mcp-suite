@@ -1,4 +1,4 @@
-import { CanvasEntity, CourseIncludeOptions } from "./index.js";
+import { CanvasEntity, CourseIncludeOptions } from './index.js';
 
 export interface Course extends CanvasEntity {
   name: string;
@@ -34,14 +34,14 @@ export interface CourseCreateParams {
   start_at?: string;
   end_at?: string;
   license?:
-    | "private"
-    | "cc_by_nc_nd"
-    | "cc_by_nc_sa"
-    | "cc_by_nc"
-    | "cc_by_nd"
-    | "cc_by_sa"
-    | "cc_by"
-    | "public_domain";
+    | 'private'
+    | 'cc_by_nc_nd'
+    | 'cc_by_nc_sa'
+    | 'cc_by_nc'
+    | 'cc_by_nd'
+    | 'cc_by_sa'
+    | 'cc_by'
+    | 'public_domain';
   is_public?: boolean;
   is_public_to_auth_users?: boolean;
   public_syllabus?: boolean;
@@ -60,10 +60,10 @@ export interface CourseCreateParams {
   time_zone?: string;
   offer?: boolean;
   enroll_me?: boolean;
-  default_view?: "feed" | "wiki" | "modules" | "syllabus" | "assignments";
+  default_view?: 'feed' | 'wiki' | 'modules' | 'syllabus' | 'assignments';
   syllabus_body?: string;
   grading_standard_id?: number;
-  course_format?: "on_campus" | "online" | "blended";
+  course_format?: 'on_campus' | 'online' | 'blended';
 }
 
 export interface CourseUpdateParams {
@@ -87,17 +87,17 @@ export interface CourseUpdateParams {
   apply_assignment_group_weights?: boolean;
   time_zone?: string;
   offer?: boolean;
-  event?: "claim" | "offer" | "conclude" | "delete" | "undelete";
-  default_view?: "feed" | "wiki" | "modules" | "syllabus" | "assignments";
+  event?: 'claim' | 'offer' | 'conclude' | 'delete' | 'undelete';
+  default_view?: 'feed' | 'wiki' | 'modules' | 'syllabus' | 'assignments';
   syllabus_body?: string;
   grading_standard_id?: number;
-  course_format?: "on_campus" | "online" | "blended";
+  course_format?: 'on_campus' | 'online' | 'blended';
 }
 
 export interface CourseListParams {
-  enrollment_type?: "teacher" | "student" | "ta" | "observer" | "designer";
-  enrollment_state?: "active" | "invited_or_pending" | "completed";
-  state?: Array<"unpublished" | "available" | "completed" | "deleted">;
+  enrollment_type?: 'teacher' | 'student' | 'ta' | 'observer' | 'designer';
+  enrollment_state?: 'active' | 'invited_or_pending' | 'completed';
+  state?: Array<'unpublished' | 'available' | 'completed' | 'deleted'>;
   include?: CourseIncludeOptions[];
 }
 

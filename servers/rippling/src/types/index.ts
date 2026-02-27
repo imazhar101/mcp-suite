@@ -27,7 +27,7 @@ export interface ActionRequestFiltersRequest {
   pendingReviewerRoles?: string[];
   requestedByRoles?: string[];
   sortColumn?: string;
-  sortOrder?: "ASC" | "DESC";
+  sortOrder?: 'ASC' | 'DESC';
   includeRoleDetails?: boolean;
 }
 
@@ -71,7 +71,7 @@ export interface UpdateFeedbackFormResponseRequest {
 }
 
 export interface GetAlertsRequest {
-  readStatus?: "READ_STATUS_ALL" | "READ_STATUS_READ" | "READ_STATUS_UNREAD";
+  readStatus?: 'READ_STATUS_ALL' | 'READ_STATUS_READ' | 'READ_STATUS_UNREAD';
   pageSize?: number;
   pageToken?: string;
 }

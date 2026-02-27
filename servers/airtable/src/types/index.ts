@@ -47,7 +47,7 @@ export interface ListRecordsRequest {
   filterByFormula?: string;
   sort?: Array<{
     field: string;
-    direction: "asc" | "desc";
+    direction: 'asc' | 'desc';
   }>;
 }
 

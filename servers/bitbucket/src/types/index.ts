@@ -18,7 +18,7 @@ export interface BitbucketPullRequest {
   id: number;
   title: string;
   description?: string;
-  state: "OPEN" | "MERGED" | "DECLINED" | "SUPERSEDED";
+  state: 'OPEN' | 'MERGED' | 'DECLINED' | 'SUPERSEDED';
   author: {
     display_name: string;
     uuid: string;
@@ -166,7 +166,7 @@ export interface BitbucketTask {
     markup?: string;
     html?: string;
   };
-  state: "UNRESOLVED" | "RESOLVED";
+  state: 'UNRESOLVED' | 'RESOLVED';
   creator: {
     display_name: string;
     uuid: string;
@@ -188,8 +188,8 @@ export interface BitbucketDefaultReviewer {
     display_name: string;
     uuid: string;
   };
-  reviewer_type: "repository" | "project";
-  type: "default_reviewer";
+  reviewer_type: 'repository' | 'project';
+  type: 'default_reviewer';
 }
 
 export interface CreatePullRequestData {
@@ -232,5 +232,5 @@ export interface MergePullRequestData {
   type: string;
   message?: string;
   close_source_branch?: boolean;
-  merge_strategy?: "merge_commit" | "squash" | "fast_forward";
+  merge_strategy?: 'merge_commit' | 'squash' | 'fast_forward';
 }

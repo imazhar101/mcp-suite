@@ -12,19 +12,19 @@ import {
   ScanCommand,
   BatchGetItemCommand,
   BatchWriteItemCommand,
-} from "@aws-sdk/client-dynamodb";
-import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
+} from '@aws-sdk/client-dynamodb';
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import {
   DynamoDBTableInfo,
   DynamoDBItem,
   DynamoDBQueryParams,
   DynamoDBScanParams,
-} from "../types/index.js";
+} from '../types/index.js';
 
 export class DynamoDBService {
   private client: DynamoDBClient;
 
-  constructor(region: string = "us-east-1") {
+  constructor(region: string = 'us-east-1') {
     this.client = new DynamoDBClient({ region });
   }
 
@@ -47,24 +47,24 @@ export class DynamoDBService {
       keySchema:
         response.Table.KeySchema?.map((key: any) => ({
           attributeName: key.AttributeName!,
-          keyType: key.KeyType! as "HASH" | "RANGE",
+          keyType: key.KeyType! as 'HASH' | 'RANGE',
         })) || [],
       attributeDefinitions:
         response.Table.AttributeDefinitions?.map((attr: any) => ({
           attributeName: attr.AttributeName!,
-          attributeType: attr.AttributeType! as "S" | "N" | "B",
+          attributeType: attr.AttributeType! as 'S' | 'N' | 'B',
         })) || [],
     };
   }
 
   async createTable(
     tableName: string,
-    keySchema: { attributeName: string; keyType: "HASH" | "RANGE" }[],
+    keySchema: { attributeName: string; keyType: 'HASH' | 'RANGE' }[],
     attributeDefinitions: {
       attributeName: string;
-      attributeType: "S" | "N" | "B";
+      attributeType: 'S' | 'N' | 'B';
     }[],
-    billingMode: "PAY_PER_REQUEST" | "PROVISIONED" = "PAY_PER_REQUEST"
+    billingMode: 'PAY_PER_REQUEST' | 'PROVISIONED' = 'PAY_PER_REQUEST'
   ): Promise<void> {
     const command = new CreateTableCommand({
       TableName: tableName,
@@ -77,7 +77,7 @@ export class DynamoDBService {
         AttributeType: attr.attributeType,
       })),
       BillingMode: billingMode,
-      ...(billingMode === "PROVISIONED" && {
+      ...(billingMode === 'PROVISIONED' && {
         ProvisionedThroughput: {
           ReadCapacityUnits: 5,
           WriteCapacityUnits: 5,
@@ -129,7 +129,7 @@ export class DynamoDBService {
       ExpressionAttributeValues: expressionAttributeValues
         ? marshall(expressionAttributeValues)
         : undefined,
-      ReturnValues: "ALL_NEW",
+      ReturnValues: 'ALL_NEW',
     });
 
     const response = await this.client.send(command);

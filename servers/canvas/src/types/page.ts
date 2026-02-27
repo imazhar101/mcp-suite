@@ -1,4 +1,4 @@
-import { CanvasEntity } from "./index.js";
+import { CanvasEntity } from './index.js';
 
 export interface Page extends CanvasEntity {
   page_id: number;
@@ -14,7 +14,7 @@ export interface Page extends CanvasEntity {
   locked_for_user?: boolean;
   lock_info?: any;
   lock_explanation?: string;
-  editor?: "rce" | "block_editor";
+  editor?: 'rce' | 'block_editor';
   block_editor_attributes?: {
     id: number;
     version: string;
@@ -33,17 +33,17 @@ export interface PageRevision {
 }
 
 export interface PageListParams {
-  sort?: "title" | "created_at" | "updated_at";
-  order?: "asc" | "desc";
+  sort?: 'title' | 'created_at' | 'updated_at';
+  order?: 'asc' | 'desc';
   search_term?: string;
   published?: boolean;
-  include?: "body"[];
+  include?: 'body'[];
 }
 
 export interface PageCreateParams {
   title: string;
   body?: string;
-  editing_roles?: "teachers" | "students" | "members" | "public" | string;
+  editing_roles?: 'teachers' | 'students' | 'members' | 'public' | string;
   notify_of_update?: boolean;
   published?: boolean;
   front_page?: boolean;
@@ -53,7 +53,7 @@ export interface PageCreateParams {
 export interface PageUpdateParams {
   title?: string;
   body?: string;
-  editing_roles?: "teachers" | "students" | "members" | "public" | string;
+  editing_roles?: 'teachers' | 'students' | 'members' | 'public' | string;
   notify_of_update?: boolean;
   published?: boolean;
   front_page?: boolean;

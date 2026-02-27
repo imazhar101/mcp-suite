@@ -53,10 +53,10 @@ export interface IndexInfo {
   uuid: string;
   pri: number;
   rep: number;
-  "docs.count": number;
-  "docs.deleted": number;
-  "store.size": string;
-  "pri.store.size": string;
+  'docs.count': number;
+  'docs.deleted': number;
+  'store.size': string;
+  'pri.store.size': string;
 }
 
 export interface ClusterHealth {
@@ -87,7 +87,7 @@ export interface DocumentOperation {
 export interface BulkOperation {
   index: string;
   operations: Array<{
-    action: "index" | "create" | "update" | "delete";
+    action: 'index' | 'create' | 'update' | 'delete';
     id?: string;
     document?: any;
   }>;

@@ -1,161 +1,161 @@
-import { McpTool } from "../../../../shared/types/mcp.js";
+import { McpTool } from '../../../../shared/types/mcp.js';
 
 export const salesforceTools: McpTool[] = [
   {
-    name: "salesforce_query",
-    description: "Execute a SOQL query to retrieve records from Salesforce",
+    name: 'salesforce_query',
+    description: 'Execute a SOQL query to retrieve records from Salesforce',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         soql: {
-          type: "string",
+          type: 'string',
           description:
             "SOQL query to execute (e.g., 'SELECT Id, Name FROM Account LIMIT 10')",
         },
       },
-      required: ["soql"],
+      required: ['soql'],
     },
   },
   {
-    name: "salesforce_create",
-    description: "Create a new record in Salesforce",
+    name: 'salesforce_create',
+    description: 'Create a new record in Salesforce',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         sobject_type: {
-          type: "string",
+          type: 'string',
           description:
             "Salesforce object type (e.g., 'Account', 'Contact', 'Opportunity')",
         },
         record: {
-          type: "object",
+          type: 'object',
           description:
-            "Record data as key-value pairs (do not include Id field)",
+            'Record data as key-value pairs (do not include Id field)',
         },
       },
-      required: ["sobject_type", "record"],
+      required: ['sobject_type', 'record'],
     },
   },
   {
-    name: "salesforce_read",
-    description: "Read a specific record from Salesforce by ID",
+    name: 'salesforce_read',
+    description: 'Read a specific record from Salesforce by ID',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         sobject_type: {
-          type: "string",
+          type: 'string',
           description:
             "Salesforce object type (e.g., 'Account', 'Contact', 'Opportunity')",
         },
         id: {
-          type: "string",
-          description: "Salesforce record ID (15 or 18 character ID)",
+          type: 'string',
+          description: 'Salesforce record ID (15 or 18 character ID)',
         },
         fields: {
-          type: "array",
+          type: 'array',
           items: {
-            type: "string",
+            type: 'string',
           },
           description:
-            "Optional list of fields to retrieve (if not specified, all fields are returned)",
+            'Optional list of fields to retrieve (if not specified, all fields are returned)',
         },
       },
-      required: ["sobject_type", "id"],
+      required: ['sobject_type', 'id'],
     },
   },
   {
-    name: "salesforce_update",
-    description: "Update an existing record in Salesforce",
+    name: 'salesforce_update',
+    description: 'Update an existing record in Salesforce',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         sobject_type: {
-          type: "string",
+          type: 'string',
           description:
             "Salesforce object type (e.g., 'Account', 'Contact', 'Opportunity')",
         },
         id: {
-          type: "string",
-          description: "Salesforce record ID (15 or 18 character ID)",
+          type: 'string',
+          description: 'Salesforce record ID (15 or 18 character ID)',
         },
         record: {
-          type: "object",
+          type: 'object',
           description:
-            "Record data to update as key-value pairs (do not include Id field)",
+            'Record data to update as key-value pairs (do not include Id field)',
         },
       },
-      required: ["sobject_type", "id", "record"],
+      required: ['sobject_type', 'id', 'record'],
     },
   },
   {
-    name: "salesforce_delete",
-    description: "Delete a record from Salesforce",
+    name: 'salesforce_delete',
+    description: 'Delete a record from Salesforce',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         sobject_type: {
-          type: "string",
+          type: 'string',
           description:
             "Salesforce object type (e.g., 'Account', 'Contact', 'Opportunity')",
         },
         id: {
-          type: "string",
-          description: "Salesforce record ID (15 or 18 character ID)",
+          type: 'string',
+          description: 'Salesforce record ID (15 or 18 character ID)',
         },
       },
-      required: ["sobject_type", "id"],
+      required: ['sobject_type', 'id'],
     },
   },
   {
-    name: "salesforce_bulk_delete",
+    name: 'salesforce_bulk_delete',
     description:
-      "Delete multiple records from Salesforce using the Composite API",
+      'Delete multiple records from Salesforce using the Composite API',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         sobject_type: {
-          type: "string",
+          type: 'string',
           description:
             "Salesforce object type (e.g., 'Account', 'Contact', 'Opportunity')",
         },
         ids: {
-          type: "array",
+          type: 'array',
           items: {
-            type: "string",
+            type: 'string',
           },
-          description: "Array of Salesforce record IDs to delete (maximum 200)",
+          description: 'Array of Salesforce record IDs to delete (maximum 200)',
         },
         all_or_none: {
-          type: "boolean",
+          type: 'boolean',
           description:
-            "If true, the operation will fail if any record fails to delete. If false, partial success is allowed.",
+            'If true, the operation will fail if any record fails to delete. If false, partial success is allowed.',
           default: false,
         },
       },
-      required: ["sobject_type", "ids"],
+      required: ['sobject_type', 'ids'],
     },
   },
   {
-    name: "salesforce_describe",
-    description: "Get metadata information about a Salesforce object type",
+    name: 'salesforce_describe',
+    description: 'Get metadata information about a Salesforce object type',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         sobject_type: {
-          type: "string",
+          type: 'string',
           description:
             "Salesforce object type (e.g., 'Account', 'Contact', 'Opportunity')",
         },
       },
-      required: ["sobject_type"],
+      required: ['sobject_type'],
     },
   },
   {
-    name: "salesforce_list_objects",
+    name: 'salesforce_list_objects',
     description:
-      "List all available Salesforce object types (returns only object names for efficiency)",
+      'List all available Salesforce object types (returns only object names for efficiency)',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {},
       required: [],
     },

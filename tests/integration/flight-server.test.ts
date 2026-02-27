@@ -70,7 +70,7 @@ describe('Flight Server Integration Tests', () => {
     expect(Array.isArray(result.content)).toBe(true);
     expect(result.content.length).toBeGreaterThan(0);
     expect(result.content[0].type).toBe('text');
-    
+
     const responseData = JSON.parse(result.content[0].text);
     expect(responseData.success).toBe(true);
     expect(responseData.message).toBe('Successfully connected to Duffel API');
@@ -123,13 +123,13 @@ describe('Flight Server Integration Tests', () => {
     expect(Array.isArray(result.content)).toBe(true);
     expect(result.content.length).toBeGreaterThan(0);
     expect(result.content[0].type).toBe('text');
-    
+
     const responseData = JSON.parse(result.content[0].text);
     expect(responseData.success).toBe(true);
     expect(responseData.data).toBeDefined();
     expect(Array.isArray(responseData.data)).toBe(true);
     expect(responseData.data.length).toBeGreaterThan(0);
-    
+
     // Check airline structure
     const airline = responseData.data[0];
     expect(airline.id).toBeDefined();
@@ -156,13 +156,13 @@ describe('Flight Server Integration Tests', () => {
     expect(Array.isArray(result.content)).toBe(true);
     expect(result.content.length).toBeGreaterThan(0);
     expect(result.content[0].type).toBe('text');
-    
+
     const responseData = JSON.parse(result.content[0].text);
     expect(responseData.success).toBe(true);
     expect(responseData.data).toBeDefined();
     expect(Array.isArray(responseData.data)).toBe(true);
     expect(responseData.data.length).toBeGreaterThan(0);
-    
+
     // Check airport structure
     const airport = responseData.data[0];
     expect(airport.id).toBeDefined();
@@ -201,7 +201,7 @@ describe('Flight Server Integration Tests', () => {
     expect(Array.isArray(result.content)).toBe(true);
     expect(result.content.length).toBeGreaterThan(0);
     expect(result.content[0].type).toBe('text');
-    
+
     const responseData = JSON.parse(result.content[0].text);
     expect(responseData.success).toBe(true);
     expect(responseData.data).toBeDefined();
@@ -236,7 +236,7 @@ describe('Flight Server Integration Tests', () => {
     expect(Array.isArray(result.content)).toBe(true);
     expect(result.content.length).toBeGreaterThan(0);
     expect(result.content[0].type).toBe('text');
-    
+
     const responseData = JSON.parse(result.content[0].text);
     expect(responseData.success).toBe(false);
     expect(responseData.error).toBeDefined();

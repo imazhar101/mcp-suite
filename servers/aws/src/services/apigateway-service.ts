@@ -21,7 +21,7 @@ import {
   CreateUsagePlanCommand,
   GetApiKeysCommand,
   CreateApiKeyCommand,
-} from "@aws-sdk/client-api-gateway";
+} from '@aws-sdk/client-api-gateway';
 import {
   ApiGatewayV2Client,
   GetApisCommand,
@@ -36,19 +36,19 @@ import {
   GetStagesCommand as GetStagesV2Command,
   CreateStageCommand as CreateStageV2Command,
   DeleteStageCommand as DeleteStageV2Command,
-} from "@aws-sdk/client-apigatewayv2";
+} from '@aws-sdk/client-apigatewayv2';
 import {
   APIGatewayRestAPI,
   APIGatewayResource,
   APIGatewayMethod,
   APIGatewayDeployment,
-} from "../types/index.js";
+} from '../types/index.js';
 
 export class APIGatewayService {
   private restClient: APIGatewayClient;
   private v2Client: ApiGatewayV2Client;
 
-  constructor(region: string = "us-east-1") {
+  constructor(region: string = 'us-east-1') {
     this.restClient = new APIGatewayClient({ region });
     this.v2Client = new ApiGatewayV2Client({ region });
   }
@@ -161,7 +161,7 @@ export class APIGatewayService {
     apiId: string,
     resourceId: string,
     httpMethod: string,
-    authorizationType: string = "NONE",
+    authorizationType: string = 'NONE',
     options?: {
       apiKeyRequired?: boolean;
       requestParameters?: Record<string, boolean>;
@@ -331,7 +331,7 @@ export class APIGatewayService {
     name: string,
     description?: string,
     throttle?: { rateLimit?: number; burstLimit?: number },
-    quota?: { limit?: number; period?: "DAY" | "WEEK" | "MONTH" }
+    quota?: { limit?: number; period?: 'DAY' | 'WEEK' | 'MONTH' }
   ): Promise<any> {
     const command = new CreateUsagePlanCommand({
       name,
@@ -377,7 +377,7 @@ export class APIGatewayService {
 
   async createV2Api(
     name: string,
-    protocolType: "HTTP" | "WEBSOCKET",
+    protocolType: 'HTTP' | 'WEBSOCKET',
     description?: string,
     version?: string,
     routeSelectionExpression?: string
@@ -408,7 +408,7 @@ export class APIGatewayService {
     apiId: string,
     routeKey: string,
     target?: string,
-    authorizationType?: "NONE" | "AWS_IAM" | "CUSTOM" | "JWT"
+    authorizationType?: 'NONE' | 'AWS_IAM' | 'CUSTOM' | 'JWT'
   ): Promise<any> {
     const command = new CreateRouteCommand({
       ApiId: apiId,

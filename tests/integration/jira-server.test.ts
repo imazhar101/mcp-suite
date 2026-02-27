@@ -17,8 +17,8 @@ describe('Jira Server Integration', () => {
       stdio: ['pipe', 'pipe', 'pipe'],
       env: {
         ...process.env,
-        LOG_LEVEL: 'debug'
-      }
+        LOG_LEVEL: 'debug',
+      },
     });
 
     // Wait for server to start
@@ -60,7 +60,7 @@ describe('Jira Server Integration', () => {
       expect(true).toBe(true); // Skip test
       return;
     }
-    
+
     expect(serverProcess).toBeDefined();
     expect(serverProcess.killed).toBe(false);
   });

@@ -1,4 +1,4 @@
-import { CanvasEntity, UserIncludeOptions } from "./index.js";
+import { CanvasEntity, UserIncludeOptions } from './index.js';
 
 export interface User extends CanvasEntity {
   name: string;
@@ -12,11 +12,11 @@ export interface User extends CanvasEntity {
   login_id: string;
   avatar_url?: string;
   avatar_state?:
-    | "approved"
-    | "submitted"
-    | "locked"
-    | "reported"
-    | "re_reported";
+    | 'approved'
+    | 'submitted'
+    | 'locked'
+    | 'reported'
+    | 're_reported';
   enrollments?: any[];
   email?: string;
   locale?: string;
@@ -68,12 +68,12 @@ export interface Profile {
 }
 
 export interface Avatar {
-  type: "gravatar" | "attachment" | "no_pic";
+  type: 'gravatar' | 'attachment' | 'no_pic';
   url: string;
   token: string;
   display_name: string;
   id?: number;
-  "content-type"?: string;
+  'content-type'?: string;
   filename?: string;
   size?: number;
 }
@@ -132,9 +132,9 @@ export interface DashboardPositions {
 export interface AccountUserListParams {
   account_id: string;
   search_term?: string;
-  enrollment_type?: "student" | "teacher" | "ta" | "observer" | "designer";
-  sort?: "username" | "email" | "sis_id" | "integration_id" | "last_login";
-  order?: "asc" | "desc";
+  enrollment_type?: 'student' | 'teacher' | 'ta' | 'observer' | 'designer';
+  sort?: 'username' | 'email' | 'sis_id' | 'integration_id' | 'last_login';
+  order?: 'asc' | 'desc';
   include_deleted_users?: boolean;
 }
 
@@ -142,12 +142,12 @@ export interface AccountUserListParams {
 export interface CourseUserListParams {
   course_id: string;
   search_term?: string;
-  sort?: "username" | "last_login" | "email" | "sis_id";
+  sort?: 'username' | 'last_login' | 'email' | 'sis_id';
   enrollment_type?: Array<
-    "teacher" | "student" | "student_view" | "ta" | "observer" | "designer"
+    'teacher' | 'student' | 'student_view' | 'ta' | 'observer' | 'designer'
   >;
   enrollment_state?: Array<
-    "active" | "invited" | "rejected" | "completed" | "inactive"
+    'active' | 'invited' | 'rejected' | 'completed' | 'inactive'
   >;
   include?: UserIncludeOptions[];
 }
@@ -205,18 +205,18 @@ export interface UserUpdateParams {
       token?: string;
       url?: string;
       state?:
-        | "none"
-        | "submitted"
-        | "approved"
-        | "locked"
-        | "reported"
-        | "re_reported";
+        | 'none'
+        | 'submitted'
+        | 'approved'
+        | 'locked'
+        | 'reported'
+        | 're_reported';
     };
     title?: string;
     bio?: string;
     pronunciation?: string;
     pronouns?: string;
-    event?: "suspend" | "unsuspend";
+    event?: 'suspend' | 'unsuspend';
   };
   override_sis_stickiness?: boolean;
 }
@@ -224,8 +224,8 @@ export interface UserUpdateParams {
 export interface MissingSubmissionsParams {
   user_id: string;
   observed_user_id?: string;
-  include?: Array<"planner_overrides" | "course">;
-  filter?: Array<"submittable" | "current_grading_period">;
+  include?: Array<'planner_overrides' | 'course'>;
+  filter?: Array<'submittable' | 'current_grading_period'>;
   course_ids?: string[];
 }
 
@@ -240,7 +240,7 @@ export interface ActivityStreamParams {
 }
 
 export interface TodoItemsParams {
-  include?: Array<"ungraded_quizzes">;
+  include?: Array<'ungraded_quizzes'>;
 }
 
 export interface CustomDataParams {

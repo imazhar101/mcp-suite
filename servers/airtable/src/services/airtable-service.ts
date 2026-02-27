@@ -1,8 +1,8 @@
-import axios, { AxiosInstance } from "axios";
-import { Logger } from "../../../../shared/utils/logger.js";
-import { ErrorHandler } from "../../../../shared/middleware/error-handler.js";
-import { AuthMiddleware } from "../../../../shared/middleware/auth.js";
-import { ServerResponse } from "../../../../shared/types/common.js";
+import axios, { AxiosInstance } from 'axios';
+import { Logger } from '../../../../shared/utils/logger.js';
+import { ErrorHandler } from '../../../../shared/middleware/error-handler.js';
+import { AuthMiddleware } from '../../../../shared/middleware/auth.js';
+import { ServerResponse } from '../../../../shared/types/common.js';
 import {
   AirtableConfig,
   AirtableBase,
@@ -13,7 +13,7 @@ import {
   CreateRecordRequest,
   UpdateRecordRequest,
   ListRecordsResponse,
-} from "../types/index.js";
+} from '../types/index.js';
 
 export class AirtableService {
   private client: AxiosInstance;
@@ -23,7 +23,7 @@ export class AirtableService {
 
   constructor(config: AirtableConfig, logger: Logger) {
     this.config = config;
-    this.logger = logger.withContext({ server: "airtable" });
+    this.logger = logger.withContext({ server: 'airtable' });
     this.errorHandler = new ErrorHandler(this.logger);
 
     const auth = new AuthMiddleware({
@@ -31,10 +31,10 @@ export class AirtableService {
     });
 
     this.client = axios.create({
-      baseURL: "https://api.airtable.com/v0",
+      baseURL: 'https://api.airtable.com/v0',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
         ...auth.getAuthHeaders(),
       },
     });
@@ -42,8 +42,8 @@ export class AirtableService {
 
   async listBases(): Promise<ServerResponse<AirtableBase[]>> {
     try {
-      this.logger.info("Listing bases");
-      const response = await this.client.get("/meta/bases");
+      this.logger.info('Listing bases');
+      const response = await this.client.get('/meta/bases');
 
       const bases: AirtableBase[] = response.data.bases.map((base: any) => ({
         id: base.id,
@@ -57,13 +57,13 @@ export class AirtableService {
         message: `Found ${bases.length} base(s)`,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Airtable");
+      return this.errorHandler.handleApiError(error, 'Airtable');
     }
   }
 
   async listTables(baseId: string): Promise<ServerResponse<AirtableTable[]>> {
     try {
-      this.logger.info("Listing tables", { baseId });
+      this.logger.info('Listing tables', { baseId });
       const response = await this.client.get(`/meta/bases/${baseId}/tables`);
 
       const tables: AirtableTable[] = response.data.tables.map(
@@ -81,7 +81,7 @@ export class AirtableService {
         message: `Found ${tables.length} table(s) in base ${baseId}`,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Airtable");
+      return this.errorHandler.handleApiError(error, 'Airtable');
     }
   }
 
@@ -90,7 +90,7 @@ export class AirtableService {
     tableIdOrName: string
   ): Promise<ServerResponse<AirtableTableSchema>> {
     try {
-      this.logger.info("Getting table schema", { baseId, tableIdOrName });
+      this.logger.info('Getting table schema', { baseId, tableIdOrName });
       const response = await this.client.get(`/meta/bases/${baseId}/tables`);
 
       const table = response.data.tables.find(
@@ -129,7 +129,7 @@ export class AirtableService {
         message: `Retrieved schema for table '${table.name}'`,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Airtable");
+      return this.errorHandler.handleApiError(error, 'Airtable');
     }
   }
 
@@ -137,7 +137,7 @@ export class AirtableService {
     request: ListRecordsRequest
   ): Promise<ServerResponse<ListRecordsResponse>> {
     try {
-      this.logger.info("Listing records", {
+      this.logger.info('Listing records', {
         baseId: request.baseId,
         tableIdOrName: request.tableIdOrName,
         pageSize: request.pageSize,
@@ -184,11 +184,11 @@ export class AirtableService {
         success: true,
         data: result,
         message: `Retrieved ${result.records.length} record(s)${
-          result.offset ? " (more available)" : ""
+          result.offset ? ' (more available)' : ''
         }`,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Airtable");
+      return this.errorHandler.handleApiError(error, 'Airtable');
     }
   }
 
@@ -198,7 +198,7 @@ export class AirtableService {
     recordId: string
   ): Promise<ServerResponse<AirtableRecord>> {
     try {
-      this.logger.info("Getting record", { baseId, tableIdOrName, recordId });
+      this.logger.info('Getting record', { baseId, tableIdOrName, recordId });
       const response = await this.client.get(
         `/${baseId}/${encodeURIComponent(tableIdOrName)}/${recordId}`
       );
@@ -215,7 +215,7 @@ export class AirtableService {
         message: `Retrieved record ${recordId}`,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Airtable");
+      return this.errorHandler.handleApiError(error, 'Airtable');
     }
   }
 
@@ -223,7 +223,7 @@ export class AirtableService {
     request: CreateRecordRequest
   ): Promise<ServerResponse<AirtableRecord>> {
     try {
-      this.logger.info("Creating record", {
+      this.logger.info('Creating record', {
         baseId: request.baseId,
         tableIdOrName: request.tableIdOrName,
       });
@@ -253,7 +253,7 @@ export class AirtableService {
         message: `Created record ${record.id}`,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Airtable");
+      return this.errorHandler.handleApiError(error, 'Airtable');
     }
   }
 
@@ -261,7 +261,7 @@ export class AirtableService {
     request: UpdateRecordRequest
   ): Promise<ServerResponse<AirtableRecord>> {
     try {
-      this.logger.info("Updating record", {
+      this.logger.info('Updating record', {
         baseId: request.baseId,
         tableIdOrName: request.tableIdOrName,
         recordId: request.recordId,
@@ -275,7 +275,7 @@ export class AirtableService {
         body.typecast = true;
       }
 
-      const method = request.replace ? "put" : "patch";
+      const method = request.replace ? 'put' : 'patch';
       const response = await this.client[method](
         `/${request.baseId}/${encodeURIComponent(request.tableIdOrName)}/${
           request.recordId
@@ -295,7 +295,7 @@ export class AirtableService {
         message: `Updated record ${record.id}`,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Airtable");
+      return this.errorHandler.handleApiError(error, 'Airtable');
     }
   }
 
@@ -305,7 +305,7 @@ export class AirtableService {
     recordId: string
   ): Promise<ServerResponse<{ deleted: boolean; id: string }>> {
     try {
-      this.logger.info("Deleting record", { baseId, tableIdOrName, recordId });
+      this.logger.info('Deleting record', { baseId, tableIdOrName, recordId });
       const response = await this.client.delete(
         `/${baseId}/${encodeURIComponent(tableIdOrName)}/${recordId}`
       );
@@ -321,7 +321,7 @@ export class AirtableService {
         message: `Deleted record ${recordId}`,
       };
     } catch (error) {
-      return this.errorHandler.handleApiError(error, "Airtable");
+      return this.errorHandler.handleApiError(error, 'Airtable');
     }
   }
 }

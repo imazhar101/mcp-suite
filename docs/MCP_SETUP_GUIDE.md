@@ -32,19 +32,19 @@ npm run build
 
 ### Available Servers
 
-| Server | npm Package | Binary Command | Environment Variables |
-|--------|-------------|----------------|----------------------|
-| AWS | `@imazhar101/mcp-aws-server` | `mcp-aws` | `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` |
-| Bitbucket | `@imazhar101/mcp-bitbucket-server` | `mcp-bitbucket` | `BITBUCKET_USERNAME`, `BITBUCKET_APP_PASSWORD` |
-| Canvas | `@imazhar101/mcp-canvas-server` | `mcp-canvas` | `CANVAS_BASE_URL`, `CANVAS_API_TOKEN` |
-| ClickUp | `@imazhar101/mcp-clickup-server` | `mcp-clickup` | `CLICKUP_API_TOKEN` |
-| Elasticsearch | `@imazhar101/mcp-elasticsearch-server` | `mcp-elasticsearch` | `ELASTICSEARCH_URL`, `ELASTICSEARCH_USERNAME`, `ELASTICSEARCH_PASSWORD` |
-| Figma | `@imazhar101/mcp-figma-server` | `mcp-figma` | `FIGMA_ACCESS_TOKEN` |
-| Jira | `@imazhar101/mcp-jira-server` | `mcp-jira` | `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN` |
-| Notion | `@imazhar101/mcp-notion-server` | `mcp-notion` | `NOTION_API_TOKEN` |
-| PostgreSQL | `@imazhar101/mcp-postgresql-server` | `mcp-postgresql` | `POSTGRESQL_CONNECTION_STRING` |
-| Puppeteer | `@imazhar101/mcp-puppeteer-server` | `mcp-puppeteer` | None required |
-| Salesforce | `@imazhar101/mcp-salesforce-server` | `mcp-salesforce` | `SALESFORCE_LOGIN_URL`, `SALESFORCE_USERNAME`, `SALESFORCE_PASSWORD`, `SALESFORCE_SECURITY_TOKEN` |
+| Server        | npm Package                            | Binary Command      | Environment Variables                                                                             |
+| ------------- | -------------------------------------- | ------------------- | ------------------------------------------------------------------------------------------------- |
+| AWS           | `@imazhar101/mcp-aws-server`           | `mcp-aws`           | `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`                                        |
+| Bitbucket     | `@imazhar101/mcp-bitbucket-server`     | `mcp-bitbucket`     | `BITBUCKET_USERNAME`, `BITBUCKET_APP_PASSWORD`                                                    |
+| Canvas        | `@imazhar101/mcp-canvas-server`        | `mcp-canvas`        | `CANVAS_BASE_URL`, `CANVAS_API_TOKEN`                                                             |
+| ClickUp       | `@imazhar101/mcp-clickup-server`       | `mcp-clickup`       | `CLICKUP_API_TOKEN`                                                                               |
+| Elasticsearch | `@imazhar101/mcp-elasticsearch-server` | `mcp-elasticsearch` | `ELASTICSEARCH_URL`, `ELASTICSEARCH_USERNAME`, `ELASTICSEARCH_PASSWORD`                           |
+| Figma         | `@imazhar101/mcp-figma-server`         | `mcp-figma`         | `FIGMA_ACCESS_TOKEN`                                                                              |
+| Jira          | `@imazhar101/mcp-jira-server`          | `mcp-jira`          | `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN`                                                   |
+| Notion        | `@imazhar101/mcp-notion-server`        | `mcp-notion`        | `NOTION_API_TOKEN`                                                                                |
+| PostgreSQL    | `@imazhar101/mcp-postgresql-server`    | `mcp-postgresql`    | `POSTGRESQL_CONNECTION_STRING`                                                                    |
+| Puppeteer     | `@imazhar101/mcp-puppeteer-server`     | `mcp-puppeteer`     | None required                                                                                     |
+| Salesforce    | `@imazhar101/mcp-salesforce-server`    | `mcp-salesforce`    | `SALESFORCE_LOGIN_URL`, `SALESFORCE_USERNAME`, `SALESFORCE_PASSWORD`, `SALESFORCE_SECURITY_TOKEN` |
 
 ### Environment Variables Setup
 
@@ -54,7 +54,7 @@ Create a `.env` file or set environment variables:
 # PostgreSQL Server
 POSTGRESQL_CONNECTION_STRING=postgresql://user:password@localhost:5432/database
 
-# Jira Server  
+# Jira Server
 JIRA_BASE_URL=https://your-company.atlassian.net
 JIRA_EMAIL=your-email@company.com
 JIRA_API_TOKEN=your-api-token
@@ -101,26 +101,26 @@ mcpServers:
   - name: PostgreSQL Database
     command: npx
     args:
-      - "@imazhar101/mcp-postgresql-server"
+      - '@imazhar101/mcp-postgresql-server'
     env:
-      POSTGRESQL_CONNECTION_STRING: "postgresql://user:password@localhost:5432/database"
-  
+      POSTGRESQL_CONNECTION_STRING: 'postgresql://user:password@localhost:5432/database'
+
   - name: Jira Integration
     command: npx
     args:
-      - "@imazhar101/mcp-jira-server"
+      - '@imazhar101/mcp-jira-server'
     env:
-      JIRA_BASE_URL: "https://your-company.atlassian.net"
-      JIRA_EMAIL: "your-email@company.com"
-      JIRA_API_TOKEN: "your-api-token"
-  
+      JIRA_BASE_URL: 'https://your-company.atlassian.net'
+      JIRA_EMAIL: 'your-email@company.com'
+      JIRA_API_TOKEN: 'your-api-token'
+
   - name: Canvas LMS
     command: npx
     args:
-      - "@imazhar101/mcp-canvas-server"
+      - '@imazhar101/mcp-canvas-server'
     env:
-      CANVAS_BASE_URL: "https://your-school.instructure.com" 
-      CANVAS_API_TOKEN: "your-canvas-token"
+      CANVAS_BASE_URL: 'https://your-school.instructure.com'
+      CANVAS_API_TOKEN: 'your-canvas-token'
 
   # Alternative: Using local build (if building from source)
   # - name: PostgreSQL Database
@@ -149,7 +149,7 @@ mcpServers:
         }
       },
       {
-        "name": "Jira Integration", 
+        "name": "Jira Integration",
         "transport": {
           "type": "stdio",
           "command": "npx",
@@ -164,7 +164,7 @@ mcpServers:
       {
         "name": "Canvas LMS",
         "transport": {
-          "type": "stdio", 
+          "type": "stdio",
           "command": "npx",
           "args": ["@imazhar101/mcp-canvas-server"]
         },
@@ -223,7 +223,7 @@ For team-shared configuration:
       }
     },
     "jira-integration": {
-      "command": "npx", 
+      "command": "npx",
       "args": ["@imazhar101/mcp-jira-server"],
       "env": {
         "JIRA_BASE_URL": "https://your-company.atlassian.net",
@@ -233,7 +233,7 @@ For team-shared configuration:
     },
     "canvas-lms": {
       "command": "npx",
-      "args": ["@imazhar101/mcp-canvas-server"], 
+      "args": ["@imazhar101/mcp-canvas-server"],
       "env": {
         "CANVAS_BASE_URL": "https://your-school.instructure.com",
         "CANVAS_API_TOKEN": "your-canvas-token"
@@ -288,7 +288,7 @@ Cline uses JSON configuration files stored in VS Code's global storage.
       "args": ["@imazhar101/mcp-jira-server"],
       "env": {
         "JIRA_BASE_URL": "https://your-company.atlassian.net",
-        "JIRA_EMAIL": "your-email@company.com", 
+        "JIRA_EMAIL": "your-email@company.com",
         "JIRA_API_TOKEN": "your-api-token"
       },
       "disabled": false,
@@ -320,6 +320,7 @@ Cline uses JSON configuration files stored in VS Code's global storage.
 #### Management Through UI
 
 Access server settings through the Cline extension:
+
 1. Click the "MCP Servers" icon in the top navigation
 2. Configure individual servers through their panels
 3. Set network timeouts using the dropdown in each server's config box

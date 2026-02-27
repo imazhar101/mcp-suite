@@ -1,205 +1,205 @@
-import { McpTool } from "../../../../shared/types/mcp.js";
+import { McpTool } from '../../../../shared/types/mcp.js';
 
 export const airtableTools: McpTool[] = [
   {
-    name: "list_bases",
-    description: "List all accessible Airtable bases",
+    name: 'list_bases',
+    description: 'List all accessible Airtable bases',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {},
     },
   },
   {
-    name: "list_tables",
-    description: "List all tables in an Airtable base",
+    name: 'list_tables',
+    description: 'List all tables in an Airtable base',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         baseId: {
-          type: "string",
+          type: 'string',
           description: "The ID of the base (e.g., 'appXXXXXXXXXXXXXX')",
         },
       },
-      required: ["baseId"],
+      required: ['baseId'],
     },
   },
   {
-    name: "get_table_schema",
-    description: "Get the schema (fields and their types) for a table",
+    name: 'get_table_schema',
+    description: 'Get the schema (fields and their types) for a table',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         baseId: {
-          type: "string",
-          description: "The ID of the base",
+          type: 'string',
+          description: 'The ID of the base',
         },
         tableIdOrName: {
-          type: "string",
-          description: "The ID or name of the table",
+          type: 'string',
+          description: 'The ID or name of the table',
         },
       },
-      required: ["baseId", "tableIdOrName"],
+      required: ['baseId', 'tableIdOrName'],
     },
   },
   {
-    name: "list_records",
+    name: 'list_records',
     description:
-      "List records from a table with optional filtering, sorting, and pagination",
+      'List records from a table with optional filtering, sorting, and pagination',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         baseId: {
-          type: "string",
-          description: "The ID of the base",
+          type: 'string',
+          description: 'The ID of the base',
         },
         tableIdOrName: {
-          type: "string",
-          description: "The ID or name of the table",
+          type: 'string',
+          description: 'The ID or name of the table',
         },
         pageSize: {
-          type: "number",
-          description: "Number of records per page (max 100, default 100)",
+          type: 'number',
+          description: 'Number of records per page (max 100, default 100)',
           minimum: 1,
           maximum: 100,
         },
         offset: {
-          type: "string",
-          description: "Pagination offset from previous response",
+          type: 'string',
+          description: 'Pagination offset from previous response',
         },
         fields: {
-          type: "array",
-          items: { type: "string" },
+          type: 'array',
+          items: { type: 'string' },
           description:
-            "Specific fields to return (optional, returns all if not specified)",
+            'Specific fields to return (optional, returns all if not specified)',
         },
         filterByFormula: {
-          type: "string",
+          type: 'string',
           description:
-            "Airtable formula to filter records (e.g., '{Status} = \"Active\"')",
+            'Airtable formula to filter records (e.g., \'{Status} = "Active"\')',
         },
         sort: {
-          type: "array",
+          type: 'array',
           items: {
-            type: "object",
+            type: 'object',
             properties: {
-              field: { type: "string" },
-              direction: { type: "string", enum: ["asc", "desc"] },
+              field: { type: 'string' },
+              direction: { type: 'string', enum: ['asc', 'desc'] },
             },
           },
-          description: "Sort order for records",
+          description: 'Sort order for records',
         },
       },
-      required: ["baseId", "tableIdOrName"],
+      required: ['baseId', 'tableIdOrName'],
     },
   },
   {
-    name: "get_record",
-    description: "Get a specific record by ID",
+    name: 'get_record',
+    description: 'Get a specific record by ID',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         baseId: {
-          type: "string",
-          description: "The ID of the base",
+          type: 'string',
+          description: 'The ID of the base',
         },
         tableIdOrName: {
-          type: "string",
-          description: "The ID or name of the table",
+          type: 'string',
+          description: 'The ID or name of the table',
         },
         recordId: {
-          type: "string",
+          type: 'string',
           description: "The ID of the record (e.g., 'recXXXXXXXXXXXXXX')",
         },
       },
-      required: ["baseId", "tableIdOrName", "recordId"],
+      required: ['baseId', 'tableIdOrName', 'recordId'],
     },
   },
   {
-    name: "create_record",
-    description: "Create a new record in a table",
+    name: 'create_record',
+    description: 'Create a new record in a table',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         baseId: {
-          type: "string",
-          description: "The ID of the base",
+          type: 'string',
+          description: 'The ID of the base',
         },
         tableIdOrName: {
-          type: "string",
-          description: "The ID or name of the table",
+          type: 'string',
+          description: 'The ID or name of the table',
         },
         fields: {
-          type: "object",
-          description: "Field names and values for the record",
+          type: 'object',
+          description: 'Field names and values for the record',
         },
         typecast: {
-          type: "boolean",
+          type: 'boolean',
           description:
-            "Automatically convert field values to appropriate types (default: false)",
+            'Automatically convert field values to appropriate types (default: false)',
           default: false,
         },
       },
-      required: ["baseId", "tableIdOrName", "fields"],
+      required: ['baseId', 'tableIdOrName', 'fields'],
     },
   },
   {
-    name: "update_record",
-    description: "Update an existing record",
+    name: 'update_record',
+    description: 'Update an existing record',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         baseId: {
-          type: "string",
-          description: "The ID of the base",
+          type: 'string',
+          description: 'The ID of the base',
         },
         tableIdOrName: {
-          type: "string",
-          description: "The ID or name of the table",
+          type: 'string',
+          description: 'The ID or name of the table',
         },
         recordId: {
-          type: "string",
-          description: "The ID of the record to update",
+          type: 'string',
+          description: 'The ID of the record to update',
         },
         fields: {
-          type: "object",
-          description: "Field names and values to update",
+          type: 'object',
+          description: 'Field names and values to update',
         },
         replace: {
-          type: "boolean",
+          type: 'boolean',
           description:
-            "Replace all fields (true) or merge (false, default: false)",
+            'Replace all fields (true) or merge (false, default: false)',
           default: false,
         },
         typecast: {
-          type: "boolean",
+          type: 'boolean',
           description:
-            "Automatically convert field values to appropriate types (default: false)",
+            'Automatically convert field values to appropriate types (default: false)',
           default: false,
         },
       },
-      required: ["baseId", "tableIdOrName", "recordId", "fields"],
+      required: ['baseId', 'tableIdOrName', 'recordId', 'fields'],
     },
   },
   {
-    name: "delete_record",
-    description: "Delete a record from a table",
+    name: 'delete_record',
+    description: 'Delete a record from a table',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         baseId: {
-          type: "string",
-          description: "The ID of the base",
+          type: 'string',
+          description: 'The ID of the base',
         },
         tableIdOrName: {
-          type: "string",
-          description: "The ID or name of the table",
+          type: 'string',
+          description: 'The ID or name of the table',
         },
         recordId: {
-          type: "string",
-          description: "The ID of the record to delete",
+          type: 'string',
+          description: 'The ID of the record to delete',
         },
       },
-      required: ["baseId", "tableIdOrName", "recordId"],
+      required: ['baseId', 'tableIdOrName', 'recordId'],
     },
   },
 ];

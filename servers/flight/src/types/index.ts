@@ -139,7 +139,11 @@ export interface OrderPassenger {
 }
 
 export interface IdentityDocument {
-  type: 'passport' | 'tax_id' | 'known_traveler_number' | 'passenger_redress_number';
+  type:
+    | 'passport'
+    | 'tax_id'
+    | 'known_traveler_number'
+    | 'passenger_redress_number';
   unique_identifier: string;
   expires_on?: string;
   issued_on?: string;

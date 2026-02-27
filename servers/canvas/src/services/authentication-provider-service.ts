@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 import {
   AuthenticationProvider,
   SSOSettings,
@@ -10,7 +10,7 @@ import {
   RestoreAuthenticationProviderParams,
   GetSSOSettingsParams,
   UpdateSSOSettingsParams,
-} from "../types/authentication-provider.js";
+} from '../types/authentication-provider.js';
 
 export class AuthenticationProviderService {
   constructor(private canvasClient: AxiosInstance) {}

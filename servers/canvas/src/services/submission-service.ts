@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 import {
   Submission,
   SubmissionListParams,
@@ -15,7 +15,7 @@ import {
   SubmissionHistory,
   SubmissionVersion,
   GradebookHistoryFeedParams,
-} from "../types/submission.js";
+} from '../types/submission.js';
 
 export class SubmissionService {
   constructor(private canvasClient: AxiosInstance) {}
@@ -35,7 +35,7 @@ export class SubmissionService {
     // Add submission parameters
     if (params.body) requestData.submission.body = params.body;
     if (params.url) requestData.submission.url = params.url;
-    if (params.file_ids) requestData.submission["file_ids[]"] = params.file_ids;
+    if (params.file_ids) requestData.submission['file_ids[]'] = params.file_ids;
     if (params.media_comment_id)
       requestData.submission.media_comment_id = params.media_comment_id;
     if (params.media_comment_type)
@@ -49,7 +49,7 @@ export class SubmissionService {
 
     // Add comment parameters
     if (params.comment?.text_comment) {
-      requestData["comment[text_comment]"] = params.comment.text_comment;
+      requestData['comment[text_comment]'] = params.comment.text_comment;
       if (params.comment.group_comment !== undefined) {
         requestData.submission.group_comment = params.comment.group_comment;
       }
@@ -70,7 +70,7 @@ export class SubmissionService {
     const queryParams: any = {};
 
     if (params.include) {
-      queryParams["include[]"] = params.include;
+      queryParams['include[]'] = params.include;
     }
     if (params.grouped !== undefined) {
       queryParams.grouped = params.grouped;
@@ -92,10 +92,10 @@ export class SubmissionService {
     const queryParams: any = {};
 
     if (params.student_ids) {
-      queryParams["student_ids[]"] = params.student_ids;
+      queryParams['student_ids[]'] = params.student_ids;
     }
     if (params.assignment_ids) {
-      queryParams["assignment_ids[]"] = params.assignment_ids;
+      queryParams['assignment_ids[]'] = params.assignment_ids;
     }
     if (params.grouped !== undefined) {
       queryParams.grouped = params.grouped;
@@ -128,7 +128,7 @@ export class SubmissionService {
       queryParams.order_direction = params.order_direction;
     }
     if (params.include) {
-      queryParams["include[]"] = params.include;
+      queryParams['include[]'] = params.include;
     }
 
     const response = await this.canvasClient.get(
@@ -149,7 +149,7 @@ export class SubmissionService {
     const queryParams: any = {};
 
     if (params.include) {
-      queryParams["include[]"] = params.include;
+      queryParams['include[]'] = params.include;
     }
 
     const response = await this.canvasClient.get(
@@ -170,7 +170,7 @@ export class SubmissionService {
     const queryParams: any = {};
 
     if (params.include) {
-      queryParams["include[]"] = params.include;
+      queryParams['include[]'] = params.include;
     }
 
     const response = await this.canvasClient.get(
@@ -204,24 +204,24 @@ export class SubmissionService {
     // Add comment parameters
     if (params.comment) {
       if (params.comment.text_comment) {
-        requestData["comment[text_comment]"] = params.comment.text_comment;
+        requestData['comment[text_comment]'] = params.comment.text_comment;
       }
       if (params.comment.attempt) {
-        requestData["comment[attempt]"] = params.comment.attempt;
+        requestData['comment[attempt]'] = params.comment.attempt;
       }
       if (params.comment.group_comment !== undefined) {
-        requestData["comment[group_comment]"] = params.comment.group_comment;
+        requestData['comment[group_comment]'] = params.comment.group_comment;
       }
       if (params.comment.media_comment_id) {
-        requestData["comment[media_comment_id]"] =
+        requestData['comment[media_comment_id]'] =
           params.comment.media_comment_id;
       }
       if (params.comment.media_comment_type) {
-        requestData["comment[media_comment_type]"] =
+        requestData['comment[media_comment_type]'] =
           params.comment.media_comment_type;
       }
       if (params.comment.file_ids) {
-        requestData["comment[file_ids][]"] = params.comment.file_ids;
+        requestData['comment[file_ids][]'] = params.comment.file_ids;
       }
     }
 
@@ -232,7 +232,7 @@ export class SubmissionService {
 
     // Add other parameters
     if (params.include_visibility) {
-      requestData["include[visibility]"] = params.include_visibility;
+      requestData['include[visibility]'] = params.include_visibility;
     }
     if (params.prefer_points_over_scheme !== undefined) {
       requestData.prefer_points_over_scheme = params.prefer_points_over_scheme;
@@ -266,21 +266,21 @@ export class SubmissionService {
     // Add comment parameters
     if (params.comment) {
       if (params.comment.text_comment) {
-        requestData["comment[text_comment]"] = params.comment.text_comment;
+        requestData['comment[text_comment]'] = params.comment.text_comment;
       }
       if (params.comment.group_comment !== undefined) {
-        requestData["comment[group_comment]"] = params.comment.group_comment;
+        requestData['comment[group_comment]'] = params.comment.group_comment;
       }
       if (params.comment.media_comment_id) {
-        requestData["comment[media_comment_id]"] =
+        requestData['comment[media_comment_id]'] =
           params.comment.media_comment_id;
       }
       if (params.comment.media_comment_type) {
-        requestData["comment[media_comment_type]"] =
+        requestData['comment[media_comment_type]'] =
           params.comment.media_comment_type;
       }
       if (params.comment.file_ids) {
-        requestData["comment[file_ids][]"] = params.comment.file_ids;
+        requestData['comment[file_ids][]'] = params.comment.file_ids;
       }
     }
 
@@ -291,7 +291,7 @@ export class SubmissionService {
 
     // Add other parameters
     if (params.include_visibility) {
-      requestData["include[visibility]"] = params.include_visibility;
+      requestData['include[visibility]'] = params.include_visibility;
     }
 
     const response = await this.canvasClient.put(
@@ -316,7 +316,7 @@ export class SubmissionService {
     assignmentIds: string[]
   ): Promise<GradeableStudent[]> {
     const params = {
-      "assignment_ids[]": assignmentIds,
+      'assignment_ids[]': assignmentIds,
     };
 
     const response = await this.canvasClient.get(
@@ -397,7 +397,7 @@ export class SubmissionService {
     submissionIds: string[]
   ): Promise<void> {
     const requestData = {
-      "submissionIds[]": submissionIds,
+      'submissionIds[]': submissionIds,
     };
 
     await this.canvasClient.put(
@@ -410,7 +410,7 @@ export class SubmissionService {
     courseId: string,
     assignmentId: string,
     userId: string,
-    item: "grade" | "comment" | "rubric"
+    item: 'grade' | 'comment' | 'rubric'
   ): Promise<void> {
     await this.canvasClient.put(
       `/courses/${courseId}/assignments/${assignmentId}/submissions/${userId}/read/${item}`
