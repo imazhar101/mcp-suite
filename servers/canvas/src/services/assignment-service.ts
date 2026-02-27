@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 import {
   Assignment,
   AssignmentListParams,
@@ -7,7 +7,7 @@ import {
   AssignmentShowParams,
   AssignmentOverride,
   BulkUpdateAssignmentParams,
-} from "../types/assignment.js";
+} from '../types/assignment.js';
 
 export class AssignmentService {
   constructor(private canvasClient: AxiosInstance) {}
@@ -19,7 +19,7 @@ export class AssignmentService {
     const queryParams: any = {};
 
     if (params.include) {
-      queryParams["include[]"] = params.include;
+      queryParams['include[]'] = params.include;
     }
     if (params.search_term) {
       queryParams.search_term = params.search_term;
@@ -35,7 +35,7 @@ export class AssignmentService {
       queryParams.bucket = params.bucket;
     }
     if (params.assignment_ids) {
-      queryParams["assignment_ids[]"] = params.assignment_ids;
+      queryParams['assignment_ids[]'] = params.assignment_ids;
     }
     if (params.order_by) {
       queryParams.order_by = params.order_by;
@@ -64,7 +64,7 @@ export class AssignmentService {
     const queryParams: any = {};
 
     if (params.include) {
-      queryParams["include[]"] = params.include;
+      queryParams['include[]'] = params.include;
     }
     if (params.override_assignment_dates !== undefined) {
       queryParams.override_assignment_dates = params.override_assignment_dates;
@@ -140,7 +140,7 @@ export class AssignmentService {
   async duplicateAssignment(
     courseId: string,
     assignmentId: string,
-    resultType?: "Quiz"
+    resultType?: 'Quiz'
   ): Promise<Assignment> {
     const params: any = {};
     if (resultType) {

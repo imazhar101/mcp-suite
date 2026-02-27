@@ -108,7 +108,6 @@ To use this server with Cline (VS Code extension), add the following to your Cli
 ### Configuration
 
 1. Get your Figma Personal Access Token:
-
    - Go to Figma → Settings → Account → Personal access tokens
    - Generate a new token with appropriate permissions
 

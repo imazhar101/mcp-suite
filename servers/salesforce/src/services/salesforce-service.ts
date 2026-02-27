@@ -1,4 +1,4 @@
-import { Logger } from "../../../../shared/utils/logger.js";
+import { Logger } from '../../../../shared/utils/logger.js';
 import {
   SalesforceConfig,
   SalesforceOAuthConfig,
@@ -11,7 +11,7 @@ import {
   SalesforceBulkDeleteResponse,
   SalesforceDescribeResponse,
   SalesforceError,
-} from "../types/salesforce.js";
+} from '../types/salesforce.js';
 
 export class SalesforceService {
   private config: SalesforceConfig;
@@ -22,14 +22,14 @@ export class SalesforceService {
   constructor(config: SalesforceConfig, logger: Logger) {
     this.config = config;
     this.logger = logger;
-    this.apiVersion = config.apiVersion || "v59.0";
+    this.apiVersion = config.apiVersion || 'v59.0';
     this.isAuthenticated = !!(config.instanceUrl && config.accessToken);
   }
 
   private getBaseUrl(): string {
     if (!this.config.instanceUrl) {
       throw new Error(
-        "Salesforce instance URL not configured. Please authenticate first using salesforce_oauth_login."
+        'Salesforce instance URL not configured. Please authenticate first using salesforce_oauth_login.'
       );
     }
     return `${this.config.instanceUrl}/services/data/${this.apiVersion}`;
@@ -37,12 +37,12 @@ export class SalesforceService {
 
   private async makeRequest(
     endpoint: string,
-    method: "GET" | "POST" | "PATCH" | "DELETE" = "GET",
+    method: 'GET' | 'POST' | 'PATCH' | 'DELETE' = 'GET',
     body?: any
   ): Promise<any> {
     // Try to auto-authenticate if we have OAuth credentials but no access token
     if (!this.isAuthenticated && this.hasOAuthCredentials()) {
-      this.logger.info("No access token found, attempting auto-authentication");
+      this.logger.info('No access token found, attempting auto-authentication');
       const authResult = await this.autoAuthenticate();
       if (!authResult.success) {
         throw new Error(`Auto-authentication failed: ${authResult.error}`);
@@ -51,7 +51,7 @@ export class SalesforceService {
 
     if (!this.isAuthenticated) {
       throw new Error(
-        "Not authenticated. Please use salesforce_oauth_login to authenticate first."
+        'Not authenticated. Please use salesforce_oauth_login to authenticate first.'
       );
     }
 
@@ -59,7 +59,7 @@ export class SalesforceService {
 
     const headers: Record<string, string> = {
       Authorization: `Bearer ${this.config.accessToken}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     };
 
     const options: RequestInit = {
@@ -67,7 +67,7 @@ export class SalesforceService {
       headers,
     };
 
-    if (body && (method === "POST" || method === "PATCH")) {
+    if (body && (method === 'POST' || method === 'PATCH')) {
       options.body = JSON.stringify(body);
     }
 
@@ -80,7 +80,7 @@ export class SalesforceService {
         // Check if it's an authentication error (401 Unauthorized)
         if (response.status === 401 && this.hasOAuthCredentials()) {
           this.logger.warn(
-            "Access token expired, attempting re-authentication"
+            'Access token expired, attempting re-authentication'
           );
           const authResult = await this.autoAuthenticate();
           if (authResult.success) {
@@ -143,14 +143,14 @@ export class SalesforceService {
       return {
         success: false,
         error:
-          error instanceof Error ? error.message : "Unknown error occurred",
+          error instanceof Error ? error.message : 'Unknown error occurred',
       };
     }
   }
 
   async create(
     sobjectType: string,
-    record: Omit<SalesforceRecord, "Id">
+    record: Omit<SalesforceRecord, 'Id'>
   ): Promise<{
     success: boolean;
     data?: SalesforceCreateResponse;
@@ -159,7 +159,7 @@ export class SalesforceService {
     try {
       const response = await this.makeRequest(
         `/sobjects/${sobjectType}`,
-        "POST",
+        'POST',
         record
       );
 
@@ -171,7 +171,7 @@ export class SalesforceService {
       return {
         success: false,
         error:
-          error instanceof Error ? error.message : "Unknown error occurred",
+          error instanceof Error ? error.message : 'Unknown error occurred',
       };
     }
   }
@@ -185,7 +185,7 @@ export class SalesforceService {
       let endpoint = `/sobjects/${sobjectType}/${id}`;
 
       if (fields && fields.length > 0) {
-        const fieldsParam = fields.join(",");
+        const fieldsParam = fields.join(',');
         endpoint += `?fields=${fieldsParam}`;
       }
 
@@ -199,7 +199,7 @@ export class SalesforceService {
       return {
         success: false,
         error:
-          error instanceof Error ? error.message : "Unknown error occurred",
+          error instanceof Error ? error.message : 'Unknown error occurred',
       };
     }
   }
@@ -207,14 +207,14 @@ export class SalesforceService {
   async update(
     sobjectType: string,
     id: string,
-    record: Omit<SalesforceRecord, "Id">
+    record: Omit<SalesforceRecord, 'Id'>
   ): Promise<{
     success: boolean;
     data?: SalesforceUpdateResponse;
     error?: string;
   }> {
     try {
-      await this.makeRequest(`/sobjects/${sobjectType}/${id}`, "PATCH", record);
+      await this.makeRequest(`/sobjects/${sobjectType}/${id}`, 'PATCH', record);
 
       return {
         success: true,
@@ -224,7 +224,7 @@ export class SalesforceService {
       return {
         success: false,
         error:
-          error instanceof Error ? error.message : "Unknown error occurred",
+          error instanceof Error ? error.message : 'Unknown error occurred',
       };
     }
   }
@@ -238,7 +238,7 @@ export class SalesforceService {
     error?: string;
   }> {
     try {
-      await this.makeRequest(`/sobjects/${sobjectType}/${id}`, "DELETE");
+      await this.makeRequest(`/sobjects/${sobjectType}/${id}`, 'DELETE');
 
       return {
         success: true,
@@ -248,7 +248,7 @@ export class SalesforceService {
       return {
         success: false,
         error:
-          error instanceof Error ? error.message : "Unknown error occurred",
+          error instanceof Error ? error.message : 'Unknown error occurred',
       };
     }
   }
@@ -266,7 +266,7 @@ export class SalesforceService {
       if (!ids || ids.length === 0) {
         return {
           success: false,
-          error: "No IDs provided for bulk deletion",
+          error: 'No IDs provided for bulk deletion',
         };
       }
 
@@ -274,15 +274,15 @@ export class SalesforceService {
         return {
           success: false,
           error:
-            "Maximum of 200 records can be deleted in a single bulk delete operation",
+            'Maximum of 200 records can be deleted in a single bulk delete operation',
         };
       }
 
       // For objects of the same type, we can use the Composite API's sObject Collections
       const endpoint = `/composite/sobjects?ids=${ids.join(
-        ","
+        ','
       )}&allOrNone=${allOrNone}`;
-      const response = await this.makeRequest(endpoint, "DELETE");
+      const response = await this.makeRequest(endpoint, 'DELETE');
 
       // Check if any records failed to delete when allOrNone is false
       const hasErrors =
@@ -297,7 +297,7 @@ export class SalesforceService {
       return {
         success: false,
         error:
-          error instanceof Error ? error.message : "Unknown error occurred",
+          error instanceof Error ? error.message : 'Unknown error occurred',
       };
     }
   }
@@ -320,7 +320,7 @@ export class SalesforceService {
       return {
         success: false,
         error:
-          error instanceof Error ? error.message : "Unknown error occurred",
+          error instanceof Error ? error.message : 'Unknown error occurred',
       };
     }
   }
@@ -331,7 +331,7 @@ export class SalesforceService {
     error?: string;
   }> {
     try {
-      const response = await this.makeRequest("/sobjects");
+      const response = await this.makeRequest('/sobjects');
 
       // Extract only the names from the sobjects array to reduce payload size
       const objectNames =
@@ -345,7 +345,7 @@ export class SalesforceService {
       return {
         success: false,
         error:
-          error instanceof Error ? error.message : "Unknown error occurred",
+          error instanceof Error ? error.message : 'Unknown error occurred',
       };
     }
   }
@@ -356,7 +356,7 @@ export class SalesforceService {
     error?: string;
   }> {
     try {
-      const loginUrl = oauthConfig.loginUrl || "https://login.salesforce.com";
+      const loginUrl = oauthConfig.loginUrl || 'https://login.salesforce.com';
       const tokenUrl = `${loginUrl}/services/oauth2/token`;
 
       const body = new URLSearchParams({
@@ -370,9 +370,9 @@ export class SalesforceService {
       this.logger.debug(`Authenticating with Salesforce OAuth at: ${tokenUrl}`);
 
       const response = await fetch(tokenUrl, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: body.toString(),
       });
@@ -404,7 +404,7 @@ export class SalesforceService {
       process.env.SALESFORCE_INSTANCE_URL = authResponse.instance_url;
 
       this.logger.info(
-        "Successfully authenticated with Salesforce OAuth and stored tokens"
+        'Successfully authenticated with Salesforce OAuth and stored tokens'
       );
 
       return {
@@ -412,11 +412,11 @@ export class SalesforceService {
         data: authResponse,
       };
     } catch (error) {
-      this.logger.error("OAuth authentication failed", error);
+      this.logger.error('OAuth authentication failed', error);
       return {
         success: false,
         error:
-          error instanceof Error ? error.message : "Unknown error occurred",
+          error instanceof Error ? error.message : 'Unknown error occurred',
       };
     }
   }
@@ -454,7 +454,7 @@ export class SalesforceService {
     if (!this.hasOAuthCredentials()) {
       return {
         success: false,
-        error: "OAuth credentials not available in environment variables",
+        error: 'OAuth credentials not available in environment variables',
       };
     }
 
@@ -463,9 +463,9 @@ export class SalesforceService {
       clientSecret: process.env.SALESFORCE_CLIENT_SECRET!,
       username: process.env.SALESFORCE_USERNAME!,
       password: process.env.SALESFORCE_PASSWORD!,
-      grantType: process.env.SALESFORCE_GRANT_TYPE || "password",
+      grantType: process.env.SALESFORCE_GRANT_TYPE || 'password',
       loginUrl:
-        process.env.SALESFORCE_LOGIN_URL || "https://login.salesforce.com",
+        process.env.SALESFORCE_LOGIN_URL || 'https://login.salesforce.com',
     };
 
     return await this.authenticateWithOAuth(oauthConfig);

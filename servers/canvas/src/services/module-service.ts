@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 import {
   Module,
   ModuleItem,
@@ -15,7 +15,7 @@ import {
   ModuleItemSequenceParams,
   MasteryPathSelectParams,
   ModuleOverrideUpdateParams,
-} from "../types/module.js";
+} from '../types/module.js';
 
 export class ModuleService {
   constructor(private canvasClient: AxiosInstance) {}

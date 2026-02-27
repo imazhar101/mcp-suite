@@ -44,7 +44,7 @@ export interface SubmissionComment {
 }
 
 export interface MediaComment {
-  "content-type": string;
+  'content-type': string;
   display_name: string;
   media_id: string;
   media_type: string;

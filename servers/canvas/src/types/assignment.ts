@@ -209,8 +209,7 @@ export interface AssignmentCreateParams {
   annotatable_attachment_id?: number;
 }
 
-export interface AssignmentUpdateParams
-  extends Partial<AssignmentCreateParams> {
+export interface AssignmentUpdateParams extends Partial<AssignmentCreateParams> {
   sis_assignment_id?: string;
   force_updated_at?: boolean;
 }

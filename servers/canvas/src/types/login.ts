@@ -7,14 +7,14 @@ export interface Login {
   integration_id?: string;
   authentication_provider_id?: number;
   authentication_provider_type?: string;
-  workflow_state: "active" | "suspended";
+  workflow_state: 'active' | 'suspended';
   declared_user_type?:
-    | "administrative"
-    | "observer"
-    | "staff"
-    | "student"
-    | "student_other"
-    | "teacher";
+    | 'administrative'
+    | 'observer'
+    | 'staff'
+    | 'student'
+    | 'student_other'
+    | 'teacher';
   created_at?: string;
 }
 
@@ -39,12 +39,12 @@ export interface CreateLoginParams {
     integration_id?: string;
     authentication_provider_id?: string;
     declared_user_type?:
-      | "administrative"
-      | "observer"
-      | "staff"
-      | "student"
-      | "student_other"
-      | "teacher";
+      | 'administrative'
+      | 'observer'
+      | 'staff'
+      | 'student'
+      | 'student_other'
+      | 'teacher';
   };
 }
 
@@ -58,14 +58,14 @@ export interface UpdateLoginParams {
     sis_user_id?: string;
     integration_id?: string;
     authentication_provider_id?: string;
-    workflow_state?: "active" | "suspended";
+    workflow_state?: 'active' | 'suspended';
     declared_user_type?:
-      | "administrative"
-      | "observer"
-      | "staff"
-      | "student"
-      | "student_other"
-      | "teacher";
+      | 'administrative'
+      | 'observer'
+      | 'staff'
+      | 'student'
+      | 'student_other'
+      | 'teacher';
   };
   override_sis_stickiness?: boolean;
 }

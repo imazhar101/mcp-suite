@@ -11,26 +11,31 @@ This is the **initial major release** of MCP Suite - a comprehensive monorepo of
 ## 📦 New MCP Servers (5 Total)
 
 ### 🎫 Jira Server (11 tools)
+
 - Complete issue management and project tracking
 - JQL search, CRUD operations, workflow transitions
 - Comments, assignments, and project management
 
 ### ☁️ Salesforce Server (7 tools)
+
 - Full CRM integration with OAuth authentication
 - SOQL queries, record CRUD operations
 - Automatic token management and renewal
 
 ### 🐘 PostgreSQL Server (2 tools)
+
 - Database management with safety controls
 - `POSTGRESQL_ALLOW_DANGEROUS_OPERATIONS` environment variable
 - Read-only mode by default, optional write operations
 
 ### 🎓 Canvas LMS Server (185 tools)
+
 - Comprehensive learning management system integration
 - Course management, enrollment, grading, administration
 - Assignments, quizzes, modules, pages, user management
 
 ### 🎨 Figma Server (16 tools)
+
 - Complete design workflow integration
 - File operations, comment management, component retrieval
 - Team & project management capabilities

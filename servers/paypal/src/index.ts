@@ -1,18 +1,18 @@
 #!/usr/bin/env node
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ErrorCode,
   ListToolsRequestSchema,
   McpError,
-} from "@modelcontextprotocol/sdk/types.js";
+} from '@modelcontextprotocol/sdk/types.js';
 
-import { Logger } from "../../../shared/utils/logger.js";
-import { getEnvVar, getLogLevel } from "../../../shared/utils/config.js";
-import { PayPalService } from "./services/paypal-service.js";
-import { paypalTools } from "./tools/index.js";
-import { PayPalConfig } from "./types/index.js";
+import { Logger } from '../../../shared/utils/logger.js';
+import { getEnvVar, getLogLevel } from '../../../shared/utils/config.js';
+import { PayPalService } from './services/paypal-service.js';
+import { paypalTools } from './tools/index.js';
+import { PayPalConfig } from './types/index.js';
 
 class PayPalServer {
   private server: Server;
@@ -20,22 +20,22 @@ class PayPalServer {
   private logger: Logger;
 
   constructor() {
-    this.logger = new Logger(getLogLevel(), { server: "paypal" });
+    this.logger = new Logger(getLogLevel(), { server: 'paypal' });
 
     const config: PayPalConfig = {
-      clientId: getEnvVar("PAYPAL_CLIENT_ID"),
-      clientSecret: getEnvVar("PAYPAL_CLIENT_SECRET"),
+      clientId: getEnvVar('PAYPAL_CLIENT_ID'),
+      clientSecret: getEnvVar('PAYPAL_CLIENT_SECRET'),
       environment:
-        (process.env.PAYPAL_ENVIRONMENT as "sandbox" | "production") ||
-        "sandbox",
+        (process.env.PAYPAL_ENVIRONMENT as 'sandbox' | 'production') ||
+        'sandbox',
     };
 
     this.paypalService = new PayPalService(config, this.logger);
 
     this.server = new Server(
       {
-        name: "paypal-server",
-        version: "1.0.0",
+        name: 'paypal-server',
+        version: '1.0.0',
       },
       {
         capabilities: {
@@ -61,7 +61,7 @@ class PayPalServer {
         );
         return this.formatResponse(result);
       } catch (error) {
-        this.logger.error("Tool call failed", error);
+        this.logger.error('Tool call failed', error);
         if (error instanceof McpError) {
           throw error;
         }
@@ -76,24 +76,24 @@ class PayPalServer {
   private async handleToolCall(toolName: string, args: any): Promise<any> {
     switch (toolName) {
       // Legacy payment tools
-      case "paypal_create_payment":
+      case 'paypal_create_payment':
         return await this.createPayment(args);
-      case "paypal_execute_payment":
+      case 'paypal_execute_payment':
         return await this.paypalService.executePayment(args.payment_id, {
           payer_id: args.payer_id,
           transactions: args.transactions,
         });
-      case "paypal_get_payment":
+      case 'paypal_get_payment':
         return await this.paypalService.getPayment(args.payment_id);
-      case "paypal_list_payments":
+      case 'paypal_list_payments':
         return await this.paypalService.listPayments(args);
-      case "paypal_refund_sale":
+      case 'paypal_refund_sale':
         return await this.paypalService.refundSale(args.sale_id, {
           amount: args.amount,
           description: args.description,
           invoice_number: args.invoice_number,
         });
-      case "paypal_capture_authorization":
+      case 'paypal_capture_authorization':
         return await this.paypalService.captureAuthorization(
           args.authorization_id,
           {
@@ -101,105 +101,105 @@ class PayPalServer {
             is_final_capture: args.is_final_capture,
           }
         );
-      case "paypal_void_authorization":
+      case 'paypal_void_authorization':
         return await this.paypalService.voidAuthorization(
           args.authorization_id
         );
-      case "paypal_get_webhook_events":
+      case 'paypal_get_webhook_events':
         return await this.paypalService.getWebhookEvents(args);
-      case "paypal_test_connection":
+      case 'paypal_test_connection':
         return await this.paypalService.testConnection();
 
       // Invoice management tools
-      case "paypal_create_invoice":
+      case 'paypal_create_invoice':
         return await this.paypalService.createInvoice(args);
-      case "paypal_list_invoices":
+      case 'paypal_list_invoices':
         return await this.paypalService.listInvoices(args);
-      case "paypal_get_invoice":
+      case 'paypal_get_invoice':
         return await this.paypalService.getInvoice(args.invoice_id);
-      case "paypal_send_invoice":
+      case 'paypal_send_invoice':
         return await this.paypalService.sendInvoice(args.invoice_id, args);
-      case "paypal_send_invoice_reminder":
+      case 'paypal_send_invoice_reminder':
         return await this.paypalService.sendInvoiceReminder(
           args.invoice_id,
           args
         );
-      case "paypal_cancel_sent_invoice":
+      case 'paypal_cancel_sent_invoice':
         return await this.paypalService.cancelSentInvoice(
           args.invoice_id,
           args
         );
-      case "paypal_generate_invoice_qr_code":
+      case 'paypal_generate_invoice_qr_code':
         return await this.paypalService.generateInvoiceQrCode(
           args.invoice_id,
           args
         );
 
       // Order management tools
-      case "paypal_create_order":
+      case 'paypal_create_order':
         return await this.paypalService.createOrder(args);
-      case "paypal_get_order":
+      case 'paypal_get_order':
         return await this.paypalService.getOrder(args.order_id, args.fields);
-      case "paypal_capture_order":
+      case 'paypal_capture_order':
         return await this.paypalService.captureOrder(
           args.order_id,
           args.payment_source
         );
 
       // Dispute management tools
-      case "paypal_list_disputes":
+      case 'paypal_list_disputes':
         return await this.paypalService.listDisputes(args);
-      case "paypal_get_dispute":
+      case 'paypal_get_dispute':
         return await this.paypalService.getDispute(args.dispute_id);
-      case "paypal_accept_dispute_claim":
+      case 'paypal_accept_dispute_claim':
         return await this.paypalService.acceptDisputeClaim(
           args.dispute_id,
           args
         );
 
       // Shipment tracking tools
-      case "paypal_create_shipment_tracking":
+      case 'paypal_create_shipment_tracking':
         return await this.paypalService.createShipmentTracking(
           args.transaction_id,
           args
         );
-      case "paypal_get_shipment_tracking":
+      case 'paypal_get_shipment_tracking':
         return await this.paypalService.getShipmentTracking(
           args.transaction_id
         );
 
       // Catalog management tools
-      case "paypal_create_product":
+      case 'paypal_create_product':
         return await this.paypalService.createProduct(args);
-      case "paypal_list_products":
+      case 'paypal_list_products':
         return await this.paypalService.listProducts(args);
-      case "paypal_get_product":
+      case 'paypal_get_product':
         return await this.paypalService.getProduct(args.product_id);
-      case "paypal_update_product":
+      case 'paypal_update_product':
         return await this.paypalService.updateProduct(
           args.product_id,
           args.operations
         );
 
       // Subscription management tools
-      case "paypal_create_subscription_plan":
+      case 'paypal_create_subscription_plan':
         return await this.paypalService.createSubscriptionPlan(args);
-      case "paypal_list_subscription_plans":
+      case 'paypal_list_subscription_plans':
         return await this.paypalService.listSubscriptionPlans(args);
-      case "paypal_get_subscription_plan":
+      case 'paypal_get_subscription_plan':
         return await this.paypalService.getSubscriptionPlan(args.plan_id);
-      case "paypal_create_subscription":
+      case 'paypal_create_subscription':
         return await this.paypalService.createSubscription(args);
-      case "paypal_get_subscription":
+      case 'paypal_get_subscription':
         return await this.paypalService.getSubscription(args.subscription_id);
-      case "paypal_cancel_subscription":
+      case 'paypal_cancel_subscription':
         return await this.paypalService.cancelSubscription(
           args.subscription_id,
           args.reason
         );
 
       // Reporting tools
-      case "paypal_list_transactions":
+      case 'paypal_list_transactions':
         return await this.paypalService.listTransactions(args);
 
       default:
@@ -214,7 +214,7 @@ class PayPalServer {
     const paymentData = {
       intent: args.intent,
       payer: {
-        payment_method: "paypal" as const,
+        payment_method: 'paypal' as const,
         payer_info: args.payer_info,
       },
       transactions: [
@@ -238,11 +238,11 @@ class PayPalServer {
     if (result.success) {
       const text = result.data
         ? JSON.stringify(result.data, null, 2)
-        : result.message || "Operation completed successfully";
+        : result.message || 'Operation completed successfully';
       return {
         content: [
           {
-            type: "text" as const,
+            type: 'text' as const,
             text: text,
           },
         ],
@@ -251,8 +251,8 @@ class PayPalServer {
       return {
         content: [
           {
-            type: "text" as const,
-            text: result.error || result.message || "Operation failed",
+            type: 'text' as const,
+            text: result.error || result.message || 'Operation failed',
           },
         ],
         isError: true,
@@ -262,17 +262,17 @@ class PayPalServer {
 
   private setupErrorHandling(): void {
     this.server.onerror = (error) => {
-      this.logger.error("MCP Server error", error);
+      this.logger.error('MCP Server error', error);
     };
 
-    process.on("SIGINT", async () => {
-      this.logger.info("Shutting down PayPal MCP server");
+    process.on('SIGINT', async () => {
+      this.logger.info('Shutting down PayPal MCP server');
       await this.server.close();
       process.exit(0);
     });
 
-    process.on("SIGTERM", async () => {
-      this.logger.info("Shutting down PayPal MCP server");
+    process.on('SIGTERM', async () => {
+      this.logger.info('Shutting down PayPal MCP server');
       await this.server.close();
       process.exit(0);
     });
@@ -281,12 +281,12 @@ class PayPalServer {
   async run(): Promise<void> {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    this.logger.info("PayPal MCP server running on stdio");
+    this.logger.info('PayPal MCP server running on stdio');
   }
 }
 
 const server = new PayPalServer();
 server.run().catch((error) => {
-  console.error("Failed to start PayPal MCP server:", error);
+  console.error('Failed to start PayPal MCP server:', error);
   process.exit(1);
 });

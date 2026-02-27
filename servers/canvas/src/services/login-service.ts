@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 import {
   Login,
   ListLoginsParams,
@@ -7,7 +7,7 @@ import {
   DeleteLoginParams,
   ForgotPasswordParams,
   ForgotPasswordResponse,
-} from "../types/login.js";
+} from '../types/login.js';
 
 export class LoginService {
   constructor(private canvasClient: AxiosInstance) {}
@@ -20,7 +20,7 @@ export class LoginService {
     } else if (params.user_id) {
       endpoint = `/users/${params.user_id}/logins`;
     } else {
-      throw new Error("Either account_id or user_id must be provided");
+      throw new Error('Either account_id or user_id must be provided');
     }
 
     const response = await this.canvasClient.get(endpoint);

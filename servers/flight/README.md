@@ -5,12 +5,14 @@ A Model Context Protocol (MCP) server that integrates with the [Duffel API](http
 ## Features
 
 ### Core Flight Operations
+
 - **Flight Search**: Search for flights between airports with various filters
 - **Offer Management**: Get and manage flight offers from search results
 - **Booking Management**: Create, retrieve, and cancel flight bookings
 - **Seat Maps**: Access seat maps for specific flight offers
 
 ### Reference Data
+
 - **Airlines**: Get information about airlines
 - **Airports**: Search and get airport information by IATA code
 
@@ -163,6 +165,7 @@ The server implements the full Duffel API for flight booking operations. Key con
 ## Error Handling
 
 The server provides comprehensive error handling for:
+
 - Invalid API credentials
 - Malformed requests
 - Network connectivity issues

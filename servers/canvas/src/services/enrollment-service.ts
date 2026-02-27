@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 import {
   Enrollment,
   EnrollmentListParams,
@@ -10,7 +10,7 @@ import {
   TemporaryEnrollmentStatusParams,
   TemporaryEnrollmentStatus,
   EnrollmentContext,
-} from "../types/enrollment.js";
+} from '../types/enrollment.js';
 
 export class EnrollmentService {
   constructor(private canvasClient: AxiosInstance) {}
@@ -27,28 +27,28 @@ export class EnrollmentService {
 
     // Handle array parameters
     if (params.type) {
-      queryParams["type[]"] = params.type;
+      queryParams['type[]'] = params.type;
     }
     if (params.role) {
-      queryParams["role[]"] = params.role;
+      queryParams['role[]'] = params.role;
     }
     if (params.state) {
-      queryParams["state[]"] = params.state;
+      queryParams['state[]'] = params.state;
     }
     if (params.include) {
-      queryParams["include[]"] = params.include;
+      queryParams['include[]'] = params.include;
     }
     if (params.sis_account_id) {
-      queryParams["sis_account_id[]"] = params.sis_account_id;
+      queryParams['sis_account_id[]'] = params.sis_account_id;
     }
     if (params.sis_course_id) {
-      queryParams["sis_course_id[]"] = params.sis_course_id;
+      queryParams['sis_course_id[]'] = params.sis_course_id;
     }
     if (params.sis_section_id) {
-      queryParams["sis_section_id[]"] = params.sis_section_id;
+      queryParams['sis_section_id[]'] = params.sis_section_id;
     }
     if (params.sis_user_id) {
-      queryParams["sis_user_id[]"] = params.sis_user_id;
+      queryParams['sis_user_id[]'] = params.sis_user_id;
     }
 
     // Handle single value parameters
@@ -67,13 +67,13 @@ export class EnrollmentService {
 
     let endpoint: string;
     switch (context) {
-      case "course":
+      case 'course':
         endpoint = `/courses/${contextId}/enrollments`;
         break;
-      case "section":
+      case 'section':
         endpoint = `/sections/${contextId}/enrollments`;
         break;
-      case "user":
+      case 'user':
         endpoint = `/users/${contextId}/enrollments`;
         break;
       default:
@@ -103,7 +103,7 @@ export class EnrollmentService {
    * Create a new enrollment in a course
    */
   async createEnrollment(
-    context: "course" | "section",
+    context: 'course' | 'section',
     contextId: string,
     params: EnrollmentCreateParams
   ): Promise<Enrollment> {
@@ -112,7 +112,7 @@ export class EnrollmentService {
     };
 
     let endpoint: string;
-    if (context === "course") {
+    if (context === 'course') {
       endpoint = `/courses/${contextId}/enrollments`;
     } else {
       endpoint = `/sections/${contextId}/enrollments`;
@@ -221,7 +221,7 @@ export class EnrollmentService {
    * Bulk enrollment operations
    */
   async bulkCreateEnrollments(
-    context: "course" | "section",
+    context: 'course' | 'section',
     contextId: string,
     enrollments: EnrollmentCreateParams[]
   ): Promise<Enrollment[]> {
@@ -252,9 +252,9 @@ export class EnrollmentService {
    */
   async getUserEnrollments(
     userId: string,
-    params: Omit<EnrollmentListParams, "user_id"> = {}
+    params: Omit<EnrollmentListParams, 'user_id'> = {}
   ): Promise<Enrollment[]> {
-    return this.listEnrollments("user", userId, params);
+    return this.listEnrollments('user', userId, params);
   }
 
   /**
@@ -264,7 +264,7 @@ export class EnrollmentService {
     courseId: string,
     params: EnrollmentListParams = {}
   ): Promise<Enrollment[]> {
-    return this.listEnrollments("course", courseId, params);
+    return this.listEnrollments('course', courseId, params);
   }
 
   /**
@@ -274,7 +274,7 @@ export class EnrollmentService {
     sectionId: string,
     params: EnrollmentListParams = {}
   ): Promise<Enrollment[]> {
-    return this.listEnrollments("section", sectionId, params);
+    return this.listEnrollments('section', sectionId, params);
   }
 
   /**
@@ -282,9 +282,9 @@ export class EnrollmentService {
    */
   async getActiveStudents(courseId: string): Promise<Enrollment[]> {
     return this.getCourseEnrollments(courseId, {
-      type: ["StudentEnrollment"],
-      state: ["active"],
-      include: ["user"],
+      type: ['StudentEnrollment'],
+      state: ['active'],
+      include: ['user'],
     });
   }
 
@@ -293,9 +293,9 @@ export class EnrollmentService {
    */
   async getCourseTeachers(courseId: string): Promise<Enrollment[]> {
     return this.getCourseEnrollments(courseId, {
-      type: ["TeacherEnrollment"],
-      state: ["active"],
-      include: ["user"],
+      type: ['TeacherEnrollment'],
+      state: ['active'],
+      include: ['user'],
     });
   }
 
@@ -304,8 +304,8 @@ export class EnrollmentService {
    */
   async getPendingEnrollments(courseId: string): Promise<Enrollment[]> {
     return this.getCourseEnrollments(courseId, {
-      state: ["invited", "creation_pending"],
-      include: ["user"],
+      state: ['invited', 'creation_pending'],
+      include: ['user'],
     });
   }
 
@@ -319,12 +319,12 @@ export class EnrollmentService {
   ): Promise<Enrollment[]> {
     const enrollments = userIds.map((userId) => ({
       user_id: userId,
-      type: "StudentEnrollment" as const,
-      enrollment_state: "active" as const,
+      type: 'StudentEnrollment' as const,
+      enrollment_state: 'active' as const,
       ...options,
     }));
 
-    return this.bulkCreateEnrollments("course", courseId, enrollments);
+    return this.bulkCreateEnrollments('course', courseId, enrollments);
   }
 
   /**
@@ -333,7 +333,7 @@ export class EnrollmentService {
   async removeEnrollments(
     courseId: string,
     enrollmentIds: string[],
-    task: "conclude" | "delete" | "inactivate" | "deactivate" = "conclude"
+    task: 'conclude' | 'delete' | 'inactivate' | 'deactivate' = 'conclude'
   ): Promise<Enrollment[]> {
     const results: Enrollment[] = [];
 

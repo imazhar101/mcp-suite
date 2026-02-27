@@ -18,7 +18,7 @@ export interface ADFMark {
 }
 
 export interface ADFDocument {
-  type: "doc";
+  type: 'doc';
   version: 1;
   content: ADFNode[];
 }

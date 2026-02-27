@@ -1,5 +1,5 @@
-import puppeteer from "puppeteer";
-import type { Browser, Page } from "puppeteer";
+import puppeteer from 'puppeteer';
+import type { Browser, Page } from 'puppeteer';
 import {
   PuppeteerOptions,
   NavigateParams,
@@ -11,7 +11,7 @@ import {
   EvaluateParams,
   WaitForSelectorParams,
   PuppeteerResult,
-} from "../types/index.js";
+} from '../types/index.js';
 
 export class PuppeteerService {
   private browser: Browser | null = null;
@@ -26,19 +26,19 @@ export class PuppeteerService {
       }
 
       const defaultArgs = [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-accelerated-2d-canvas",
-        "--disable-gpu",
-        "--window-size=1920x1080",
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--disable-gpu',
+        '--window-size=1920x1080',
       ];
 
       // Security: validate and filter potentially dangerous args
       const dangerousArgs = [
-        "--disable-web-security",
-        "--allow-running-insecure-content",
-        "--disable-features=VizDisplayCompositor",
+        '--disable-web-security',
+        '--allow-running-insecure-content',
+        '--disable-features=VizDisplayCompositor',
       ];
 
       const safeArgs =
@@ -56,7 +56,7 @@ export class PuppeteerService {
       this.page = await this.browser.newPage();
 
       // Set up console logging
-      this.page.on("console", (msg: any) => {
+      this.page.on('console', (msg: any) => {
         this.consoleLogs.push({
           type: msg.type(),
           text: msg.text(),
@@ -66,14 +66,14 @@ export class PuppeteerService {
 
       await this.page.setViewport({ width: 1920, height: 1080 });
 
-      return { success: true, data: "Browser launched successfully" };
+      return { success: true, data: 'Browser launched successfully' };
     } catch (error) {
       return {
         success: false,
         error:
           error instanceof Error
             ? error.message
-            : "Unknown error launching browser",
+            : 'Unknown error launching browser',
       };
     }
   }
@@ -88,7 +88,7 @@ export class PuppeteerService {
       }
 
       await this.page!.goto(params.url, {
-        waitUntil: params.waitUntil || "networkidle2",
+        waitUntil: params.waitUntil || 'networkidle2',
         timeout: params.timeout || 30000,
       });
 
@@ -96,7 +96,7 @@ export class PuppeteerService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Navigation failed",
+        error: error instanceof Error ? error.message : 'Navigation failed',
       };
     }
   }
@@ -106,7 +106,7 @@ export class PuppeteerService {
       if (!this.page) {
         return {
           success: false,
-          error: "No page available. Navigate to a URL first.",
+          error: 'No page available. Navigate to a URL first.',
         };
       }
 
@@ -121,30 +121,30 @@ export class PuppeteerService {
           };
         }
         screenshotBuffer = await element.screenshot({
-          type: params.type || "png",
+          type: params.type || 'png',
           quality: params.quality,
         });
       } else {
         screenshotBuffer = await this.page.screenshot({
           fullPage: params.fullPage || false,
-          type: params.type || "png",
+          type: params.type || 'png',
           quality: params.quality,
           clip: params.clip,
         });
       }
 
-      const base64 = screenshotBuffer.toString("base64");
+      const base64 = screenshotBuffer.toString('base64');
       return {
         success: true,
         data: {
           screenshot: base64,
-          type: params.type || "png",
+          type: params.type || 'png',
         },
       };
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Screenshot failed",
+        error: error instanceof Error ? error.message : 'Screenshot failed',
       };
     }
   }
@@ -154,12 +154,12 @@ export class PuppeteerService {
       if (!this.page) {
         return {
           success: false,
-          error: "No page available. Navigate to a URL first.",
+          error: 'No page available. Navigate to a URL first.',
         };
       }
 
       await this.page.click(params.selector, {
-        button: params.button || "left",
+        button: params.button || 'left',
         clickCount: params.clickCount || 1,
         delay: params.delay || 0,
       });
@@ -168,7 +168,7 @@ export class PuppeteerService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Click failed",
+        error: error instanceof Error ? error.message : 'Click failed',
       };
     }
   }
@@ -178,14 +178,14 @@ export class PuppeteerService {
       if (!this.page) {
         return {
           success: false,
-          error: "No page available. Navigate to a URL first.",
+          error: 'No page available. Navigate to a URL first.',
         };
       }
 
       await this.page.focus(params.selector);
-      await this.page.keyboard.down("Control");
-      await this.page.keyboard.press("KeyA");
-      await this.page.keyboard.up("Control");
+      await this.page.keyboard.down('Control');
+      await this.page.keyboard.press('KeyA');
+      await this.page.keyboard.up('Control');
       await this.page.type(params.selector, params.value, {
         delay: params.delay || 0,
       });
@@ -194,7 +194,7 @@ export class PuppeteerService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Fill failed",
+        error: error instanceof Error ? error.message : 'Fill failed',
       };
     }
   }
@@ -204,7 +204,7 @@ export class PuppeteerService {
       if (!this.page) {
         return {
           success: false,
-          error: "No page available. Navigate to a URL first.",
+          error: 'No page available. Navigate to a URL first.',
         };
       }
 
@@ -223,7 +223,7 @@ export class PuppeteerService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Select failed",
+        error: error instanceof Error ? error.message : 'Select failed',
       };
     }
   }
@@ -233,7 +233,7 @@ export class PuppeteerService {
       if (!this.page) {
         return {
           success: false,
-          error: "No page available. Navigate to a URL first.",
+          error: 'No page available. Navigate to a URL first.',
         };
       }
 
@@ -246,7 +246,7 @@ export class PuppeteerService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Hover failed",
+        error: error instanceof Error ? error.message : 'Hover failed',
       };
     }
   }
@@ -256,7 +256,7 @@ export class PuppeteerService {
       if (!this.page) {
         return {
           success: false,
-          error: "No page available. Navigate to a URL first.",
+          error: 'No page available. Navigate to a URL first.',
         };
       }
 
@@ -267,7 +267,7 @@ export class PuppeteerService {
       return {
         success: false,
         error:
-          error instanceof Error ? error.message : "Script evaluation failed",
+          error instanceof Error ? error.message : 'Script evaluation failed',
       };
     }
   }
@@ -279,7 +279,7 @@ export class PuppeteerService {
       if (!this.page) {
         return {
           success: false,
-          error: "No page available. Navigate to a URL first.",
+          error: 'No page available. Navigate to a URL first.',
         };
       }
 
@@ -294,7 +294,7 @@ export class PuppeteerService {
       return {
         success: false,
         error:
-          error instanceof Error ? error.message : "Wait for selector failed",
+          error instanceof Error ? error.message : 'Wait for selector failed',
       };
     }
   }
@@ -311,7 +311,7 @@ export class PuppeteerService {
       if (!this.page) {
         return {
           success: false,
-          error: "No page available. Navigate to a URL first.",
+          error: 'No page available. Navigate to a URL first.',
         };
       }
 
@@ -327,7 +327,7 @@ export class PuppeteerService {
       return {
         success: false,
         error:
-          error instanceof Error ? error.message : "Failed to get page info",
+          error instanceof Error ? error.message : 'Failed to get page info',
       };
     }
   }
@@ -340,12 +340,12 @@ export class PuppeteerService {
         this.page = null;
         this.consoleLogs = [];
       }
-      return { success: true, data: "Browser closed successfully" };
+      return { success: true, data: 'Browser closed successfully' };
     } catch (error) {
       return {
         success: false,
         error:
-          error instanceof Error ? error.message : "Failed to close browser",
+          error instanceof Error ? error.message : 'Failed to close browser',
       };
     }
   }

@@ -1,11 +1,11 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 import {
   Admin,
   AdminCreateParams,
   AdminRemoveParams,
   AdminListParams,
   AdminSelfRolesParams,
-} from "../types/admin.js";
+} from '../types/admin.js';
 
 export class AdminService {
   constructor(private canvasClient: AxiosInstance) {}
@@ -38,7 +38,7 @@ export class AdminService {
     // Convert array parameters to Canvas API format
     const apiParams: any = {};
     if (queryParams.user_id) {
-      apiParams["user_id[]"] = queryParams.user_id;
+      apiParams['user_id[]'] = queryParams.user_id;
     }
 
     const response = await this.canvasClient.get(

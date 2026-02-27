@@ -23,16 +23,20 @@ Set the following environment variables:
 ## Available Tools
 
 ### extract_skills
+
 Extract skills from text using taxonomy mappings.
 
 **Parameters:**
+
 - `taxonomy` (string): Skills taxonomy to use (recommended: "lightcast")
 - `context` (string): Job description, resume, or text block to extract skills from
 
 ### match_jobs
+
 Find jobs that match skills or text.
 
 **Parameters:**
+
 - `type` (string): "skills" or "text"
 - `skills_list` (array): Array of skills (required when type='skills')
   - `title` (string): Skill title
@@ -45,26 +49,26 @@ Find jobs that match skills or text.
 ```javascript
 // Extract skills from text
 const skills = await extractSkills({
-  taxonomy: "lightcast",
-  context: "Software Engineer with experience in web development..."
+  taxonomy: 'lightcast',
+  context: 'Software Engineer with experience in web development...',
 });
 
 // Match jobs by skills
 const jobs = await matchJobs({
-  type: "skills",
+  type: 'skills',
   skills_list: [
     {
-      title: "Software Engineering",
-      description: "Software Engineering...",
-      taxonomy: "lightcast"
-    }
-  ]
+      title: 'Software Engineering',
+      description: 'Software Engineering...',
+      taxonomy: 'lightcast',
+    },
+  ],
 });
 
 // Match jobs by text
 const jobsByText = await matchJobs({
-  type: "text",
-  context: "Your resume text here..."
+  type: 'text',
+  context: 'Your resume text here...',
 });
 ```
 

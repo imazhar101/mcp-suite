@@ -1,212 +1,217 @@
-import { McpTool } from "../../../../shared/types/mcp.js";
+import { McpTool } from '../../../../shared/types/mcp.js';
 
 export const jiraTools: McpTool[] = [
   {
-    name: "search_issues",
-    description: "Search for Jira issues using JQL (Jira Query Language)",
+    name: 'search_issues',
+    description: 'Search for Jira issues using JQL (Jira Query Language)',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         jql: {
-          type: "string",
+          type: 'string',
           description:
             'JQL query string (e.g., "project = PROJ AND status = Open")',
         },
         maxResults: {
-          type: "number",
-          description: "Maximum number of results to return (default: 50)",
+          type: 'number',
+          description: 'Maximum number of results to return (default: 50)',
           minimum: 1,
           maximum: 100,
         },
       },
-      required: ["jql"],
+      required: ['jql'],
     },
   },
   {
-    name: "get_issue",
-    description: "Get detailed information about a specific Jira issue",
+    name: 'get_issue',
+    description: 'Get detailed information about a specific Jira issue',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         issueKey: {
-          type: "string",
+          type: 'string',
           description: 'Issue key (e.g., "PROJ-123")',
         },
       },
-      required: ["issueKey"],
+      required: ['issueKey'],
     },
   },
   {
-    name: "create_issue",
-    description: "Create a new Jira issue. Descriptions can use ADF (Atlassian Document Format) for rich formatting including headings, bold text, lists, and links.",
+    name: 'create_issue',
+    description:
+      'Create a new Jira issue. Descriptions can use ADF (Atlassian Document Format) for rich formatting including headings, bold text, lists, and links.',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         projectKey: {
-          type: "string",
-          description: "Project key where the issue will be created",
+          type: 'string',
+          description: 'Project key where the issue will be created',
         },
         summary: {
-          type: "string",
-          description: "Issue summary/title",
+          type: 'string',
+          description: 'Issue summary/title',
         },
         description: {
-          type: ["string", "object"],
-          description: "Issue description. Can be plain text string or ADF (Atlassian Document Format) object. For ADF format, use: {\"type\": \"doc\", \"version\": 1, \"content\": [{\"type\": \"paragraph\", \"content\": [{\"type\": \"text\", \"text\": \"Your content here\"}]}]}",
+          type: ['string', 'object'],
+          description:
+            'Issue description. Can be plain text string or ADF (Atlassian Document Format) object. For ADF format, use: {"type": "doc", "version": 1, "content": [{"type": "paragraph", "content": [{"type": "text", "text": "Your content here"}]}]}',
         },
         issueType: {
-          type: "string",
+          type: 'string',
           description: 'Issue type (e.g., "Bug", "Task", "Story")',
-          default: "Task",
+          default: 'Task',
         },
         priority: {
-          type: "string",
+          type: 'string',
           description: 'Issue priority (e.g., "High", "Medium", "Low")',
-          default: "Medium",
+          default: 'Medium',
         },
         assignee: {
-          type: "string",
-          description: "Assignee email address (optional)",
+          type: 'string',
+          description: 'Assignee email address (optional)',
         },
       },
-      required: ["projectKey", "summary"],
+      required: ['projectKey', 'summary'],
     },
   },
   {
-    name: "update_issue",
-    description: "Update an existing Jira issue",
+    name: 'update_issue',
+    description: 'Update an existing Jira issue',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         issueKey: {
-          type: "string",
-          description: "Issue key to update",
+          type: 'string',
+          description: 'Issue key to update',
         },
         summary: {
-          type: "string",
-          description: "New summary/title",
+          type: 'string',
+          description: 'New summary/title',
         },
         description: {
-          type: ["string", "object"],
-          description: "New description. Can be plain text string or ADF (Atlassian Document Format) object. For ADF format, use: {\"type\": \"doc\", \"version\": 1, \"content\": [{\"type\": \"paragraph\", \"content\": [{\"type\": \"text\", \"text\": \"Your content here\"}]}]}",
+          type: ['string', 'object'],
+          description:
+            'New description. Can be plain text string or ADF (Atlassian Document Format) object. For ADF format, use: {"type": "doc", "version": 1, "content": [{"type": "paragraph", "content": [{"type": "text", "text": "Your content here"}]}]}',
         },
         assignee: {
-          type: "string",
-          description: "New assignee email address",
+          type: 'string',
+          description: 'New assignee email address',
         },
       },
-      required: ["issueKey"],
+      required: ['issueKey'],
     },
   },
   {
-    name: "transition_issue",
-    description: "Transition an issue to a different status",
+    name: 'transition_issue',
+    description: 'Transition an issue to a different status',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         issueKey: {
-          type: "string",
-          description: "Issue key to transition",
+          type: 'string',
+          description: 'Issue key to transition',
         },
         transitionName: {
-          type: "string",
+          type: 'string',
           description:
             'Name of the transition (e.g., "Done", "In Progress", "To Do")',
         },
       },
-      required: ["issueKey", "transitionName"],
+      required: ['issueKey', 'transitionName'],
     },
   },
   {
-    name: "add_comment",
-    description: "Add a comment to a Jira issue",
+    name: 'add_comment',
+    description: 'Add a comment to a Jira issue',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         issueKey: {
-          type: "string",
-          description: "Issue key to comment on",
+          type: 'string',
+          description: 'Issue key to comment on',
         },
         comment: {
-          type: ["string", "object"],
-          description: "Comment text. Can be plain text string or ADF (Atlassian Document Format) object. For ADF format, use: {\"type\": \"doc\", \"version\": 1, \"content\": [{\"type\": \"paragraph\", \"content\": [{\"type\": \"text\", \"text\": \"Your comment here\"}]}]}",
+          type: ['string', 'object'],
+          description:
+            'Comment text. Can be plain text string or ADF (Atlassian Document Format) object. For ADF format, use: {"type": "doc", "version": 1, "content": [{"type": "paragraph", "content": [{"type": "text", "text": "Your comment here"}]}]}',
         },
         format: {
-          type: "string",
-          enum: ["plain", "rich"],
-          description: "Format to use for text conversion. 'plain' converts text to simple ADF paragraphs. 'rich' creates formatted ADF with headings and styling (only used when comment is a string, ignored for ADF objects)",
-          default: "plain",
+          type: 'string',
+          enum: ['plain', 'rich'],
+          description:
+            "Format to use for text conversion. 'plain' converts text to simple ADF paragraphs. 'rich' creates formatted ADF with headings and styling (only used when comment is a string, ignored for ADF objects)",
+          default: 'plain',
         },
       },
-      required: ["issueKey", "comment"],
+      required: ['issueKey', 'comment'],
     },
   },
   {
-    name: "list_projects",
-    description: "List all accessible Jira projects",
+    name: 'list_projects',
+    description: 'List all accessible Jira projects',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {},
     },
   },
   {
-    name: "get_project",
-    description: "Get detailed information about a specific project",
+    name: 'get_project',
+    description: 'Get detailed information about a specific project',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         projectKey: {
-          type: "string",
+          type: 'string',
           description: 'Project key (e.g., "PROJ")',
         },
       },
-      required: ["projectKey"],
+      required: ['projectKey'],
     },
   },
   {
-    name: "get_issue_transitions",
-    description: "Get available transitions for an issue",
+    name: 'get_issue_transitions',
+    description: 'Get available transitions for an issue',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         issueKey: {
-          type: "string",
-          description: "Issue key to get transitions for",
+          type: 'string',
+          description: 'Issue key to get transitions for',
         },
       },
-      required: ["issueKey"],
+      required: ['issueKey'],
     },
   },
   {
-    name: "assign_issue",
-    description: "Assign an issue to a user",
+    name: 'assign_issue',
+    description: 'Assign an issue to a user',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         issueKey: {
-          type: "string",
-          description: "Issue key to assign",
+          type: 'string',
+          description: 'Issue key to assign',
         },
         assignee: {
-          type: "string",
-          description: "Email address of the assignee",
+          type: 'string',
+          description: 'Email address of the assignee',
         },
       },
-      required: ["issueKey", "assignee"],
+      required: ['issueKey', 'assignee'],
     },
   },
   {
-    name: "delete_issue",
-    description: "Delete a Jira issue",
+    name: 'delete_issue',
+    description: 'Delete a Jira issue',
     inputSchema: {
-      type: "object",
+      type: 'object',
       properties: {
         issueKey: {
-          type: "string",
-          description: "Issue key to delete",
+          type: 'string',
+          description: 'Issue key to delete',
         },
       },
-      required: ["issueKey"],
+      required: ['issueKey'],
     },
   },
 ];

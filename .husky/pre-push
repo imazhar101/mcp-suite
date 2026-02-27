@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Checking code formatting..."
+npm run format:check || {
+  echo "❌ Code is not formatted properly!"
+  echo "💡 Run 'npm run format' to fix formatting issues"
+  exit 1
+}
+
+echo "✅ Code formatting is correct!"

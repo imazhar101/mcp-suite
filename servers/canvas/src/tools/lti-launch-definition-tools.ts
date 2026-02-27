@@ -1,4 +1,4 @@
-import { LtiLaunchDefinitionService } from "../services/lti-launch-definition-service.js";
+import { LtiLaunchDefinitionService } from '../services/lti-launch-definition-service.js';
 
 export class LtiLaunchDefinitionTools {
   constructor(private ltiLaunchDefinitionService: LtiLaunchDefinitionService) {}
@@ -6,33 +6,33 @@ export class LtiLaunchDefinitionTools {
   getToolDefinitions() {
     return [
       {
-        name: "list_lti_launch_definitions",
-        description: "List LTI launch definitions for a course or account",
+        name: 'list_lti_launch_definitions',
+        description: 'List LTI launch definitions for a course or account',
         inputSchema: {
-          type: "object",
+          type: 'object',
           properties: {
             course_id: {
-              type: "string",
+              type: 'string',
               description:
-                "Course ID (either course_id or account_id required)",
+                'Course ID (either course_id or account_id required)',
             },
             account_id: {
-              type: "string",
+              type: 'string',
               description:
-                "Account ID (either course_id or account_id required)",
+                'Account ID (either course_id or account_id required)',
             },
             placements: {
-              type: "array",
+              type: 'array',
               items: {
-                type: "string",
+                type: 'string',
               },
               description:
-                "Array of placement types to return launch definitions for",
+                'Array of placement types to return launch definitions for',
             },
             only_visible: {
-              type: "boolean",
+              type: 'boolean',
               description:
-                "Only return launch definitions visible to current user",
+                'Only return launch definitions visible to current user',
               default: true,
             },
           },
@@ -43,7 +43,7 @@ export class LtiLaunchDefinitionTools {
 
   async handleToolCall(name: string, args: any) {
     switch (name) {
-      case "list_lti_launch_definitions":
+      case 'list_lti_launch_definitions':
         return await this.ltiLaunchDefinitionService.listLtiLaunchDefinitions(
           args
         );

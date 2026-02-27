@@ -17,17 +17,18 @@ export class DuffelService {
 
   constructor(config: DuffelConfig, logger: Logger) {
     this.logger = logger;
-    
-    const baseURL = config.environment === 'live' 
-      ? 'https://api.duffel.com'
-      : 'https://api.duffel.com';
+
+    const baseURL =
+      config.environment === 'live'
+        ? 'https://api.duffel.com'
+        : 'https://api.duffel.com';
 
     this.client = axios.create({
       baseURL,
       headers: {
-        'Authorization': `Bearer ${config.apiKey}`,
+        Authorization: `Bearer ${config.apiKey}`,
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Accept-Encoding': 'gzip',
         'Duffel-Version': 'v2',
       },
@@ -71,7 +72,11 @@ export class DuffelService {
     );
   }
 
-  async testConnection(): Promise<{ success: boolean; message?: string; error?: string }> {
+  async testConnection(): Promise<{
+    success: boolean;
+    message?: string;
+    error?: string;
+  }> {
     try {
       const response = await this.client.get('/air/airlines');
       return {
@@ -86,7 +91,9 @@ export class DuffelService {
     }
   }
 
-  async searchFlights(params: FlightSearchParams): Promise<{ success: boolean; data?: OfferRequest; error?: string }> {
+  async searchFlights(
+    params: FlightSearchParams
+  ): Promise<{ success: boolean; data?: OfferRequest; error?: string }> {
     try {
       const slices: Slice[] = [
         {
@@ -128,8 +135,11 @@ export class DuffelService {
         },
       };
 
-      const response = await this.client.post('/air/offer_requests', requestData);
-      
+      const response = await this.client.post(
+        '/air/offer_requests',
+        requestData
+      );
+
       return {
         success: true,
         data: response.data.data,
@@ -142,10 +152,14 @@ export class DuffelService {
     }
   }
 
-  async getOfferRequest(offerRequestId: string): Promise<{ success: boolean; data?: OfferRequest; error?: string }> {
+  async getOfferRequest(
+    offerRequestId: string
+  ): Promise<{ success: boolean; data?: OfferRequest; error?: string }> {
     try {
-      const response = await this.client.get(`/air/offer_requests/${offerRequestId}`);
-      
+      const response = await this.client.get(
+        `/air/offer_requests/${offerRequestId}`
+      );
+
       return {
         success: true,
         data: response.data.data,
@@ -158,18 +172,21 @@ export class DuffelService {
     }
   }
 
-  async getOffers(offerRequestId: string, limit?: number): Promise<{ success: boolean; data?: Offer[]; error?: string }> {
+  async getOffers(
+    offerRequestId: string,
+    limit?: number
+  ): Promise<{ success: boolean; data?: Offer[]; error?: string }> {
     try {
       const params = new URLSearchParams({
         offer_request_id: offerRequestId,
       });
-      
+
       if (limit) {
         params.append('limit', limit.toString());
       }
 
       const response = await this.client.get(`/air/offers?${params}`);
-      
+
       return {
         success: true,
         data: response.data.data,
@@ -182,10 +199,12 @@ export class DuffelService {
     }
   }
 
-  async getOffer(offerId: string): Promise<{ success: boolean; data?: Offer; error?: string }> {
+  async getOffer(
+    offerId: string
+  ): Promise<{ success: boolean; data?: Offer; error?: string }> {
     try {
       const response = await this.client.get(`/air/offers/${offerId}`);
-      
+
       return {
         success: true,
         data: response.data.data,
@@ -198,12 +217,14 @@ export class DuffelService {
     }
   }
 
-  async createOrder(orderRequest: OrderRequest): Promise<{ success: boolean; data?: Order; error?: string }> {
+  async createOrder(
+    orderRequest: OrderRequest
+  ): Promise<{ success: boolean; data?: Order; error?: string }> {
     try {
       const response = await this.client.post('/air/orders', {
         data: orderRequest,
       });
-      
+
       return {
         success: true,
         data: response.data.data,
@@ -216,10 +237,12 @@ export class DuffelService {
     }
   }
 
-  async getOrder(orderId: string): Promise<{ success: boolean; data?: Order; error?: string }> {
+  async getOrder(
+    orderId: string
+  ): Promise<{ success: boolean; data?: Order; error?: string }> {
     try {
       const response = await this.client.get(`/air/orders/${orderId}`);
-      
+
       return {
         success: true,
         data: response.data.data,
@@ -232,10 +255,13 @@ export class DuffelService {
     }
   }
 
-  async listOrders(limit?: number, after?: string): Promise<{ success: boolean; data?: Order[]; error?: string }> {
+  async listOrders(
+    limit?: number,
+    after?: string
+  ): Promise<{ success: boolean; data?: Order[]; error?: string }> {
     try {
       const params = new URLSearchParams();
-      
+
       if (limit) {
         params.append('limit', limit.toString());
       }
@@ -244,7 +270,7 @@ export class DuffelService {
       }
 
       const response = await this.client.get(`/air/orders?${params}`);
-      
+
       return {
         success: true,
         data: response.data.data,
@@ -257,10 +283,12 @@ export class DuffelService {
     }
   }
 
-  async cancelOrder(orderId: string): Promise<{ success: boolean; message?: string; error?: string }> {
+  async cancelOrder(
+    orderId: string
+  ): Promise<{ success: boolean; message?: string; error?: string }> {
     try {
       await this.client.post(`/air/orders/${orderId}/actions/cancel`);
-      
+
       return {
         success: true,
         message: 'Order cancelled successfully',
@@ -273,10 +301,14 @@ export class DuffelService {
     }
   }
 
-  async getSeatMaps(offerId: string): Promise<{ success: boolean; data?: any; error?: string }> {
+  async getSeatMaps(
+    offerId: string
+  ): Promise<{ success: boolean; data?: any; error?: string }> {
     try {
-      const response = await this.client.get(`/air/seat_maps?offer_id=${offerId}`);
-      
+      const response = await this.client.get(
+        `/air/seat_maps?offer_id=${offerId}`
+      );
+
       return {
         success: true,
         data: response.data.data,
@@ -289,7 +321,9 @@ export class DuffelService {
     }
   }
 
-  async getAirlines(limit?: number): Promise<{ success: boolean; data?: any[]; error?: string }> {
+  async getAirlines(
+    limit?: number
+  ): Promise<{ success: boolean; data?: any[]; error?: string }> {
     try {
       const params = new URLSearchParams();
       if (limit) {
@@ -297,7 +331,7 @@ export class DuffelService {
       }
 
       const response = await this.client.get(`/air/airlines?${params}`);
-      
+
       return {
         success: true,
         data: response.data.data,
@@ -310,7 +344,13 @@ export class DuffelService {
     }
   }
 
-  async getAirports(limit?: number, iataCode?: string, iataCountryCode?: string, after?: string, before?: string): Promise<{ success: boolean; data?: any[]; error?: string }> {
+  async getAirports(
+    limit?: number,
+    iataCode?: string,
+    iataCountryCode?: string,
+    after?: string,
+    before?: string
+  ): Promise<{ success: boolean; data?: any[]; error?: string }> {
     try {
       const params = new URLSearchParams();
       if (limit) {
@@ -330,7 +370,7 @@ export class DuffelService {
       }
 
       const response = await this.client.get(`/air/airports?${params}`);
-      
+
       return {
         success: true,
         data: response.data.data,

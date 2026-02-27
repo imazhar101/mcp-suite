@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
-import { BitbucketService } from "./services/bitbucket-service.js";
-import { tools } from "./tools/index.js";
+} from '@modelcontextprotocol/sdk/types.js';
+import { BitbucketService } from './services/bitbucket-service.js';
+import { tools } from './tools/index.js';
 import {
   CreatePullRequestData,
   UpdatePullRequestData,
   MergePullRequestData,
-} from "./types/index.js";
+} from './types/index.js';
 
 class BitbucketServer {
   private server: Server;
@@ -21,8 +21,8 @@ class BitbucketServer {
   constructor() {
     this.server = new Server(
       {
-        name: "bitbucket-server",
-        version: "0.1.0",
+        name: 'bitbucket-server',
+        version: '0.1.0',
       },
       {
         capabilities: {
@@ -36,8 +36,8 @@ class BitbucketServer {
   }
 
   private setupErrorHandling(): void {
-    this.server.onerror = (error) => console.error("[MCP Error]", error);
-    process.on("SIGINT", async () => {
+    this.server.onerror = (error) => console.error('[MCP Error]', error);
+    process.on('SIGINT', async () => {
       await this.server.close();
       process.exit(0);
     });
@@ -53,7 +53,7 @@ class BitbucketServer {
 
       if (!this.bitbucketService) {
         throw new Error(
-          "Bitbucket service not initialized. Please check your environment variables."
+          'Bitbucket service not initialized. Please check your environment variables.'
         );
       }
 
@@ -69,18 +69,18 @@ class BitbucketServer {
 
   private async handleToolCall(name: string, args: any) {
     if (!this.bitbucketService) {
-      throw new Error("Bitbucket service not initialized");
+      throw new Error('Bitbucket service not initialized');
     }
 
     const service = this.bitbucketService;
 
     switch (name) {
       // Repository tools
-      case "get_repositories":
+      case 'get_repositories':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.getRepositories({
                   page: args.page,
@@ -94,11 +94,11 @@ class BitbucketServer {
           ],
         };
 
-      case "get_repository":
+      case 'get_repository':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.getRepository(args.repo_slug),
                 null,
@@ -109,11 +109,11 @@ class BitbucketServer {
         };
 
       // Pull Request tools
-      case "get_pull_requests":
+      case 'get_pull_requests':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.getPullRequests(args.repo_slug, {
                   state: args.state,
@@ -127,11 +127,11 @@ class BitbucketServer {
           ],
         };
 
-      case "get_pull_request":
+      case 'get_pull_request':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.getPullRequest(
                   args.repo_slug,
@@ -144,7 +144,7 @@ class BitbucketServer {
           ],
         };
 
-      case "create_pull_request":
+      case 'create_pull_request':
         const createData: CreatePullRequestData = {
           title: args.title,
           description: args.description,
@@ -155,7 +155,7 @@ class BitbucketServer {
               : undefined,
           },
           destination: {
-            branch: { name: args.destination_branch || "main" },
+            branch: { name: args.destination_branch || 'main' },
             repository: args.destination_repository
               ? { full_name: args.destination_repository }
               : undefined,
@@ -168,7 +168,7 @@ class BitbucketServer {
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.createPullRequest(args.repo_slug, createData),
                 null,
@@ -178,7 +178,7 @@ class BitbucketServer {
           ],
         };
 
-      case "update_pull_request":
+      case 'update_pull_request':
         const updateData: UpdatePullRequestData = {
           title: args.title,
           description: args.description,
@@ -190,7 +190,7 @@ class BitbucketServer {
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.updatePullRequest(
                   args.repo_slug,
@@ -204,7 +204,7 @@ class BitbucketServer {
           ],
         };
 
-      case "merge_pull_request":
+      case 'merge_pull_request':
         const mergeData: MergePullRequestData = {
           type: args.type,
           message: args.message,
@@ -215,7 +215,7 @@ class BitbucketServer {
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.mergePullRequest(
                   args.repo_slug,
@@ -229,11 +229,11 @@ class BitbucketServer {
           ],
         };
 
-      case "decline_pull_request":
+      case 'decline_pull_request':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.declinePullRequest(
                   args.repo_slug,
@@ -246,11 +246,11 @@ class BitbucketServer {
           ],
         };
 
-      case "get_pull_request_activity":
+      case 'get_pull_request_activity':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.getPullRequestActivity(
                   args.repo_slug,
@@ -267,11 +267,11 @@ class BitbucketServer {
           ],
         };
 
-      case "get_pull_request_comments":
+      case 'get_pull_request_comments':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.getPullRequestComments(
                   args.repo_slug,
@@ -288,11 +288,11 @@ class BitbucketServer {
           ],
         };
 
-      case "create_pull_request_comment":
+      case 'create_pull_request_comment':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.createPullRequestComment(
                   args.repo_slug,
@@ -306,11 +306,11 @@ class BitbucketServer {
           ],
         };
 
-      case "update_pull_request_comment":
+      case 'update_pull_request_comment':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.updatePullRequestComment(
                   args.repo_slug,
@@ -325,7 +325,7 @@ class BitbucketServer {
           ],
         };
 
-      case "delete_pull_request_comment":
+      case 'delete_pull_request_comment':
         await service.deletePullRequestComment(
           args.repo_slug,
           args.pull_request_id,
@@ -334,17 +334,17 @@ class BitbucketServer {
         return {
           content: [
             {
-              type: "text",
-              text: "Comment deleted successfully",
+              type: 'text',
+              text: 'Comment deleted successfully',
             },
           ],
         };
 
-      case "get_pull_request_diff":
+      case 'get_pull_request_diff':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: await service.getPullRequestDiff(
                 args.repo_slug,
                 args.pull_request_id
@@ -353,11 +353,11 @@ class BitbucketServer {
           ],
         };
 
-      case "get_pull_request_commits":
+      case 'get_pull_request_commits':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.getPullRequestCommits(
                   args.repo_slug,
@@ -375,11 +375,11 @@ class BitbucketServer {
         };
 
       // Pull Request Approval tools
-      case "approve_pull_request":
+      case 'approve_pull_request':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.approvePullRequest(
                   args.repo_slug,
@@ -392,7 +392,7 @@ class BitbucketServer {
           ],
         };
 
-      case "unapprove_pull_request":
+      case 'unapprove_pull_request':
         await service.unapprovePullRequest(
           args.repo_slug,
           args.pull_request_id
@@ -400,17 +400,17 @@ class BitbucketServer {
         return {
           content: [
             {
-              type: "text",
-              text: "Pull request approval removed successfully",
+              type: 'text',
+              text: 'Pull request approval removed successfully',
             },
           ],
         };
 
-      case "request_changes":
+      case 'request_changes':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.requestChanges(
                   args.repo_slug,
@@ -423,23 +423,23 @@ class BitbucketServer {
           ],
         };
 
-      case "remove_change_request":
+      case 'remove_change_request':
         await service.removeChangeRequest(args.repo_slug, args.pull_request_id);
         return {
           content: [
             {
-              type: "text",
-              text: "Change request removed successfully",
+              type: 'text',
+              text: 'Change request removed successfully',
             },
           ],
         };
 
       // Pull Request Task tools
-      case "get_pull_request_tasks":
+      case 'get_pull_request_tasks':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.getPullRequestTasks(
                   args.repo_slug,
@@ -456,11 +456,11 @@ class BitbucketServer {
           ],
         };
 
-      case "create_pull_request_task":
+      case 'create_pull_request_task':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.createPullRequestTask(
                   args.repo_slug,
@@ -475,11 +475,11 @@ class BitbucketServer {
           ],
         };
 
-      case "update_pull_request_task":
+      case 'update_pull_request_task':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.updatePullRequestTask(
                   args.repo_slug,
@@ -497,7 +497,7 @@ class BitbucketServer {
           ],
         };
 
-      case "delete_pull_request_task":
+      case 'delete_pull_request_task':
         await service.deletePullRequestTask(
           args.repo_slug,
           args.pull_request_id,
@@ -506,18 +506,18 @@ class BitbucketServer {
         return {
           content: [
             {
-              type: "text",
-              text: "Task deleted successfully",
+              type: 'text',
+              text: 'Task deleted successfully',
             },
           ],
         };
 
       // Default Reviewer tools
-      case "get_default_reviewers":
+      case 'get_default_reviewers':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.getDefaultReviewers(args.repo_slug),
                 null,
@@ -527,11 +527,11 @@ class BitbucketServer {
           ],
         };
 
-      case "get_effective_default_reviewers":
+      case 'get_effective_default_reviewers':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.getEffectiveDefaultReviewers(args.repo_slug),
                 null,
@@ -541,11 +541,11 @@ class BitbucketServer {
           ],
         };
 
-      case "add_default_reviewer":
+      case 'add_default_reviewer':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.addDefaultReviewer(args.repo_slug, args.username),
                 null,
@@ -555,23 +555,23 @@ class BitbucketServer {
           ],
         };
 
-      case "remove_default_reviewer":
+      case 'remove_default_reviewer':
         await service.removeDefaultReviewer(args.repo_slug, args.username);
         return {
           content: [
             {
-              type: "text",
-              text: "Default reviewer removed successfully",
+              type: 'text',
+              text: 'Default reviewer removed successfully',
             },
           ],
         };
 
       // Commit tools
-      case "get_commits":
+      case 'get_commits':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.getCommits(args.repo_slug, {
                   branch: args.branch,
@@ -585,11 +585,11 @@ class BitbucketServer {
           ],
         };
 
-      case "get_commit":
+      case 'get_commit':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.getCommit(args.repo_slug, args.commit_hash),
                 null,
@@ -600,11 +600,11 @@ class BitbucketServer {
         };
 
       // Branch tools
-      case "get_branches":
+      case 'get_branches':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.getBranches(args.repo_slug, {
                   page: args.page,
@@ -618,11 +618,11 @@ class BitbucketServer {
         };
 
       // Additional tools
-      case "get_pull_requests_for_commit":
+      case 'get_pull_requests_for_commit':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.getPullRequestsForCommit(
                   args.repo_slug,
@@ -639,11 +639,11 @@ class BitbucketServer {
           ],
         };
 
-      case "get_pull_request_statuses":
+      case 'get_pull_request_statuses':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await service.getPullRequestStatuses(
                   args.repo_slug,
@@ -672,7 +672,7 @@ class BitbucketServer {
 
     if (!workspace || !username || !appPassword) {
       console.error(
-        "Missing required environment variables: BITBUCKET_WORKSPACE, BITBUCKET_USERNAME, BITBUCKET_APP_PASSWORD"
+        'Missing required environment variables: BITBUCKET_WORKSPACE, BITBUCKET_USERNAME, BITBUCKET_APP_PASSWORD'
       );
       process.exit(1);
     }
@@ -685,7 +685,7 @@ class BitbucketServer {
 
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error("Bitbucket MCP server running on stdio");
+    console.error('Bitbucket MCP server running on stdio');
   }
 }
 

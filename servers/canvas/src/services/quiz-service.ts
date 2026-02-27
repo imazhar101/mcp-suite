@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 import {
   Quiz,
   QuizQuestion,
@@ -8,7 +8,7 @@ import {
   QuizQuestionCreateParams,
   QuizQuestionUpdateParams,
   QuizQuestionListParams,
-} from "../types/quiz.js";
+} from '../types/quiz.js';
 
 export class QuizService {
   constructor(private canvasClient: AxiosInstance) {}
@@ -88,7 +88,7 @@ export class QuizService {
   async reorderQuizItems(
     courseId: string,
     quizId: string,
-    order: Array<{ id: number; type?: "question" | "group" }>
+    order: Array<{ id: number; type?: 'question' | 'group' }>
   ): Promise<void> {
     const requestData = {
       order: order,

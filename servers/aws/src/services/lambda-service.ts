@@ -12,13 +12,13 @@ import {
   CreateAliasCommand,
   ListAliasesCommand,
   GetAccountSettingsCommand,
-} from "@aws-sdk/client-lambda";
-import { LambdaFunctionInfo, LambdaInvokeParams } from "../types/index.js";
+} from '@aws-sdk/client-lambda';
+import { LambdaFunctionInfo, LambdaInvokeParams } from '../types/index.js';
 
 export class LambdaService {
   private client: LambdaClient;
 
-  constructor(region: string = "us-east-1") {
+  constructor(region: string = 'us-east-1') {
     this.client = new LambdaClient({ region });
   }
 
@@ -134,7 +134,7 @@ export class LambdaService {
       Payload: params.payload
         ? new TextEncoder().encode(JSON.stringify(params.payload))
         : undefined,
-      InvocationType: params.invocationType || "RequestResponse",
+      InvocationType: params.invocationType || 'RequestResponse',
     });
 
     const response = await this.client.send(command);

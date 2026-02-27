@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
-import { DynamoDBService } from "./services/dynamodb-service.js";
-import { LambdaService } from "./services/lambda-service.js";
-import { APIGatewayService } from "./services/apigateway-service.js";
-import { tools } from "./tools/index.js";
+} from '@modelcontextprotocol/sdk/types.js';
+import { DynamoDBService } from './services/dynamodb-service.js';
+import { LambdaService } from './services/lambda-service.js';
+import { APIGatewayService } from './services/apigateway-service.js';
+import { tools } from './tools/index.js';
 
 class AWSServer {
   private server: Server;
@@ -20,8 +20,8 @@ class AWSServer {
   constructor() {
     this.server = new Server(
       {
-        name: "aws-server",
-        version: "1.0.0",
+        name: 'aws-server',
+        version: '1.0.0',
       },
       {
         capabilities: {
@@ -35,8 +35,8 @@ class AWSServer {
   }
 
   private setupErrorHandling(): void {
-    this.server.onerror = (error) => console.error("[MCP Error]", error);
-    process.on("SIGINT", async () => {
+    this.server.onerror = (error) => console.error('[MCP Error]', error);
+    process.on('SIGINT', async () => {
       await this.server.close();
       process.exit(0);
     });
@@ -56,7 +56,7 @@ class AWSServer {
         !this.apiGatewayService
       ) {
         throw new Error(
-          "AWS services not initialized. Please check your AWS credentials."
+          'AWS services not initialized. Please check your AWS credentials.'
         );
       }
 
@@ -76,7 +76,7 @@ class AWSServer {
       !this.lambdaService ||
       !this.apiGatewayService
     ) {
-      throw new Error("AWS services not initialized");
+      throw new Error('AWS services not initialized');
     }
 
     const dynamoDBService = this.dynamoDBService;
@@ -85,21 +85,21 @@ class AWSServer {
 
     switch (name) {
       // DynamoDB tools
-      case "dynamodb_list_tables":
+      case 'dynamodb_list_tables':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(await dynamoDBService.listTables(), null, 2),
             },
           ],
         };
 
-      case "dynamodb_describe_table":
+      case 'dynamodb_describe_table':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await dynamoDBService.describeTable(args.tableName),
                 null,
@@ -109,22 +109,22 @@ class AWSServer {
           ],
         };
 
-      case "dynamodb_put_item":
+      case 'dynamodb_put_item':
         await dynamoDBService.putItem(args.tableName, args.item);
         return {
           content: [
             {
-              type: "text",
-              text: "Item successfully inserted",
+              type: 'text',
+              text: 'Item successfully inserted',
             },
           ],
         };
 
-      case "dynamodb_get_item":
+      case 'dynamodb_get_item':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await dynamoDBService.getItem(args.tableName, args.key),
                 null,
@@ -134,11 +134,11 @@ class AWSServer {
           ],
         };
 
-      case "dynamodb_update_item":
+      case 'dynamodb_update_item':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await dynamoDBService.updateItem(
                   args.tableName,
@@ -154,22 +154,22 @@ class AWSServer {
           ],
         };
 
-      case "dynamodb_delete_item":
+      case 'dynamodb_delete_item':
         await dynamoDBService.deleteItem(args.tableName, args.key);
         return {
           content: [
             {
-              type: "text",
-              text: "Item successfully deleted",
+              type: 'text',
+              text: 'Item successfully deleted',
             },
           ],
         };
 
-      case "dynamodb_query":
+      case 'dynamodb_query':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await dynamoDBService.query({
                   tableName: args.tableName,
@@ -187,11 +187,11 @@ class AWSServer {
           ],
         };
 
-      case "dynamodb_scan":
+      case 'dynamodb_scan':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await dynamoDBService.scan({
                   tableName: args.tableName,
@@ -208,11 +208,11 @@ class AWSServer {
         };
 
       // Lambda tools
-      case "lambda_list_functions":
+      case 'lambda_list_functions':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await lambdaService.listFunctions(),
                 null,
@@ -222,11 +222,11 @@ class AWSServer {
           ],
         };
 
-      case "lambda_get_function":
+      case 'lambda_get_function':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await lambdaService.getFunction(args.functionName),
                 null,
@@ -236,11 +236,11 @@ class AWSServer {
           ],
         };
 
-      case "lambda_invoke_function":
+      case 'lambda_invoke_function':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await lambdaService.invokeFunction({
                   functionName: args.functionName,
@@ -254,7 +254,7 @@ class AWSServer {
           ],
         };
 
-      case "lambda_update_function_code":
+      case 'lambda_update_function_code':
         await lambdaService.updateFunctionCode(
           args.functionName,
           undefined,
@@ -264,14 +264,14 @@ class AWSServer {
         return {
           content: [
             {
-              type: "text",
-              text: "Function code updated successfully",
+              type: 'text',
+              text: 'Function code updated successfully',
             },
           ],
         };
 
-      case "lambda_create_function":
-        const zipFileBuffer = Buffer.from(args.zipFile, "base64");
+      case 'lambda_create_function':
+        const zipFileBuffer = Buffer.from(args.zipFile, 'base64');
         await lambdaService.createFunction(
           args.functionName,
           args.runtime,
@@ -286,13 +286,13 @@ class AWSServer {
         return {
           content: [
             {
-              type: "text",
-              text: "Function created successfully",
+              type: 'text',
+              text: 'Function created successfully',
             },
           ],
         };
 
-      case "lambda_update_function_configuration":
+      case 'lambda_update_function_configuration':
         await lambdaService.updateFunctionConfiguration(args.functionName, {
           description: args.description,
           timeout: args.timeout,
@@ -304,18 +304,18 @@ class AWSServer {
         return {
           content: [
             {
-              type: "text",
-              text: "Function configuration updated successfully",
+              type: 'text',
+              text: 'Function configuration updated successfully',
             },
           ],
         };
 
       // API Gateway REST API tools
-      case "apigateway_list_rest_apis":
+      case 'apigateway_list_rest_apis':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await apiGatewayService.listRestApis(),
                 null,
@@ -325,11 +325,11 @@ class AWSServer {
           ],
         };
 
-      case "apigateway_get_rest_api":
+      case 'apigateway_get_rest_api':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await apiGatewayService.getRestApi(args.apiId),
                 null,
@@ -339,11 +339,11 @@ class AWSServer {
           ],
         };
 
-      case "apigateway_create_rest_api":
+      case 'apigateway_create_rest_api':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await apiGatewayService.createRestApi(
                   args.name,
@@ -357,22 +357,22 @@ class AWSServer {
           ],
         };
 
-      case "apigateway_delete_rest_api":
+      case 'apigateway_delete_rest_api':
         await apiGatewayService.deleteRestApi(args.apiId);
         return {
           content: [
             {
-              type: "text",
-              text: "REST API deleted successfully",
+              type: 'text',
+              text: 'REST API deleted successfully',
             },
           ],
         };
 
-      case "apigateway_get_resources":
+      case 'apigateway_get_resources':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await apiGatewayService.getResources(args.apiId),
                 null,
@@ -382,11 +382,11 @@ class AWSServer {
           ],
         };
 
-      case "apigateway_create_resource":
+      case 'apigateway_create_resource':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await apiGatewayService.createResource(
                   args.apiId,
@@ -400,11 +400,11 @@ class AWSServer {
           ],
         };
 
-      case "apigateway_put_method":
+      case 'apigateway_put_method':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await apiGatewayService.putMethod(
                   args.apiId,
@@ -420,11 +420,11 @@ class AWSServer {
           ],
         };
 
-      case "apigateway_put_integration":
+      case 'apigateway_put_integration':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await apiGatewayService.putIntegration(
                   args.apiId,
@@ -441,11 +441,11 @@ class AWSServer {
           ],
         };
 
-      case "apigateway_create_deployment":
+      case 'apigateway_create_deployment':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await apiGatewayService.createDeployment(
                   args.apiId,
@@ -460,11 +460,11 @@ class AWSServer {
         };
 
       // API Gateway v2 tools
-      case "apigatewayv2_list_apis":
+      case 'apigatewayv2_list_apis':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await apiGatewayService.listV2Apis(),
                 null,
@@ -474,11 +474,11 @@ class AWSServer {
           ],
         };
 
-      case "apigatewayv2_create_api":
+      case 'apigatewayv2_create_api':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await apiGatewayService.createV2Api(
                   args.name,
@@ -493,11 +493,11 @@ class AWSServer {
           ],
         };
 
-      case "apigatewayv2_get_routes":
+      case 'apigatewayv2_get_routes':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await apiGatewayService.getV2Routes(args.apiId),
                 null,
@@ -507,11 +507,11 @@ class AWSServer {
           ],
         };
 
-      case "apigatewayv2_create_route":
+      case 'apigatewayv2_create_route':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await apiGatewayService.createV2Route(
                   args.apiId,
@@ -526,11 +526,11 @@ class AWSServer {
           ],
         };
 
-      case "apigatewayv2_get_integrations":
+      case 'apigatewayv2_get_integrations':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await apiGatewayService.getV2Integrations(args.apiId),
                 null,
@@ -540,11 +540,11 @@ class AWSServer {
           ],
         };
 
-      case "apigatewayv2_create_integration":
+      case 'apigatewayv2_create_integration':
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 await apiGatewayService.createV2Integration(
                   args.apiId,
@@ -565,7 +565,7 @@ class AWSServer {
   }
 
   async run(): Promise<void> {
-    const region = process.env.AWS_REGION || "us-east-1";
+    const region = process.env.AWS_REGION || 'us-east-1';
 
     this.dynamoDBService = new DynamoDBService(region);
     this.lambdaService = new LambdaService(region);
@@ -573,7 +573,7 @@ class AWSServer {
 
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error("AWS MCP server running on stdio");
+    console.error('AWS MCP server running on stdio');
   }
 }
 

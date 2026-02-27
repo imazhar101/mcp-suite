@@ -5,12 +5,12 @@ export interface Module {
   name: string;
   unlock_at?: string;
   require_sequential_progress: boolean;
-  requirement_type?: "all" | "one";
+  requirement_type?: 'all' | 'one';
   prerequisite_module_ids: number[];
   items_count: number;
   items_url: string;
   items?: ModuleItem[];
-  state?: "locked" | "unlocked" | "started" | "completed";
+  state?: 'locked' | 'unlocked' | 'started' | 'completed';
   completed_at?: string;
   publish_final_grade?: boolean;
   published?: boolean;
@@ -23,14 +23,14 @@ export interface ModuleItem {
   title: string;
   indent: number;
   type:
-    | "File"
-    | "Page"
-    | "Discussion"
-    | "Assignment"
-    | "Quiz"
-    | "SubHeader"
-    | "ExternalUrl"
-    | "ExternalTool";
+    | 'File'
+    | 'Page'
+    | 'Discussion'
+    | 'Assignment'
+    | 'Quiz'
+    | 'SubHeader'
+    | 'ExternalUrl'
+    | 'ExternalTool';
   content_id?: number;
   html_url: string;
   url?: string;
@@ -44,12 +44,12 @@ export interface ModuleItem {
 
 export interface CompletionRequirement {
   type:
-    | "must_view"
-    | "must_submit"
-    | "must_contribute"
-    | "min_score"
-    | "min_percentage"
-    | "must_mark_done";
+    | 'must_view'
+    | 'must_submit'
+    | 'must_contribute'
+    | 'min_score'
+    | 'min_percentage'
+    | 'must_mark_done';
   min_score?: number;
   min_percentage?: number;
   completed?: boolean;
@@ -103,13 +103,13 @@ export interface OverrideTarget {
 
 // Request parameter interfaces
 export interface ModuleListParams {
-  include?: ("items" | "content_details")[];
+  include?: ('items' | 'content_details')[];
   search_term?: string;
   student_id?: string;
 }
 
 export interface ModuleShowParams {
-  include?: ("items" | "content_details")[];
+  include?: ('items' | 'content_details')[];
   student_id?: string;
 }
 
@@ -133,27 +133,27 @@ export interface ModuleUpdateParams {
 }
 
 export interface ModuleItemListParams {
-  include?: "content_details"[];
+  include?: 'content_details'[];
   search_term?: string;
   student_id?: string;
 }
 
 export interface ModuleItemShowParams {
-  include?: "content_details"[];
+  include?: 'content_details'[];
   student_id?: string;
 }
 
 export interface ModuleItemCreateParams {
   title?: string;
   type:
-    | "File"
-    | "Page"
-    | "Discussion"
-    | "Assignment"
-    | "Quiz"
-    | "SubHeader"
-    | "ExternalUrl"
-    | "ExternalTool";
+    | 'File'
+    | 'Page'
+    | 'Discussion'
+    | 'Assignment'
+    | 'Quiz'
+    | 'SubHeader'
+    | 'ExternalUrl'
+    | 'ExternalTool';
   content_id?: string;
   position?: number;
   indent?: number;
@@ -161,7 +161,7 @@ export interface ModuleItemCreateParams {
   external_url?: string;
   new_tab?: boolean;
   completion_requirement?: {
-    type: "must_view" | "must_contribute" | "must_submit" | "must_mark_done";
+    type: 'must_view' | 'must_contribute' | 'must_submit' | 'must_mark_done';
     min_score?: number;
   };
   iframe?: {
@@ -177,7 +177,7 @@ export interface ModuleItemUpdateParams {
   external_url?: string;
   new_tab?: boolean;
   completion_requirement?: {
-    type: "must_view" | "must_contribute" | "must_submit" | "must_mark_done";
+    type: 'must_view' | 'must_contribute' | 'must_submit' | 'must_mark_done';
     min_score?: number;
   };
   published?: boolean;
@@ -186,13 +186,13 @@ export interface ModuleItemUpdateParams {
 
 export interface ModuleItemSequenceParams {
   asset_type:
-    | "ModuleItem"
-    | "File"
-    | "Page"
-    | "Discussion"
-    | "Assignment"
-    | "Quiz"
-    | "ExternalTool";
+    | 'ModuleItem'
+    | 'File'
+    | 'Page'
+    | 'Discussion'
+    | 'Assignment'
+    | 'Quiz'
+    | 'ExternalTool';
   asset_id: number;
 }
 

@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 import {
   ExternalTool,
   ExternalToolListParams,
@@ -7,14 +7,14 @@ import {
   SessionlessLaunchParams,
   SessionlessLaunchResponse,
   VisibleCourseNavToolsParams,
-} from "../types/external-tool.js";
+} from '../types/external-tool.js';
 
 export class ExternalToolService {
   constructor(private canvasClient: AxiosInstance) {}
 
   // External Tool Management
   async listExternalTools(
-    context: "courses" | "accounts" | "groups",
+    context: 'courses' | 'accounts' | 'groups',
     contextId: string,
     params?: ExternalToolListParams
   ): Promise<ExternalTool[]> {
@@ -26,7 +26,7 @@ export class ExternalToolService {
   }
 
   async getExternalTool(
-    context: "courses" | "accounts",
+    context: 'courses' | 'accounts',
     contextId: string,
     toolId: string
   ): Promise<ExternalTool> {
@@ -37,7 +37,7 @@ export class ExternalToolService {
   }
 
   async createExternalTool(
-    context: "courses" | "accounts",
+    context: 'courses' | 'accounts',
     contextId: string,
     toolData: ExternalToolCreateParams
   ): Promise<ExternalTool> {
@@ -49,7 +49,7 @@ export class ExternalToolService {
   }
 
   async updateExternalTool(
-    context: "courses" | "accounts",
+    context: 'courses' | 'accounts',
     contextId: string,
     toolId: string,
     toolData: ExternalToolUpdateParams
@@ -62,7 +62,7 @@ export class ExternalToolService {
   }
 
   async deleteExternalTool(
-    context: "courses" | "accounts",
+    context: 'courses' | 'accounts',
     contextId: string,
     toolId: string
   ): Promise<ExternalTool> {
@@ -74,7 +74,7 @@ export class ExternalToolService {
 
   // Sessionless Launch
   async getSessionlessLaunch(
-    context: "courses" | "accounts",
+    context: 'courses' | 'accounts',
     contextId: string,
     params: SessionlessLaunchParams
   ): Promise<SessionlessLaunchResponse> {
@@ -116,7 +116,7 @@ export class ExternalToolService {
     params: VisibleCourseNavToolsParams
   ): Promise<ExternalTool[]> {
     const response = await this.canvasClient.get(
-      "/external_tools/visible_course_nav_tools",
+      '/external_tools/visible_course_nav_tools',
       { params }
     );
     return response.data;
