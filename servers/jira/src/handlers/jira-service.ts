@@ -66,18 +66,12 @@ export class JiraService {
       version: 1,
       content: [
         {
-          type: 'heading',
-          attrs: { level: 1 },
-          content: [{ type: 'text', text: 'Rich Text Example' }],
-        },
-        {
           type: 'paragraph',
           content: [
-            { type: 'text', text: 'This is ' },
-            { type: 'text', text: 'bold', marks: [{ type: 'strong' }] },
-            { type: 'text', text: ' and this is ' },
-            { type: 'text', text: 'italic', marks: [{ type: 'em' }] },
-            { type: 'text', text: ' text.' },
+            {
+              type: 'text',
+              text: text,
+            },
           ],
         },
       ],
