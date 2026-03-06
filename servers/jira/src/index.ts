@@ -92,6 +92,11 @@ class JiraServer {
           args.comment,
           args.format
         );
+      case 'delete_comment':
+        return await this.jiraService.deleteComment(
+          args.issueKey,
+          args.commentId
+        );
       case 'list_projects':
         return await this.jiraService.listProjects();
       case 'get_project':

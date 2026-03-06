@@ -152,6 +152,24 @@ export const jiraTools: McpTool[] = [
     },
   },
   {
+    name: 'delete_comment',
+    description: 'Delete a comment from a Jira issue',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        issueKey: {
+          type: 'string',
+          description: 'Issue key to delete comment from',
+        },
+        commentId: {
+          type: 'string',
+          description: 'Comment ID to delete',
+        },
+      },
+      required: ['issueKey', 'commentId'],
+    },
+  },
+  {
     name: 'list_projects',
     description: 'List all accessible Jira projects',
     inputSchema: {
