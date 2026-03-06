@@ -330,6 +330,24 @@ export class JiraService {
     }
   }
 
+  async deleteComment(
+    issueKey: string,
+    commentId: string
+  ): Promise<ServerResponse<void>> {
+    try {
+      this.logger.info('Deleting comment', { issueKey, commentId });
+
+      await this.client.delete(`/issue/${issueKey}/comment/${commentId}`);
+
+      return {
+        success: true,
+        message: `Comment ${commentId} deleted from issue ${issueKey} successfully`,
+      };
+    } catch (error) {
+      return this.errorHandler.handleApiError(error, 'Jira');
+    }
+  }
+
   async listProjects(): Promise<ServerResponse<JiraProject[]>> {
     try {
       this.logger.info('Listing projects');
