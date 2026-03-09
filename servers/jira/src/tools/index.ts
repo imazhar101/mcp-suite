@@ -32,6 +32,13 @@ export const jiraTools: McpTool[] = [
           type: 'string',
           description: 'Issue key (e.g., "PROJ-123")',
         },
+        format: {
+          type: 'string',
+          enum: ['json', 'csv'],
+          description:
+            'Output format: "json" returns structured object, "csv" returns field-value pairs (default: "json")',
+          default: 'json',
+        },
       },
       required: ['issueKey'],
     },
@@ -171,10 +178,19 @@ export const jiraTools: McpTool[] = [
   },
   {
     name: 'list_projects',
-    description: 'List all accessible Jira projects',
+    description:
+      'List all accessible Jira projects in CSV format for efficient token usage',
     inputSchema: {
       type: 'object',
-      properties: {},
+      properties: {
+        format: {
+          type: 'string',
+          enum: ['json', 'csv'],
+          description:
+            'Output format: "json" returns array of objects, "csv" returns comma-separated values (default: "csv")',
+          default: 'csv',
+        },
+      },
     },
   },
   {
