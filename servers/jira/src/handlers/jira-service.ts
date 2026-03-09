@@ -506,17 +506,15 @@ export class JiraService {
     try {
       this.logger.info('Assigning issue', { issueKey, assignee });
 
-      // Detect if assignee is an email address or account ID
-      const isEmail = assignee.includes('@');
-      const assigneePayload = isEmail
-        ? { emailAddress: assignee }
-        : { accountId: assignee };
-
-      await this.client.put(`/issue/${issueKey}/assignee`, assigneePayload);
+      // Always use account ID for reliable assignment
+      // Email-based assignment is unreliable due to GDPR privacy controls
+      await this.client.put(`/issue/${issueKey}/assignee`, {
+        accountId: assignee,
+      });
 
       return {
         success: true,
-        message: `Issue ${issueKey} assigned to ${assignee} successfully`,
+        message: `Issue ${issueKey} assigned to account ${assignee} successfully`,
       };
     } catch (error) {
       return this.errorHandler.handleApiError(error, 'Jira');

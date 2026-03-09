@@ -234,7 +234,7 @@ export const jiraTools: McpTool[] = [
         assignee: {
           type: 'string',
           description:
-            'Email address or account ID of the assignee. Use search_users tool to find account IDs by name.',
+            'Account ID of the assignee (email addresses are not reliable). Use search_users tool to find account IDs by name.',
         },
       },
       required: ['issueKey', 'assignee'],
