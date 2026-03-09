@@ -233,7 +233,8 @@ export const jiraTools: McpTool[] = [
         },
         assignee: {
           type: 'string',
-          description: 'Email address of the assignee',
+          description:
+            'Email address or account ID of the assignee. Use search_users tool to find account IDs by name.',
         },
       },
       required: ['issueKey', 'assignee'],
@@ -251,6 +252,35 @@ export const jiraTools: McpTool[] = [
         },
       },
       required: ['issueKey'],
+    },
+  },
+  {
+    name: 'search_users',
+    description:
+      'Search for Jira users by display name, email, or account ID. Useful for finding user account IDs for JQL queries.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        query: {
+          type: 'string',
+          description:
+            'Search query to match against user display names and email addresses (e.g., "john", "smith", "john.smith@example.com")',
+        },
+        maxResults: {
+          type: 'number',
+          description: 'Maximum number of results to return (default: 50)',
+          minimum: 1,
+          maximum: 100,
+        },
+        format: {
+          type: 'string',
+          enum: ['json', 'csv'],
+          description:
+            'Output format: "json" returns structured objects, "csv" returns array format (default: "csv")',
+          default: 'csv',
+        },
+      },
+      required: ['query'],
     },
   },
 ];

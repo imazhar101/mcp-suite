@@ -107,6 +107,8 @@ class JiraServer {
         return await this.jiraService.assignIssue(args.issueKey, args.assignee);
       case 'delete_issue':
         return await this.jiraService.deleteIssue(args.issueKey);
+      case 'search_users':
+        return await this.jiraService.searchUsers(args, args.format);
       default:
         throw new McpError(
           ErrorCode.MethodNotFound,

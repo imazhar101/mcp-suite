@@ -6,13 +6,14 @@ import { ServerResponse } from '../../../../shared/types/common.js';
 import {
   JiraConfig,
   ADFDocument,
-  ADFNode,
   JiraIssue,
   JiraProject,
   JiraTransition,
+  JiraUser,
   CreateIssueRequest,
   UpdateIssueRequest,
   SearchIssuesRequest,
+  SearchUsersRequest,
 } from '../types.js';
 
 export class JiraService {
@@ -505,9 +506,13 @@ export class JiraService {
     try {
       this.logger.info('Assigning issue', { issueKey, assignee });
 
-      await this.client.put(`/issue/${issueKey}/assignee`, {
-        emailAddress: assignee,
-      });
+      // Detect if assignee is an email address or account ID
+      const isEmail = assignee.includes('@');
+      const assigneePayload = isEmail
+        ? { emailAddress: assignee }
+        : { accountId: assignee };
+
+      await this.client.put(`/issue/${issueKey}/assignee`, assigneePayload);
 
       return {
         success: true,
@@ -527,6 +532,57 @@ export class JiraService {
       return {
         success: true,
         message: `Issue ${issueKey} deleted successfully`,
+      };
+    } catch (error) {
+      return this.errorHandler.handleApiError(error, 'Jira');
+    }
+  }
+
+  async searchUsers(
+    request: SearchUsersRequest,
+    format: 'json' | 'csv' = 'csv'
+  ): Promise<ServerResponse<JiraUser[] | any[]>> {
+    try {
+      this.logger.info('Searching users', { query: request.query, format });
+
+      const response = await this.client.get('/user/search', {
+        params: {
+          query: request.query,
+          maxResults: request.maxResults || 50,
+        },
+      });
+
+      const users: JiraUser[] = response.data.map((user: any) => ({
+        accountId: user.accountId,
+        displayName: user.displayName,
+        emailAddress: user.emailAddress || 'No email available',
+        active: user.active,
+        avatarUrls: user.avatarUrls,
+      }));
+
+      if (format === 'json') {
+        return {
+          success: true,
+          data: users,
+          message: `Found ${users.length} users matching "${request.query}"`,
+        };
+      }
+
+      // CSV format - return as JSON arrays
+      const arrayData = [
+        ['accountId', 'displayName', 'emailAddress', 'active'],
+        ...users.map((user: any) => [
+          user.accountId,
+          user.displayName,
+          user.emailAddress,
+          user.active.toString(),
+        ]),
+      ];
+
+      return {
+        success: true,
+        data: arrayData,
+        message: `Found ${users.length} users matching "${request.query}"`,
       };
     } catch (error) {
       return this.errorHandler.handleApiError(error, 'Jira');
