@@ -93,3 +93,21 @@ export interface SearchIssuesRequest {
   jql: string;
   maxResults?: number;
 }
+
+export interface JiraUser {
+  accountId: string;
+  displayName: string;
+  emailAddress: string;
+  active: boolean;
+  avatarUrls?: {
+    '48x48': string;
+    '24x24': string;
+    '16x16': string;
+    '32x32': string;
+  };
+}
+
+export interface SearchUsersRequest {
+  query: string;
+  maxResults?: number;
+}
