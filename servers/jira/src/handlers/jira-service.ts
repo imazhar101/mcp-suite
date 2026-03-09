@@ -111,8 +111,9 @@ export class JiraService {
   }
 
   async searchIssues(
-    request: SearchIssuesRequest
-  ): Promise<ServerResponse<JiraIssue[]>> {
+    request: SearchIssuesRequest,
+    format: 'json' | 'csv' = 'csv'
+  ): Promise<ServerResponse<JiraIssue[] | any[]>> {
     try {
       this.logger.info('Searching issues', { jql: request.jql });
 
@@ -149,9 +150,45 @@ export class JiraService {
         updated: issue.fields.updated,
       }));
 
+      if (format === 'json') {
+        return {
+          success: true,
+          data: issues,
+          message: `Found ${response.data.total} issues (showing ${issues.length})`,
+        };
+      }
+
+      // CSV format - return as JSON arrays
+      const arrayData = [
+        [
+          'key',
+          'summary',
+          'status',
+          'assignee',
+          'reporter',
+          'priority',
+          'issueType',
+          'project',
+          'created',
+          'updated',
+        ],
+        ...issues.map((issue) => [
+          issue.key,
+          issue.summary,
+          issue.status,
+          issue.assignee,
+          issue.reporter,
+          issue.priority,
+          issue.issueType,
+          `${issue.project.key} - ${issue.project.name}`,
+          issue.created,
+          issue.updated,
+        ]),
+      ];
+
       return {
         success: true,
-        data: issues,
+        data: arrayData,
         message: `Found ${response.data.total} issues (showing ${issues.length})`,
       };
     } catch (error) {

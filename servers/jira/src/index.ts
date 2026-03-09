@@ -74,7 +74,7 @@ class JiraServer {
   private async handleToolCall(toolName: string, args: any): Promise<any> {
     switch (toolName) {
       case 'search_issues':
-        return await this.jiraService.searchIssues(args);
+        return await this.jiraService.searchIssues(args, args.format);
       case 'get_issue':
         return await this.jiraService.getIssue(args.issueKey, args.format);
       case 'create_issue':

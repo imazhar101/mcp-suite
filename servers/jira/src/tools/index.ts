@@ -18,6 +18,13 @@ export const jiraTools: McpTool[] = [
           minimum: 1,
           maximum: 100,
         },
+        format: {
+          type: 'string',
+          enum: ['json', 'csv'],
+          description:
+            'Output format: "json" returns structured objects, "csv" returns array format for efficient token usage (default: "csv")',
+          default: 'csv',
+        },
       },
       required: ['jql'],
     },
