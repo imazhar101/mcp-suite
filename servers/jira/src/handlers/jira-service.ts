@@ -88,6 +88,27 @@ export class JiraService {
     return description;
   }
 
+  private extractTextFromADF(adf: any): string {
+    if (!adf) return '';
+    if (typeof adf === 'string') return adf;
+
+    const extractText = (node: any): string => {
+      if (node.type === 'text') {
+        return node.text || '';
+      }
+      if (node.content && Array.isArray(node.content)) {
+        return node.content.map(extractText).join('');
+      }
+      return '';
+    };
+
+    if (adf.content && Array.isArray(adf.content)) {
+      return adf.content.map(extractText).join('\n');
+    }
+
+    return '';
+  }
+
   async searchIssues(
     request: SearchIssuesRequest
   ): Promise<ServerResponse<JiraIssue[]>> {
@@ -137,9 +158,12 @@ export class JiraService {
     }
   }
 
-  async getIssue(issueKey: string): Promise<ServerResponse<JiraIssue>> {
+  async getIssue(
+    issueKey: string,
+    format: 'json' | 'csv' = 'json'
+  ): Promise<ServerResponse<JiraIssue | any[]>> {
     try {
-      this.logger.info('Getting issue', { issueKey });
+      this.logger.info('Getting issue', { issueKey, format });
 
       const response = await this.client.get(`/issue/${issueKey}`, {
         params: {
@@ -173,9 +197,40 @@ export class JiraService {
           })) || [],
       };
 
+      if (format === 'json') {
+        return {
+          success: true,
+          data: issueData,
+        };
+      }
+
+      // CSV format - return as JSON arrays instead of CSV string
+      const flatDescription = this.extractTextFromADF(issueData.description);
+      const flatComments =
+        issueData.comments
+          ?.map(
+            (comment) =>
+              `${comment.author}: ${this.extractTextFromADF(comment.body)} (${comment.created})`
+          )
+          .join('; ') || '';
+
       return {
         success: true,
-        data: issueData,
+        data: [
+          ['field', 'value'],
+          ['key', issueData.key],
+          ['summary', issueData.summary],
+          ['description', flatDescription],
+          ['status', issueData.status],
+          ['assignee', issueData.assignee],
+          ['reporter', issueData.reporter],
+          ['priority', issueData.priority],
+          ['issueType', issueData.issueType],
+          ['project', `${issueData.project.key} - ${issueData.project.name}`],
+          ['created', issueData.created],
+          ['updated', issueData.updated],
+          ['comments', flatComments],
+        ],
       };
     } catch (error) {
       return this.errorHandler.handleApiError(error, 'Jira');
@@ -348,9 +403,11 @@ export class JiraService {
     }
   }
 
-  async listProjects(): Promise<ServerResponse<JiraProject[]>> {
+  async listProjects(
+    format: 'json' | 'csv' = 'csv'
+  ): Promise<ServerResponse<JiraProject[] | any[]>> {
     try {
-      this.logger.info('Listing projects');
+      this.logger.info('Listing projects', { format });
 
       const response = await this.client.get('/project');
       const projects: JiraProject[] = response.data.map((project: any) => ({
@@ -360,9 +417,27 @@ export class JiraService {
         lead: project.lead?.displayName || 'No lead assigned',
       }));
 
+      if (format === 'json') {
+        return {
+          success: true,
+          data: projects,
+        };
+      }
+
+      // CSV format - return as JSON arrays instead of CSV string
+      const arrayData = [
+        ['key', 'name', 'projectType', 'lead'],
+        ...projects.map((project: any) => [
+          project.key,
+          project.name,
+          project.projectType,
+          project.lead,
+        ]),
+      ];
+
       return {
         success: true,
-        data: projects,
+        data: arrayData,
       };
     } catch (error) {
       return this.errorHandler.handleApiError(error, 'Jira');

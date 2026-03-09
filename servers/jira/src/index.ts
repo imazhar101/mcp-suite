@@ -76,7 +76,7 @@ class JiraServer {
       case 'search_issues':
         return await this.jiraService.searchIssues(args);
       case 'get_issue':
-        return await this.jiraService.getIssue(args.issueKey);
+        return await this.jiraService.getIssue(args.issueKey, args.format);
       case 'create_issue':
         return await this.jiraService.createIssue(args);
       case 'update_issue':
@@ -98,7 +98,7 @@ class JiraServer {
           args.commentId
         );
       case 'list_projects':
-        return await this.jiraService.listProjects();
+        return await this.jiraService.listProjects(args.format);
       case 'get_project':
         return await this.jiraService.getProject(args.projectKey);
       case 'get_issue_transitions':
